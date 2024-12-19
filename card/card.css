@@ -1,0 +1,18 @@
+.card{
+    height:400px;
+    width: 250px;
+    margin:12px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.card img{
+    object-fit:fill;
+    height: 200px;
+    width: 240px;
+    margin: 5px 3px 5px 3px;
+}
+.image-card{
+    height: 200px;
+    width: 200px;
+    justify-content: center;
+    align-items: center;
+}

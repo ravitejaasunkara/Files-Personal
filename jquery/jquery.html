@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+        <script src="./promise.js"></script>
+        <link rel="stylesheet" href="./styles.css">
+        <div>
+            <p class="paragraph">Hello world</p>
+            <button class="singleClickHide">Submit</button>
+
+            <button class="doubleClickHide">hideParagraph</button>
+
+            <p class="mouseenter">Mouse entered</p>
+
+            <p class="mouseleft">Mouse left</p>
+
+            <h1 class="h1">This is a paragraph.</h1>
+
+            <input type="text" class="input-field">
+
+            <button class="getdata">Get data</button>
+
+            <div class="nthchild">
+                <ul>
+                    <li>Item 1</li>
+                    <li>Item 2</li>
+                    <li>Item 3</li>
+                    <li>Item 4</li>
+                    <li>Item 5</li>
+                </ul>
+
+            </div>
+
+            <!--descendants-->
+            <div id="parent">
+                <p>Paragraph 1</p>
+                <div>
+                    <p>Paragraph 2</p>
+                    <span>Span inside the second div</span>
+                </div>
+                <button class="descendant">Change color of descendant</button>
+            </div>
+
+            <!--direct imediate children-->
+            <div id="parent2">
+                <p>Paragraph 1</p>
+                <div>
+                    <p>Paragraph 2</p>
+                    <span>Span inside the second div</span>
+                </div>
+                <button class="children">Change color of children</button>
+            </div>
+
+            <!-- contains example-->
+            <ul>
+                <li>Example 1</li>
+                <li>Another Example</li>
+                <li>Yet another item</li>
+                <li>Final Example</li>
+            </ul>
+            <p id="myElement">Raviteja</p>
+        </div>
+    </body>
+</html>

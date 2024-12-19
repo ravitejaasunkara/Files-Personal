@@ -1,0 +1,607 @@
+In java scanner class is used to read the input from the user.
+we can read integer input using nextInt(), but once nextInt() is executed the scanner class will read the integer and left the '/n' so when you use nextLine() to read string the scanner class will read the leftout '/n' from the previous buffer and skips reading the string input, so to avoid that whenever you have used a nextInt() use the nextLine() immediately for clearing out process.
+
+typecasting
+int x = 10;
+
+JOptionPane is like window.prompt in javascript.
+
+Integer.parseInt() for typecasting into int
+
+Double.parseDouble() for typescasting into double.
+
+Math class
+
+String methods - equals(),equalsIgnoreCase(),charAt(),indexOf(),isEmpty(),toUpperCase(),toLowerCase(),trim(),replace()
+overloaded methods
+
+final keywords cannot be modified, final classes cannot be inherited, final methods cannpt be overloaded
+
+method over-riding:
+class A{
+	public void fun() {
+		System.out.println("fun in class A");
+	}
+}
+class B extends A{
+	public void fun() {
+		System.out.println("fun in class B");
+	}
+}
+public class Classes {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		B b = new B();
+		b.fun();
+	}
+
+}
+------------------------------
+In method overriding we have a class A and class B extends from class A,
+if we create a object for class B and call the method which is present in both class A and class B then it will executes the method in class B, if we don't have that method in class B then it will go to the parent class and executes the parent  class method.
+
+overriding is basically creating a own version of methods for child class
+we have the method in base class and we are creating own version of the child class which is having the extended capabillities  than the parent class.so the child class can do all the things that parent class do and can achieve what parent class cannot.
+------------------------------------
+OOPS concepts
+objects
+constructers
+
+toString()
+-------------------------
+Array of objects
+
+package project1;
+class Food{
+	String name;
+	Food(String name){
+		this.name = name;
+	}
+	void display() {
+		System.out.println("Food is:"+this.name);
+	}
+}
+public class ArrayOfObjects {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Food[] f = new Food[3];
+		Food f1 = new Food("pizza");
+		Food f2 = new Food("sandwich");
+		Food f3 = new Food("hamburger");
+		f[0] = f1;
+		f[1] = f2;
+		f[2] = f3;
+		f[0].display();
+		f[1].display();
+		f[2].display();
+	}
+}
+---------------------------
+passing objects
+
+package project1;
+class Cars{
+	String name;
+	Cars(String name){
+		this.name = name;
+	}
+}
+class Garage{
+	void park(Cars car) {
+		System.out.println(car.name+" is parked");
+	}
+}
+public class PassingObjects {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Garage g = new Garage();
+		Cars c = new Cars("Audi");
+		g.park(c);
+		Cars c1 = new Cars("BMW");
+		g.park(c1);
+	}
+}
+-----------------------------------
+
+static variables or functions can be accessed without creating an object inside the class, outside the class you can access it by the classname.variablename or the classname.methodname
+
+example of a static method id 
+Math.round()
+here Math is the class name and round is the method,here round is a static function that is why we can access it with the class name
+
+It's worth noting that it's generally a good practice to keep the initialization code simple in static blocks, since complex initialization tasks can be error-prone and difficult to debug. If you need to perform complex initialization tasks, it's often better to do so in a separate method or constructor, which can be called explicitly from client code.
+
+static block will be given preference first than static method
+and static block will be executed only once
+
+public class MyClass {
+    static {
+        System.out.println("This is a static block.");
+    }
+
+    public static void myStaticMethod() {
+        System.out.println("This is a static method.");
+    }
+}
+If we were to create an instance of MyClass and call myStaticMethod() multiple times, the static block would only be executed once, when the class is loaded into memory by the JVM. Here's an example:
+
+package project1;
+class StaticExample{
+	static {
+		System.out.println("this is a static block and it will be executed"
+				+ "only once even if you created multiple instances");
+	}
+	void display() {
+		System.out.println("In class");
+	}
+}
+public class Static {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		StaticExample se1 = new StaticExample();
+		StaticExample se2 = new StaticExample();
+		se1.display();
+		se2.display();
+	}
+}
+
+output:
+this is a static block and it will be executed only once even if you created multiple instances
+In class
+In class
+
+so over static blocks and static methods static block will be given the prference
+----------------------------------------------
+
+Inheritance:
+It is basically inheriting all the properties from parent to child.
+
+package project1;
+
+class Vehicle{
+	String color = "red";
+}
+class Bike extends Vehicle{
+	int tyres = 2;
+}
+class Carr extends Vehicle{
+	int tyres = 4;
+}
+public class Inheritance {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Bike b = new Bike();
+		Carr c = new Carr();
+		System.out.println("Bike color is:"+b.color+" and bike have:"+b.tyres);
+		System.out.println("Car color is:"+c.color+" and car have:"+c.tyres);
+	}
+}
+
+here if we can see Vehicle is the parent class and bike,car are child classes
+even if bike and car had no color property still we can access the color property because it is defined in the parent class,
+and these child classes were extended or we can say inherited from parent class so these child classes can have the privilege to access all the properties or methods of parent class.
+-----------------------------
+Super keyword:
+Overall, the super keyword allows you to interact with the parent class of a subclass in various ways, such as calling constructors, methods, or fields from the parent class.
+
+there should definitely be an super() in child class constructor when child class inherited from parent class.
+
+we have a parent class and a child class, the child class had a parameterized constructor so we created an object and called it with parameters in object, where as we have a paraameterized xonstructor in parent class as well, but we are not calling it explicitly, so we will be getting an error because
+in child class constructor the first statement will be super() which calls the parent class default constructor since we dont have any default constructor in parent class but we are still trying to call it so we will get the error, to avoid that we willplace a empty default constructor.
+here is the example.
+
+package project1;
+class ravi{
+	ravi(){}
+	ravi(int age){
+		System.out.println("ravi");
+	}
+}
+class teja extends ravi{
+	String name;
+	int age;
+	teja(String name,int age){
+		System.out.println("teja");
+		this.name = name;
+		this.age = age;
+	}
+}
+public class ConstructorsDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		teja t = new teja("Hello",21);
+	}
+
+}
+
+------ ----------------------
+abstraction
+Abstract classes cannot be instantiated - we cannot create objects to abstract classes but we can create references.
+abstract classes contains both abstract methods and normal methods.
+abstract methods dont have implementation or body,they are implemented in the subclasses derived from them.
+the methods that we defined in abstract class must be implemented in derived subclass;
+the subclass must have the implementation of abstract class methods.
+
+package project1;
+abstract class Class1{
+	String name;
+	Class1(){
+	}
+	abstract void hello();
+	void world() {
+		System.out.println("non abstract method");
+	}
+}
+class Class2 extends Class1{
+	void hello() {
+		System.out.println("method implemented from class named "
+				+ "abstract class1");
+	}
+}
+public class AbstractClass {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Class1 c1;
+		Class2 c2 = new Class2();
+		c1 = c2;
+		c1.name = "some name";
+		c1.hello();
+		c1.world();
+	}
+}
+as we can see here the method defined in abstract class is hello() which is having the implementation in child subclass.
+and we cannot create objects for abstract class but we can create a reference for abstract class and assign the subclass object to it.
+
+an abstract class can contain constrcutors also which will be invoked whenever the object for child class is created.
+
+package project1;
+
+abstract class C1{
+	C1(){
+		System.out.println("Abstract class constructor");
+	}
+	C1(String name){
+		this();
+		System.out.println(name);
+	}
+}
+class C2 extends C1{
+	C2(){
+		super("Raviteja");
+		System.out.println("Derived class constructor");
+	}
+}
+
+public class AbstractClass2 {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		C2 c2 = new C2();
+	}
+}
+
+to call parent class constructor we use super()
+to call same class constrcutor from another constructor we use this();like calling default constructor from parameterized constructor.
+---------------------
+In Java, if no access modifier is specified for a class member (i.e. field, method, constructor), then the default access modifier is "package-private" or "default". This means that the member is accessible only within the same package as the class.
+
+However, if no access modifier is specified for a top-level class, then it has package-private access if it's declared inside a package, or public access if it's declared at the top level.
+
+It's important to note that the "private" access modifier is not the default modifier in Java. If you don't specify any access modifier, it defaults to package-private, not private.
+
+when comes to private fields we can only access them inside the same class, not even in the subclass.
+
+protected fields can be accessed inside the subclass.
+
+let's say we have a class class1 in package1 which is protected and in package2 we have a class named class2 which is derived from class1 in package1 so we can access the fields from class1 in class2 since class2 is derived from class1 as the protected fields can be accessed inside the subclass even in different packages.
+
+encapslation is like controlled access to the fields in class.
+-------------------------------------------- 
+shallow copy is like there were 2 references to a single object
+A obj = new A();
+A obj1 = obj;
+
+this is shallow copy,here both the objects(say references) pointing to the same memory so changing one object it will reflect the other object
+shallow copy copies an object which points to the same memory location
+where as in deep copy objects points to the different memory locations.
+
+In Java, making a shallow copy means copying the references to the objects, while making a deep copy means making new copies of the objects themselves.
+
+Shallow copy is like single copy multiple objects pointing to single copy
+where as deep copy means different objects different copies.
+
+Creating a copy of object in a different memory location. This is called a Deep copy.
+
+A shallow copy is a copy of the object that shares the same memory location as the original object. This means that if you modify the original object, those modifications will be reflected in the copy as well, because both objects point to the same data.
+
+A deep copy, on the other hand, creates a new object with the same values as the original object, but with a different memory location. This means that if you modify the original object, the copy will remain unchanged, because the two objects don't share the same data.
+
+---------------------------
+Multiple Inheritance Problem
+
+package project1;
+class M1{
+	public void some() {
+		System.out.println("M1");
+	}
+}
+class M2{
+	public void some() {
+		System.out.println("M2");
+	}
+}
+public class MultipleInheritanceProblem extends M1,M2{
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		MultipleInheritanceProblem MIP = new MultipleInheritanceProblem();
+		MIP.some();
+	}
+}
+
+here we can see Main class extends two classes which will be having the same method some().
+so when we create an object for parent class and call the method which class some() will be called?
+That is the issue with multiple inheritance it cannot be decided from which parent class the method should be called.
+
+polymorphism
+static - method overloading
+dynamic - method overriding
+
+Exception handling;
+-------------------------------------
+File
+
+import java.io.File;
+public class Files {
+	public static void main(String[] args) {
+		File f = new File("sample.txt");
+		if(f.exists()) {
+			System.out.println("file exist");
+			System.out.println(f.getAbsolutePath());
+			System.out.println(f.getPath());
+			System.out.println(f.isFile());
+			f.delete();
+		}else {
+			System.out.println("File not found");
+		}
+	}
+}
+
+writing into a file
+
+package project1;
+import java.io.FileWriter;
+import java.io.IOException;
+public class FileWriterr {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try {
+			FileWriter fw = new FileWriter("sample.txt");
+			fw.write("Roses are red\nViolets are blue");
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+----------------
+generic methods
+
+Generic methods in java which accepts a single/multiple type parameter
+helpful for code reduction.
+
+package project1;
+public class GenericTypes {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Integer[] intarr = {1,2,3,4};
+		String[] strarr = {"Java","Cpp","Python"};
+		grabarr(intarr,strarr);
+		
+	}
+	public static <T1,T2> void grabarr(T1[] arr1,T2[] arr2){
+		for(T1 i:arr1) {
+			System.out.println(i);
+		}
+		System.out.println("-----------------------------------");
+		for(T2 j:arr2) {
+			System.out.println(j);
+		}
+	}
+}
+
+here we can see like we are using the method which supports any datatype of data that we are passing;
+this is generic methods;
+
+generic classes 
+
+package project1;
+class MyGenericClass <T>{
+	T val;
+	MyGenericClass(T val){
+		this.val = val;
+	}
+	public T getValue() {
+		return val;
+	}
+}
+public class GenericClass {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		MyGenericClass<Integer> intValue = new MyGenericClass(10);
+		MyGenericClass<String> strValue = new MyGenericClass("Hello");
+		MyGenericClass<Character> charValue = new MyGenericClass('a');
+		MyGenericClass<Double> doubleValue = new MyGenericClass(10.5);
+		System.out.println(intValue.getValue());
+		System.out.println("--------------");
+		System.out.println(strValue.getValue());
+		System.out.println("--------------");
+		System.out.println(charValue.getValue());
+		System.out.println("--------------");
+		System.out.println(doubleValue.getValue());
+	}
+}
+
+here tha class accepts any type of data and return it;
+normall to do the above we have to create 4 seperate classes but here with generic classes we acheived that by using a single class.
+
+----- 
+serialization
+conversion of object to byte streams
+
+deserializtion
+is the reverse process of serialization
+
+Serialization is useful in Java for a variety of reasons, including:
+
+Persistence: Serialization allows objects to be saved to a file or database and loaded later, so that an application can resume where it left off after being shut down or restarted. This is particularly useful for applications that need to store user preferences or other state information.
+
+Communication: Serialization allows objects to be sent over a network or between processes, so that different parts of an application can communicate with each other. This is especially important in distributed systems, where different parts of an application may be running on different machines.
+
+Cloning: Serialization can be used to create a copy of an object, either in memory or on disk. This is useful for creating backup copies of important data, or for cloning objects to be used in parallel processing.
+
+Security: Serialization can be used to encrypt and decrypt sensitive data, so that it cannot be read or modified by unauthorized parties.
+
+Testing: Serialization can be used to create test data for an application, or to create test fixtures that can be used to test individual components of an application.
+
+Overall, serialization provides a powerful mechanism for managing complex data in Java, allowing objects to be saved, loaded, and transmitted across different parts of an application.
+
+Serialization example
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+class Example implements Serializable{
+    String name;
+    String password;
+}
+public class Serialization {
+    public static void main(String[] args) throws FileNotFoundException,IOException {
+        Example ex = new Example();
+        ex.name = "raviteja.sunkara";
+        ex.password = "Raviteja552@";
+        FileOutputStream fos = new FileOutputStream("example.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(ex);
+        oos.close();
+        System.out.println("Serialization done!!");
+    }
+}
+here like with this code a .ser file will be created which consists of the serialized data we can deserialize that file to get the actual contents, deserialization can be done as below.
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+public class Deserialization {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        Example ex = null;
+        FileInputStream FIS = new FileInputStream("D:\\Java Related\\pro1\\example.ser");
+        ObjectInputStream OIS = new ObjectInputStream(FIS);
+        ex = (Example)OIS.readObject();
+        System.out.println(ex.name);
+        System.out.println(ex.password);
+    }
+}
+this code will deserialize the byte code and prints the content.
+
+Saving state information: Imagine a game that allows users to save their progress and resume from where they left off. Serialization can be used to save the state of the game, including the user's progress, game score, and other relevant information. The serialized object can be stored in a file and loaded later when the user wants to resume the game.
+
+Network communication: In a distributed system, different applications may communicate with each other over a network. Serialization can be used to convert Java objects into a byte stream, which can be transmitted over the network. The receiving application can then deserialize the byte stream to reconstruct the original object.
+
+Caching data: Serialization can be used to cache data in memory or on disk. This can improve application performance by reducing the number of times the data needs to be fetched from a database or external service. When the data is required, the serialized object can be deserialized and used.
+
+---------------
+Threads
+In Java, a thread is a unit of execution within a program. Threads allow multiple tasks to be performed concurrently within the same program, making it possible to execute multiple operations simultaneously.
+
+In non-threaded execution, the program executes sequentially, one line of code at a time, until it completes the task at hand. The execution of a single task takes up the entire CPU time, during which other tasks cannot be executed.
+
+In contrast, threaded execution allows multiple tasks to be executed concurrently, allowing the CPU to switch between threads and perform different tasks simultaneously. This makes the application more responsive and efficient, as it can perform multiple tasks at the same time.
+
+For example, consider a simple program that needs to download several files from the internet. In a non-threaded execution, the program would download each file sequentially, waiting for the download of one file to complete before starting the download of the next file. This would result in a slower execution time, as the program would spend most of its time waiting for downloads to complete.
+
+With threaded execution, the program could download multiple files simultaneously, with each file download taking place in a separate thread. This would allow the program to take advantage of available CPU resources and perform the downloads much more quickly than a non-threaded implementation.
+
+sleep()
+
+Multithreading examples
+
+class Thread1 extends Thread{
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Thread #1 : "+i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Thread1 Finished!!");
+    }
+}
+class Runnable1 implements Runnable{
+
+    @Override
+    public void run() {
+        for (int i = 10; i > 0; i--) {
+            System.out.println("Thread #2 : "+i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(1/0);
+        }
+        System.out.println("Thread2 Finished!!");
+    }
+    
+}
+public class Multithreading {
+    public static void main(String[] args) {
+        // Normal Thread Creation
+        Thread1 thread1 = new Thread1();
+        // Thread implemented from runnable interface
+        Runnable1 runnable1 = new Runnable1();
+        Thread thread2 = new Thread(runnable1);
+
+        thread1.start();
+        thread2.start();
+
+    }
+}
+ output:
+
+Thread #1 : 1
+Thread #2 : 8
+Thread #1 : 2
+Thread #2 : 7
+Thread #1 : 3
+Thread #2 : 6
+Thread #1 : 4
+Thread #2 : 5
+Thread #1 : 5
+Thread #2 : 4
+Thread #1 : 6
+Thread #2 : 3
+Thread #1 : 7
+Thread #2 : 2
+Thread #1 : 8
+Thread #2 : 1
+Thread #1 : 9
+Thread2 Finished!!
+Thread1 Finished!!
+
+
+
+
+
+
+
+
