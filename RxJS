@@ -1,0 +1,655 @@
+RxJS -> Reactive Extensions for JavaScript
+Used to work with asynchronous actions and events.
+
+Synchronous means the code runs in a particular sequence of instructions given in the program, whereas asynchronous code execution allows to execution of the upcoming instructions immediately. Because of asynchronous programming we can avoid the blocking of tasks due to the previous instructions.
+
+declare a variable by ending it with the dollar sign represents a observable which is ready to react for any changes happened.
+var hello$; this variable is now an observable.
+x=5           x = 5
+y=3           y = 3
+z = x+5       z$ = x+y
+x = 7         x = 7
+
+z is 8        z emits 10 so an observable will always react to changes and emits the latest value.
+
+subscribe() - emit items, emits an observable
+
+Observable - A collection of events or values emitted over time
+
+If we are using pipe() wit subscribe() then whatever the values emitted by the subscribe will go through the operations mentioned inside the pipe operator
+
+of (2, 4, 6).pipe(
+  map(item => item * 2),
+  tap(item => console. log(item)),
+  take(3)
+).subscribe(item => console.log(item));
+
+consider the above example 
+the subscribe first emits the value 2 which will go through the map,tap,take inside pipe the same happens for all the other items which the subscribe emits.
+
+in the above example
+first 2 will be passed as an input observable to  map and map emits a output observable that will be taken as a input to tap and tap will emits an output and that output will be taken as input to take and finally take passes the output to the item variable.
+
+
+map is used to transform the output into the required form
+
+tap() operator is used to limit the number of values to be emitted
+
+we can use async pipe for subscription.
+
+for example
+
+productsData = []; 
+
+this.productService.getData().subscribe((res) => {
+  this.productsData = res;
+})
+
+this is a generic way of subscribing to an observable, we can also do like the below
+
+productsData$<Observable[]>;
+
+this.productsData$ = this.productsService.getData();
+
+and we can use in template as *ngFor = "productData$ | async as productData"
+ and then productData.name and productData.price like this we can use in template.
+
+this.productService.getProducts().subscribe({
+    next: products => this.products = products,
+    error: err => this.errorMessage = err
+})
+
+like this also we can store data coming from API response.
+
+we can change the data recieved from API using the map operator
+let's see an example
+
+getEmailSubscriptionsByCustomerId() {
+    this._customerLookpService.getSubscriptionDetails(this.customerId).subscribe(
+      res =>{
+          this.emailSubscriptions = <Array<Emailsubscription>> res;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+}
+
+this is some API call which is having the response like this 
+[
+    {
+        "type": "SOFT OPT-IN",
+        "dateTime": "2022-07-18 10:50:10"
+    }
+]
+
+so what if we want to change the response data in the call itself, we can achieve it using the map operator as described below
+getEmailSubscriptionsByCustomerId() {
+    this._customerLookpService.getSubscriptionDetails(this.customerId)
+    .pipe(
+      map(data => 
+        data.map(item =>({
+        ...item,
+        dateTime: new Date().getUTCFullYear()
+      } as Emailsubscription))
+      )
+    )
+    .subscribe(
+      res =>{
+          this.emailSubscriptions = <Array<Emailsubscription>> res;
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
+
+  after this the data will looks like
+
+  [
+    {
+        "type": "SOFT OPT-IN",
+        "dateTime": 2023
+    }
+] as we have modified the dateTime field using the map operator.
+whatever the data that we have modified inside pipe that will be copied to the result variable then the res will be allocated to our emailsubscriptions variable.
+
+RxJs filter is used to filter the repsonse received from API with some condition
+let's see an example
+
+import { of } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+const numbers = of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+const evenNumbers = numbers.pipe(filter(num => num % 2 === 0));
+
+evenNumbers.subscribe(num => console.log(num)); 
+// Output: 2, 4, 6, 8
+
+
+In this example, we create an observable numbers that emits a stream of integers from 1 to 9. We then use the filter operator to create a new observable evenNumbers that only emits even numbers. The filter condition is specified as a predicate function that returns true for even numbers (i.e., numbers that have a remainder of 0 when divided by 2).
+
+Finally, we subscribe to evenNumbers and log each emitted value to the console. The output shows only even numbers (i.e., 2, 4, 6, 8) are emitted.
+
+
+caching observables
+
+observables can be cached by using shareReplay() in rxjs.
+let's see an example here
+
+getData(){
+  return this.http.get('https://jsonplaceholder.com');
+}
+
+this function is making a network call each time the component has reloaded so to avoid that we can do like
+
+private cachedCERdata$:any;
+
+getData(){
+  if(!!this.cachedCERdata$){
+    return this.cachedCERdata$;
+  }else{
+    this.cachedCERdata$ = return this.http.get('https://jsonplaceholder.com').pipe(shareReplay(1));
+    return this.cachedCERdata$;
+  }
+}
+
+In this way using the sharedReplay() at the begining the API call is made and when the component is changed and get back to the same component again normall it will make another call, but now the data is being stored in that variable cachedData and it already contais the data so we are not making any API call for now using this sharedReplay from rxjs.
+
+concatMap
+It can be useful in multiple ways like
+
+when we want to make a series of API calls one after another like we have 3 API calls were there and we want make API calls in an order such that the 2nd API call will be triggered only when the 1st call completed means the upcoming API call will be triggered only when the previous API call completed.
+
+we you can use concatMap to make sequential API calls in RxJS. concatMap is an operator that allows you to concatenate the emissions of one observable onto the end of another observable, sequentially.
+
+urlArray = ['https://jsonplaceholder.typicode.com/posts?userId=1','https://jsonplaceholder.typicode.com/posts?userId=2','https://jsonplaceholder.typicode.com/posts?userId=3'];
+
+ngOnInit() {
+    of(...this.urlArray)
+    .pipe(
+      concatMap((url) => {
+        return this.http.get(url)
+      })
+    ).subscribe(res => console.log(res));
+}
+
+In Angular, another common use of concatMap is to handle sequential HTTP requests that depend on the results of the previous request.
+
+For example, let's say you have an application that needs to fetch data from multiple endpoints in sequence, where the data from each endpoint depends on the data from the previous endpoint. In this case, you would need to use concatMap to ensure that each HTTP request is made in sequence, after the previous request has completed.
+
+In this example we are making series of 3 API calls one after another.
+
+of() needs individual elements as an arguments where as from() takes arrray an an argument and take each item from array and perform specific task.
+ getData() {
+    // Make a series of HTTP requests using concatMap
+    this.http.get('https://jsonplaceholder.typicode.com/users/1').pipe(
+      concatMap((user: any) => this.http.get(`https://jsonplaceholder.typicode.com/posts?userId=${user.id}`)),
+      concatMap((posts: any) => this.http.get(`https://jsonplaceholder.typicode.com/comments?postId=${posts[0].id}`))
+    ).subscribe((comments: any) => {
+      // Do something with the final data
+      console.log(comments);
+    });
+  }
+
+getData() method when clicked. Inside the getData() method, we use concatMap to make a sequence of HTTP requests that depend on each other.
+
+The first concatMap call makes an HTTP request to fetch user data from the https://jsonplaceholder.typicode.com/users/1 endpoint. The response data is then passed to the next concatMap call, which makes an HTTP request to fetch posts data for that user from the https://jsonplaceholder.typicode.com/posts endpoint. Finally, the response data from the posts request is passed to the last concatMap call, which makes an HTTP request to fetch comments data for the first post in the posts data from the https://jsonplaceholder.typicode.com/comments endpoint.
+
+Each concatMap call waits for the previous HTTP request to complete before making its own request, and the responses are passed down the chain in sequence. The final response data (comments) is then passed to the subscribe method, where it can be used to update the UI or perform other actions.
+
+Using concatMap in this way allows you to handle sequential HTTP requests in Angular in a simple and elegant way, while ensuring that each request is made in sequence and that the results are passed down the chain in the correct order.
+
+here what happening is first we are making one API call and that API call gives a response from the response we are taking some 'id' field and with that id field we are making the 2nd API call for getting posts after that API call gives response from that response we are taking the first post and it's id and making another API call and yeilding the final result.
+
+so basically when we have series of API calls to be made and each API call depends upon previous API call so we can obtain the data from previous API call and make the next API call, concatMap allows us to do that.
+
+of('a','b','c')
+from(['a','b','c'])
+
+switchMap
+
+switchMap is another commonly used RxJS operator in Angular, which is used to handle scenarios where you need to cancel previous HTTP requests and switch to a new one.
+
+For example, let's say you have a search box in your application that allows users to enter search terms, and you want to perform an HTTP request to fetch search results from the server. If the user types a new search term before the previous request completes, you may want to cancel the previous request and switch to a new one to avoid displaying outdated search results.
+
+urlArray = ['https://jsonplaceholder.typicode.com/posts?userId=1','https://jsonplaceholder.typicode.com/posts?userId=2','https://jsonplaceholder.typicode.com/posts?userId=3'];
+  ngOnInit() {
+    from(this.urlArray)
+    .pipe(
+      switchMap((url) => {
+        return this.http.get(url)
+      })
+    ).subscribe(res => console.log(res));
+}
+
+here the API calls for the first and 2nd url's will be cancelled and the 3rd which is the last url the API call happened as switchMap works in that way.
+It cancells any previous or pending API calls and takes care of the current API call.
+
+seems like mergeMap and concatMap are similar but concatMap follows the order where as there is no specific order for mergeMap and the requests will happen in random order unlike concatMap.
+
+Both concatMap and mergeMap are operators that allow you to transform each item emitted by an observable into a new observable. The difference between the two lies in how they handle the emissions from the inner observables.
+
+concatMap concatenates the emissions from each inner observable, so that they are emitted in order and only after the previous inner observable has completed. This means that emissions from the second inner observable won't be emitted until all emissions from the first inner observable have completed.
+
+mergeMap, on the other hand, merges the emissions from all of the inner observables into a single stream of emissions, regardless of the order in which they complete. This means that emissions from the second inner observable can be emitted before emissions from the first inner observable have completed.
+
+So, while it's true that concatMap follows a strict order of emissions and mergeMap does not, this is just one aspect of how they differ. The choice between concatMap and mergeMap will depend on your specific use case and how you want to handle the emissions from the inner observables.
+
+
+switchMap()
+concatMap()
+mergeMap()
+catchError()
+throwError()
+shareReplay()
+of()
+from()
+tap()
+map()
+take()
+debounceTime()
+
+debounceTime() is used to reduce the number of API calls that are being sent to the server.
+for example we have an input field in which when we start typing into that for each key stroke an API call is being sent that will cause unnecessary load on the server, to avoid that we can use debounceTime() like this
+
+this.myform.get('myValue')?.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+    )
+    .subscribe(data => console.log(data));
+
+In this way the API call is being sent after the user stops typing for 300ms
+so when the user starts typing continously and stopped for 300ms then the latest value emitted being taken and sent to the server instead of for every keystroke
+we can achieve this along with distinctUntilChanges()
+
+For example, let's say you have a form that allows users to enter their email address, and you want to validate the email address as they type, but you don't want to send a validation request to the server for every keystroke.
+
+Here's an example of how you can use distinctUntilChanged() to achieve this:
+
+
+import { Component } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { ApiService } from './api.service';
+
+@Component({
+  selector: 'app-email-form',
+  template: `
+    <form [formGroup]="form">
+      <input formControlName="email" placeholder="Email">
+    </form>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  `
+})
+export class EmailFormComponent {
+  form = new FormGroup({
+    email: new FormControl('')
+  });
+
+  errorMessage: string;
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit() {
+    this.form
+      .get('email')
+      .valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((email) => this.apiService.validateEmail(email))
+      )
+      .subscribe(
+        () => {
+          this.errorMessage = null;
+        },
+        (error) => {
+          this.errorMessage = error.message;
+        }
+      );
+  }
+}
+In this example, we listen to the valueChanges event of the email input field using the valueChanges property of the FormControl. We then pipe the event stream through the debounceTime(), distinctUntilChanged(), and switchMap() operators.
+
+The debounceTime() operator delays the stream by 500 milliseconds, which means that if the user types multiple characters within 500 milliseconds, only the final value will be emitted. The distinctUntilChanged() operator ensures that we only send validation requests when the email address has actually changed.
+
+The switchMap() operator maps each email address to a validation request using the ApiService that sends the request to the server. If a new email address is entered before the previous request has completed, the switchMap() operator cancels the previous request and starts a new one.
+
+The result is an email validation request that is only sent to the server when the user has finished typing the email address and only if the email address has actually changed.
+
+Overall, distinctUntilChanged() helps to reduce unnecessary email validation requests and improve the performance of the form, by ensuring that only distinct email addresses trigger validation requests.
+
+----------------------------------------------------------------------------------------------------------------
+In Angular, a BehaviorSubject is a type of Subject that allows you to easily share data across components and services. It is useful for real-time data sharing and can be used in a variety of scenarios, such as when you need to synchronize data between components, manage global state, or implement data caching.
+
+Here's an example of how to use a BehaviorSubject in Angular:
+
+Import the BehaviorSubject from the rxjs library:
+python
+Copy code
+import { BehaviorSubject } from 'rxjs';
+Create a new instance of the BehaviorSubject in your service or component:
+typescript
+Copy code
+private data = new BehaviorSubject<any>(null);
+In this example, the data property is initialized with a null value. The type of data can be any object, array, or primitive value.
+
+Implement methods to read and write data to the BehaviorSubject:
+kotlin
+Copy code
+getData() {
+  return this.data.asObservable();
+}
+
+setData(value: any) {
+  this.data.next(value);
+}
+The getData() method returns an Observable that can be subscribed to by other components to receive updates whenever the data changes. The setData() method updates the value of the data property and notifies all subscribers.
+
+Subscribe to the data in your component:
+kotlin
+Copy code
+this.service.getData().subscribe(data => {
+  // do something with the data
+});
+In this example, the component subscribes to the data Observable and receives updates whenever the data changes.
+
+By using a BehaviorSubject, you can easily share data between components and services in real-time. This makes it a useful tool for building complex, data-driven applications in Angular.
+
+
+
+
+errorsareinmyblood@gmail.com
+show me example by sending data to the behaviour subject from different components
+Sure, here's an example of how to send data to a BehaviorSubject from different components in Angular:
+
+First, let's create a service that has a BehaviorSubject to store the data:
+
+typescript
+Copy code
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private data = new BehaviorSubject<string>('');
+  currentData = this.data.asObservable();
+
+  constructor() { }
+
+  changeData(newData: string) {
+    this.data.next(newData);
+  }
+}
+In this service, we have a private variable data that is a BehaviorSubject of type string. We also have a public variable currentData that is an Observable that can be subscribed to by other components to receive updates. Finally, we have a method changeData that allows us to update the value of data and notify all subscribers.
+
+Now, let's create two components that will send data to the service:
+
+kotlin
+Copy code
+import { Component } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-component-one',
+  template: `
+    <input [(ngModel)]="data" (ngModelChange)="sendData()">
+  `
+})
+export class ComponentOneComponent {
+  data: string;
+
+  constructor(private dataService: DataService) {}
+
+  sendData() {
+    this.dataService.changeData(this.data);
+  }
+}
+In this component, we have an input field that is bound to the data variable using ngModel. Whenever the value of the input field changes, we call the sendData method that sends the new value to the DataService using the changeData method.
+
+typescript
+Copy code
+import { Component } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-component-two',
+  template: `
+    <button (click)="sendData()">Send Data</button>
+  `
+})
+export class ComponentTwoComponent {
+  constructor(private dataService: DataService) {}
+
+  sendData() {
+    this.dataService.changeData('Data sent from Component Two');
+  }
+}
+In this component, we have a button that calls the sendData method when clicked. This method sends a fixed string to the DataService using the changeData method.
+
+Now, whenever the changeData method is called in either of these two components, the new data is sent to the DataService and all subscribers to the currentData Observable will receive the updated value. You can subscribe to the currentData Observable in any component to receive updates whenever the data changes.
+
+
+
+
+errorsareinmyblood@gmail.com
+okay for the same example what happens if i use Subject instead of Behaviour subject
+If you use a Subject instead of a BehaviorSubject in the same example, the behavior will be slightly different.
+
+A Subject is also a type of Observable that allows you to multicast a single value or stream of values to multiple Observers. However, unlike a BehaviorSubject, a Subject does not have an initial value and does not store the last emitted value. This means that any component that subscribes to a Subject will not receive the most recent data emitted by the Subject.
+
+Here's an example of how the DataService class would look like with a Subject:
+
+typescript
+Copy code
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private data = new Subject<string>();
+  currentData = this.data.asObservable();
+
+  constructor() { }
+
+  changeData(newData: string) {
+    this.data.next(newData);
+  }
+}
+In this example, we are using a Subject instead of a BehaviorSubject. The changeData method is the same as in the previous example, but there is no initial value for the data variable.
+
+Now, when a component sends data using the changeData method, all subscribers to the currentData Observable will receive the updated value, but they will not receive the most recent value. This means that if a component subscribes to the currentData Observable after data has already been sent, it will not receive the previous value.
+
+For example, if ComponentTwo sends data before ComponentOne subscribes to the currentData Observable, ComponentOne will not receive the data that was sent by ComponentTwo. This may or may not be the desired behavior depending on your use case.
+
+In general, if you need to store and share the most recent value of a data stream, you should use a BehaviorSubject. If you only need to multicast events or values to multiple subscribers without storing the last emitted value, you can use a Subject.
+
+
+
+
+show me example differentiating subject and behaviour subject with output
+Sure, here's an example that demonstrates the difference between a Subject and a BehaviorSubject with output.
+
+First, let's create a DataService that uses a BehaviorSubject to store and share the most recent value:
+
+
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private data = new BehaviorSubject<string>('Initial Value');
+  currentData = this.data.asObservable();
+
+  constructor() { }
+
+  changeData(newData: string) {
+    this.data.next(newData);
+  }
+}
+In this example, we have a BehaviorSubject that is initialized with the value 'Initial Value'. We also have a method changeData that allows us to update the value of the BehaviorSubject and notify all subscribers.
+
+Now, let's create two components that subscribe to the DataService and output the received data:
+
+typescript
+Copy code
+import { Component, OnDestroy } from '@angular/core';
+import { DataService } from './data.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-component-one',
+  template: `
+    <div>Component One: {{ data }}</div>
+  `
+})
+export class ComponentOneComponent implements OnDestroy {
+  data: string;
+  private subscription: Subscription;
+
+  constructor(private dataService: DataService) {
+    this.subscription = dataService.currentData.subscribe(data => this.data = data);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+}
+In this component, we subscribe to the currentData Observable in the DataService and set the data variable whenever new data is received. We output the value of data in the template.
+
+import { Component, OnDestroy } from '@angular/core';
+import { DataService } from './data.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-component-two',
+  template: `
+    <div>Component Two: {{ data }}</div>
+  `
+})
+export class ComponentTwoComponent implements OnDestroy {
+  data: string;
+  private subscription: Subscription;
+
+  constructor(private dataService: DataService) {
+    this.subscription = dataService.currentData.subscribe(data => this.data = data);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+}
+In this component, we do the same thing as in ComponentOne, subscribing to the currentData Observable and outputting the received data.
+
+Now, let's create another DataService that uses a Subject instead of a BehaviorSubject:
+
+typescript
+Copy code
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SubjectDataService {
+  private data = new Subject<string>();
+  currentData = this.data.asObservable();
+
+  constructor() { }
+
+  changeData(newData: string) {
+    this.data.next(newData);
+  }
+}
+In this SubjectDataService, we are using a Subject instead of a BehaviorSubject. There is no initial value for the Subject, and it does not store the last emitted value.
+
+Let's create two more components that subscribe to the SubjectDataService and output the received data:
+
+import { Component, OnDestroy } from '@angular/core';
+import { SubjectDataService } from './subject-data.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-component-three',
+  template: `
+    <div>Component Three: {{ data }}</div>
+  `
+})
+export class ComponentThreeComponent implements OnDestroy {
+  data: string;
+  private subscription: Subscription;
+
+  constructor(private subjectDataService: SubjectDataService) {
+    this.subscription = subjectDataService.currentData.subscribe(data =>
+this.data = data);
+}
+
+ngOnDestroy() {
+this.subscription.unsubscribe();
+}
+}
+
+import { Component, OnDestroy } from '@angular/core';
+import { SubjectDataService } from './subject-data.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+selector: 'app-component-four',
+template: <div>Component Four: {{ data }}</div> })
+export class ComponentFourComponent implements OnDestroy {
+data: string;
+private subscription: Subscription;
+
+constructor(private subjectDataService: SubjectDataService) {
+this.subscription = subjectDataService.currentData.subscribe(data => this.data = data);
+}
+
+ngOnDestroy() {
+this.subscription.unsubscribe();
+}
+}
+
+
+Now that we have our components and services set up, we can use them in our app. Let's create a button in `AppComponent` that calls the `changeData` method on both `DataService` and `SubjectDataService`:
+
+import { Component } from '@angular/core';
+import { DataService } from './data.service';
+import { SubjectDataService } from './subject-data.service';
+
+@Component({
+selector: 'app-root',
+template: <button (click)="changeData()">Change Data</button> <app-component-one></app-component-one> <app-component-two></app-component-two> <app-component-three></app-component-three> <app-component-four></app-component-four> })
+export class AppComponent {
+constructor(private dataService: DataService, private subjectDataService: SubjectDataService) {}
+
+changeData() {
+const data = new Date().toString();
+this.dataService.changeData(data);
+this.subjectDataService.changeData(data);
+}
+}
+
+
+This will call the `changeData` method on both services, passing in the current date as the new data.
+
+If you run this app and click the "Change Data" button, you should see the output from `ComponentOne` and `ComponentTwo` change to the current date, while the output from `ComponentThree` and `ComponentFour` will not change since they are using a `Subject` instead of a `BehaviorSubject`.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,146 @@
+tight and loose coupling
+In programming, tight coupling means that two parts of a program are strongly connected to each other, so that changing one part could break the other. Loose coupling means that the parts of a program are more independent from each other, so that changing one part will not affect the other parts as much.
+Independency comes under loose coupling
+dependency comes under tight coupling
+-------------------------------------
+Imagine that you want to make a sandwich, but you don't know what ingredients to use or how to put them together. Spring is like a pantry full of ingredients that you can use to make a sandwich, but you have to figure out which ingredients to use and how to put them together.
+
+Now, imagine that someone gives you a recipe for a sandwich. The recipe tells you exactly which ingredients to use and how to put them together to make a delicious sandwich. This is what Spring Boot does - it provides you with a recipe (a pre-configured environment) that you can follow to build your application without having to figure out all the details yourself.
+
+So, Spring is like a pantry full of ingredients that you have to figure out how to use, while Spring Boot is like a recipe that tells you exactly which ingredients to use and how to put them together to make a tasty sandwich.
+-------------------------------------
+
+record in java
+record in java is a new feature that creaates a simple class with constructor and getters and setters for data storing;
+
+@Bean(name = "myAddress")
+public Address address() {
+	return new Address("Madiwala","Marutinagar");
+}
+Now you can access the bean with name "myBean" and not with "address" when you try to access bean with "address" then we will get en exception that 
+"Exception in thread "main" org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named 'address' available"
+since now the bean has been renames to "myAddress" using the name attribute of Bean
+
+you can also access the same bean with classname like 
+getBean(Address.class) since this bean is type of Address class
+
+there are different ways to call a bean
+with beanname
+with beanname specified using name attribute in bean
+with beantype(classname.class)
+reusing existing beans in a bean to make a new bean
+
+
+spring container --> manages spring beans and their life cycles.
+
+
+@Component
+@ComponentScan
+
+will create objects by spring without you require to create objects.
+
+
+@Lazy
+In a spring app initally all Classes will be loaded eagerly even if we are not using the bean of that class which is called eagerly loading,to avoid that we can put @Lazy annotation to that class so that whenever someone has used the bean of the class then only that class will be initialized,but this is not a good approach since we could not discover any errors are there in a class since that class has not loaded yet.
+
+@Scope
+when you add @Scope(value=ConfigurableBeanFactory.SCOPE_PROTOTYPE) to a class
+then when you try to getBean of that particular class then you will get the different bean everytime,where as normal cases you'll get the same bean everytime.
+
+In Spring Framework, @Scope is an annotation used to define the scope of a bean. A bean is an object that is managed by the Spring container, and a scope determines the lifecycle and visibility of a bean.
+
+By default, beans in Spring Framework are singleton scoped, which means that only one instance of the bean is created for the entire application context. However, you can change the scope of a bean by using the @Scope annotation.
+
+The @Scope annotation can be applied to a bean definition method or to a class declaration. It accepts a string value that specifies the scope of the bean. The following are the possible values for the @Scope annotation:
+
+singleton is the default scope.when you did not defined any scope then the aactual scope will be singleton which is the default scope.
+
+prototype scope is very rarely used.most of the times only singleton prototype was used.
+
+when you have annotated any method with @PostContruct then that method will be executed after the dependency injection was completed.
+
+@PreDestroy
+And if you want to do some cleanup when a bean is being removed you can do @PreDestroy to close database connections like that.
+
+
+both @Component and @Service were same like if we are creating a class that can do anything like it's purpose is not limited then we can annotate it with @Component or otherwise if we are annotated a class with @Service it represents that this class is used for specific purpose like this class is used only for establishing db connections or some other specific purpose.
+
+difference between @Component and @Service is mainly a matter of representation and intent.
+
+@Component is a generic annotation that can be used to annotate any class that should be managed by Spring. It doesn't convey any specific meaning about the class's role or purpose within the application. It is more like a catch-all annotation that indicates that the class is a Spring-managed component.
+
+On the other hand, @Service is a specialization of @Component and is used to annotate classes that perform a specific role within the application. In particular, it is used to annotate service-layer classes that provide business logic or other services to the rest of the application. By using @Service, you are indicating that the class is specifically designed to provide a service, rather than being a generic component.
+
+So, while both annotations ultimately serve the same purpose of marking a class as a Spring-managed component, the use of @Service provides more specific semantics about the class's intended role within the application, which can make the codebase more organized and easier to understand.
+-----------------------
+spring IOC(Inversion of control)
+the name itself says the control is inversed, here the control of creating objects and maintaining is inversed from programmer to spring container
+
+IoC means that the control of an object's creation and lifecycle is shifted from the object itself to an external container. In the case of Spring, this container is called the ApplicationContext.
+
+Imagine that you need to create an object that depends on other objects to work. Traditionally, you would create and manage these objects inside the object itself, which can lead to tightly coupled code that is difficult to maintain and test.
+
+With IoC, you delegate the responsibility of creating and managing these objects to the ApplicationContext. This means that the objects are created and wired together by the container, rather than by the objects themselves.
+
+The ApplicationContext uses configuration metadata (such as XML files, Java annotations, or Java code) to define the objects and their relationships. It creates and manages these objects based on their configuration, and injects any necessary dependencies into them.
+
+In simpler terms, Spring's IoC is a way to manage the dependencies between objects by delegating the responsibility of creating and managing these objects to an external container. This allows you to create flexible and maintainable applications by separating concerns and reducing the coupling between components.
+---------------
+
+
+if you are placed say 
+
+@Autowired
+private CurrencyService currencyService;
+
+this means the CurrencyService class has a @Component annotation which means that class will be managed by spring so whenever in any class you are autowiring that class then spring will automatically inject a bean of that class into that object, here we will have a object of type CurrencyService which is being injected into currencyService variable;
+
+SPRING BOOT
+
+-> creating a configuration class named CurrencyServiceConfiguration and annotate it with @ConfigurationProperties(prefix = "currency-service") and @Component to make it managed by spring
+-> go to application prperties and set values for configuration using the prefix like currency-service.url="http://localhost:8080" like that
+-> now create an end point for that by creating a controller class and there create a method with 
+
+@Autowired
+private CurrencyServiceConfiguration configuration; -> Auto wiring an instance of that class by annotating that class with @Component
+@RequestMapping("/currency-services")
+public CurrencyServiceConfiguration getData(){
+	return configuration;
+}
+
+now if we go to "http://localhost:8080/currency-services" then we can see a response object like this 
+{
+"url": "http://in28minutes.com",
+"username": "raviteja",
+"password": "Raviteja552@"
+}
+
+here the flow is 
+create configuration class annotate it with @ConfigurationProoperties(prefix = " ")
+assign values to it in application.properties
+create controller class for request mapping
+
+when a java class is talking to a database that class has to be annotated with @Repository annotation.
+
+insert into course (id, name, author)
+values(l,'Learn AWS' , 'in28minutes');
+
+JDBC means writing queries
+spring data JDBC means using entity manager
+spring jpa means using JpaRepository
+
+
+@Controller
+@RestController = @Controller+@ResponseBody
+
+@RestController has already an annotaions of @ResponseBody and @Controller so @ResponseBody is combination of both of those.
+
+thread-safe means can be used by multiple threads at same time without any issues
+
+
+
+
+
+
+
+

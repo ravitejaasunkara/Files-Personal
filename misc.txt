@@ -1,0 +1,38 @@
+SSR stands for Server-Side Rendering. It is a technique in web development where the server generates the complete HTML content of a web page with the dynamic data included and sends it to the client's browser. This allows the browser to receive a fully rendered and interactive page from the server.
+
+To better understand SSR, let's compare examples of rendering a web page with and without SSR:
+
+Example without SSR:
+Suppose you have a single-page application (SPA) built with a JavaScript framework like React or Angular. When a user visits your website, the initial HTML file is sent from the server, which typically contains a loading spinner or a minimal static layout. The JavaScript code then runs in the browser and retrieves data from an API endpoint. Once the data is fetched, the JavaScript framework dynamically updates the HTML, rendering the complete page and making it interactive. This process is known as client-side rendering (CSR).
+
+Example with SSR:
+With SSR, the server performs the rendering process and sends a fully rendered HTML page to the client's browser. The server fetches the data from the API, populates it into the HTML template, and returns the final HTML content. The browser receives the pre-rendered HTML and can immediately display the fully rendered page to the user, even before any JavaScript code is executed. The JavaScript framework then takes over and enhances the interactivity of the page.
+
+Benefits of SSR:
+1. Faster Initial Page Load: With SSR, the user sees a complete and usable page faster since the server provides pre-rendered HTML. This improves perceived performance and reduces the time spent waiting for JavaScript to load and execute.
+
+2. SEO-Friendly: Search engines can crawl and index the pre-rendered HTML content more easily, as opposed to relying solely on client-side JavaScript rendering. This can improve the visibility and SEO ranking of your website.
+
+3. Better User Experience: SSR ensures that users with slower devices or limited JavaScript support can still access and interact with the basic content of your website.
+
+Drawbacks of SSR:
+1. Increased Server Load: SSR requires the server to perform the rendering process for each request, which can put additional load on the server, especially for high-traffic applications.
+
+2. Delayed Interactive Elements: While the initial page load is faster with SSR, interactive elements that rely on JavaScript might have a slight delay since the JavaScript code needs to load and execute after the initial render.
+
+3. Complex Development and Deployment: Implementing SSR requires additional configuration and development effort. It can introduce complexity in managing server-side rendering and client-side hydration.
+
+It's important to consider the specific requirements and constraints of your project when deciding whether to use SSR or CSR. SSR is beneficial for improving initial load times, SEO, and user experience, but it comes with additional complexity and server load considerations.
+
+Yes, you are correct. Angular also introduces hydration as part of its rendering process. Angular applications can be server-side rendered (SSR) using technologies like Angular Universal. During hydration in Angular, the server-rendered HTML is converted into a fully functional client-side Angular application.
+
+The hydration process in Angular involves attaching event handlers, initializing component state, and establishing data bindings to make the application interactive. It ensures that the server-rendered HTML is transformed into a dynamic and interactive Angular application on the client-side.
+
+Hydration in Angular helps provide a better user experience by allowing the application to take advantage of client-side rendering and interactivity while benefiting from server-side rendering for initial load and SEO purposes.
+
+Similar to other frameworks, issues with hydration in Angular can occur if there are inconsistencies between the server-rendered HTML and the client-side Angular application. Ensuring consistency in component rendering, data fetching, and state management between server and client is important to avoid hydration problems.
+
+Angular provides tools and techniques, such as Angular Universal, to facilitate server-side rendering and hydration. By following Angular's guidelines and best practices for server-side rendering and hydration, developers can mitigate issues and ensure a smooth transition from server-rendered HTML to a fully interactive Angular application on the client-side.
+
+source - https://medium.com/@PurpleGreenLemon/angular-hydration-wtf-is-it-and-why-does-it-matter-9152d55547c0
+https://angular.io/guide/universal

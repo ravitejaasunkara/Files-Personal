@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6">
+         <p style="background-color:red;text-align:center;">hello</p>
+    </div>
+     <div class="col-lg-3 col-md-4 col-sm-6">
+         <p style="background-color:blue;text-align:center;">hello</p>
+    </div>
+     <div class="col-lg-3 col-md-4 col-sm-6">
+         <p style="background-color:green;text-align:center;">hello</p>
+    </div>
+     <div class="col-lg-3 col-md-4 col-sm-6">
+         <p style="background-color:yellow;text-align:center;">hello</p>
+    </div>
+</div>
+
+this means in large screens it will take 3 out of 12 columns so 3*4 four divs can be displayed in one row, similarly, in medium screens, it will take 4/12 that means 
+4*3 three divs can be displayed in a row whereas in small screens it will take 6/12 columns, meaning 6*2 two divs can be displayed in a row.
+
+<div class="row">
+    <div class="col-lg-2 col-md-3" style="background-color:blue;text-align:center">
+        angela
+    </div>
+    <div class="col-lg-2 col-md-3" style="background-color:grey;text-align:center">
+        angela
+    </div>
+    <div class="col-lg-2 col-md-3" style="background-color:pink;text-align:center">
+        angela
+    </div>
+    <div class="col-lg-2 col-md-3" style="background-color:yellow;text-align:center">
+        angela
+    </div>
+    <div class="col-lg-2 col-md-3" style="background-color:red;text-align:center">
+        angela
+    </div>
+    <div class="col-lg-2 col-md-3" style="background-color:green;text-align:center">
+        angela
+    </div>
+</div>

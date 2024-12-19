@@ -1,0 +1,126 @@
+/* for first value in dropdown "products" */ 
+/* TBL PRODUCTS DATA -> FIRST ONE IN SELECT MENU */
+/*JOIN TBL_SALES_EVALUATION tse ON tp.SALES_EVAL_ID = tse.ID*/
+
+SELECT tp.*,tb.CODE,tb.TEXT,ti.IMPRINT,tppub.DESCRIPTION as PUBLISHER,tsg.DESCRIPTION
+FROM TBL_PRODUCTS tp 
+JOIN TBL_BINDINGSTYLE tb ON tp.BINDINGSTYLE_ID = tb.ID
+JOIN TBL_IMPRINTS ti ON tp.IMPRINT_ID = ti.ID
+JOIN TBL_PUBLISHER tppub ON tp.PUBLISHER_ID = tppub.ID
+JOIN TBL_SUBJECT_GROUP tsg ON tp.SUBJECT_GROUP_ID = tsg.ID
+WHERE tp.ISBN = '9780203873700';
+-------------------------------------------------------------------------------------------
+/* for first value in dropdown*/
+	//Fetch category_id from tbl_products
+	SELECT tpc.CATEGORY_ID 
+	FROM TBL_PRODUCT_CATEGORIES tpc
+	WHERE tpc.PRODUCT_ID = 557092;
+
+	//fetch categories with caategory id
+	SELECT tcwpp.*,tc.*
+	FROM TBL_CATEGORIES_WITH_PUBLISHED_PRODUCTS tcwpp 
+	JOIN TBL_CATEGORIES tc ON tcwpp.CATEGORY_ID = tc.ID
+	WHERE tcwpp.CATEGORY_ID = 4282;
+	
+	
+ 2nd part in dropdown 2nd value 
+	/* CLASSIFICATIONS API */
+	SELECT tc.*,tpc.PRODUCT_ID,tp.ISBN
+	FROM TBL_CLASSIFICATION tc 
+	JOIN TBL_PRODUCT_CLASSIFICATION tpc ON tc.ID = tpc.CLASSIFICATION_ID 
+	JOIN TBL_PRODUCTS tp ON tpc.PRODUCT_ID = tp.ID 
+	WHERE tp.ISBN = '9780203873700' ORDER BY tc.DATE_CREATED;
+-----------------------------------------------------------------------------------------------
+/* 3rd value in dropdown /DOWNLOADS/ could not figure out that one */
+bacause DOwnloads does not have any relationships exist.
+-----------------------------------------------------------------------------------------------
+/* 4th value in dropdown */
+1st part - IMPRINT&PUBLISHER
+	SELECT DISTINCT ti.* FROM TBL_IMPRINTS ti 
+	JOIN TBL_NEW_DISCOUNT_IMPRINT tndi ON ti.ID = tndi.IMPRINT_ID 
+	JOIN TBL_PRODUCTS tp ON ti.ID = tp.IMPRINT_ID 
+	WHERE tp.ISBN = '9780429063374';  
+
+2nd part -> APPLICATIONS */
+SELECT ta.ID,ta.NAME,tc.CODE,tc.CATEGORY FROM TBL_APPLICATIONS ta
+JOIN TBL_CATEGORIES tc ON ta.CATEGORY_ID = tc.ID 
+JOIN TBL_APPLICATION_PRODUCTS tap ON ta.ID = tap.APPLICATION_ID 
+WHERE tap.PRODUCT_ID = 101702;
+--------------------------------------------------------------------------------------------------
+/* 5th value in dropdown -> INVENTORY_STATUS */
+1st part -> inventory status
+	SELECT tpis.*,tdc.CODE,tdc.DESCRIPTION,tis.CODE,tis.DESCRIPTION,tp.ISBN
+	FROM TBL_PRODUCT_INVENTORY_STATUS tpis 
+	JOIN TBL_DISTRIBUTION_CENTER tdc ON tpis.DISTRIBUTION_CENTER_ID = tdc.ID 
+	JOIN TBL_INVENTORY_STATUS tis ON tpis.INVENTORY_STATUS_ID = tis.ID 
+	JOIN TBL_PRODUCTS tp ON tpis.PRODUCT_ID = tp.ID 
+	WHERE tp.ISBN = '9780429063374';
+			OR
+	SELECT tpis.*,tdc.CODE,tdc.DESCRIPTION,tis.CODE,tis.DESCRIPTION,tp.ISBN
+	FROM TBL_PRODUCT_INVENTORY_STATUS tpis 
+	JOIN TBL_DISTRIBUTION_CENTER tdc ON tpis.DISTRIBUTION_CENTER_ID = tdc.ID 
+	JOIN TBL_INVENTORY_STATUS tis ON tpis.INVENTORY_STATUS_ID = tis.ID 
+	JOIN TBL_PRODUCTS tp ON tpis.PRODUCT_ID = tp.ID 
+	WHERE tpis.PRODUCT_ID = 825709;
+	// to get the productId use ProductRepository getProductIdByIsbn() here you can pass the ISBN so that you will get the ProductId with the product id you can
+	get the details from TBL_PRODUCT_INVENTORY_STATUS by findByProductId(productId);
+2nd part -> vital source inventory not figured.
+------------------------------------------------------------------------------------------------------
+/* 6th value in dropdown -> ORIGINATORS */
+SELECT tblo.*,tpo.ORDERING,tp.ISBN
+FROM TBL_ORIGINATORS tblo
+JOIN TBL_PRODUCT_ORIGINATORS tpo ON tblo.ID = tpo.ORIGINATOR_ID 
+JOIN TBL_PRODUCTS tp ON tpo.PRODUCT_ID = tp.ID 
+WHERE tp.ISBN = '9780429063374';
+
+here role,description fields were missing will have to figure them out.
+-----------------------------------------------------------------------------------------------------
+/* 7th part in dropdown -> PRICING & DISCOUNTS */
+
+1st part -> PRICING
+SELECT tpp.*,tc.NAME,tc.ISO_NAME,tpt.CODE,tp.ISBN
+FROM TBL_PRODUCT_PRICE tpp
+JOIN TBL_CURRENCIES tc ON tpp.CURRENCY_ID = tc.ID 
+JOIN TBL_PRICE_TYPE tpt ON tpp.PRICE_TYPE_ID = tpt.ID 
+JOIN TBL_PRODUCTS tp ON tpp.PRODUCT_ID = tp.ID 
+where tp.ISBN = '9781032243948';
+
+2nd part -> DISCOUNTS
+SELECT td.*,tdp.ISBN 
+FROM TBL_DISCOUNTS td 
+JOIN TBL_DISCOUNT_PRODUCTS tdp ON td.ID = tdp.DISCOUNT_ID 
+WHERE tdp.ISBN = '9781859961896';
+---------------------------------------------------------------------------------------------------------
+/* 8th part in dropdown -> SERIES & BINDINGS
+1st part -> SERIES
+SELECT ts.* FROM TBL_SERIES ts
+JOIN TBL_SERIES_PRODUCTS tsp ON ts.ID = tsp.SERIES_ID
+JOIN TBL_PRODUCTS tp ON tsp.PRODUCT_ID = tp.ID
+WHERE tp.ISBN = '9780582423350';
+
+2nd part -> BINDINGS
+-----------------------------------------------------------------------------------------------------
+
+
+
+http://localhost:8200/productHelper/invstatus/9781857288728
+http://localhost:8200/productHelper/product/9781857288728
+http://localhost:8200/productHelper/prices/9781857288728
+http://localhost:8200/productHelper/originator/9781857288728
+http://localhost:8200/productHelper/classification/9781857288728
+http://localhost:8200/productHelper/related-bindings-data/9781857288728
+http://localhost:8200/productHelper/vital-source-inventory/9780415362177
+http://localhost:9789/producthelper/binding-style/9780203873700
+http://localhost:9789/producthelper/series/9780203873700
+
+
+
+------------------------------------------------
+pending 
+2nd value in dropdown -> categories and classifications -> categories(Entity needs to be modified),vsinv set isbn is pending
+3rd value in dropdown -> downloads pending
+4th value is totally pending -> imprint & publisher -> 1st part is confusing,2nd part applications did but postman is not giving response loading continuosly dont know why
+7th value in dropdown -> 2nd part discounts -> discounts is pending(since discounts does not contains any data for any product)
+8th value in dropdown -> series & bindings -> most part of it is pending(in which related bindings is completed)
+9th value in dropdown -> product resources -> totally pending
+

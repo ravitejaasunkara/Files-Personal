@@ -1,0 +1,159 @@
+# This workflow will build and push a new container image to Amazon ECR,
+# and then will deploy a new task definition to Amazon ECS, when a release is created
+#
+# To use this workflow, you will need to complete the following set-up steps:
+#
+# 1. Create an ECR repository to store your images.
+#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-1`.
+#    Replace the value of `ECR_REPOSITORY` in the workflow below with your repository's name.
+#    Replace the value of `aws-region` in the workflow below with your repository's region.
+#
+# 2. Create an ECS task definition, an ECS cluster, and an ECS service.
+#    For example, follow the Getting Started guide on the ECS console:
+#      https://us-east-1.console.aws.amazon.com/ecs/home?region=us-east-2#/firstRun
+#    Replace the values for `service` and `cluster` in the workflow below with your service and cluster names.
+#
+# 3. Store your ECS task definition as a JSON file in your repository.
+#    The format should follow the output of `aws ecs register-task-definition --generate-cli-skeleton`.
+#    Replace the value of `task-definition` in the workflow below with your JSON file's name.
+#    Replace the value of `container-name` in the workflow below with the name of the container
+#    in the `containerDefinitions` section of the task definition.
+#
+# 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+#    See the documentation for each action used below for the recommended IAM policies for this IAM user,
+#    and best practices on handling the access key credentials.
+# This is a basic workflow to help you get started with Actions
+ 
+on:
+  push:
+    branches: [ master, develop, stage ]
+
+name: Build & Deploy to Amazon ECS
+
+jobs:
+  build_and_deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Setting the default environment and cluster as develop.
+    - name: Set default ENVIRONMENT & CLUSTOR
+      shell: bash
+      run: |
+        echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        echo "CLUSTER=dev" >> $GITHUB_ENV
+
+    - name: Set ENVIRONMENT & CLUSTOR for develop
+      if: endsWith(github.ref, '/develop')
+      run: |
+        echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        echo "CLUSTER=dev" >> $GITHUB_ENV
+
+    - name: Set ENVIRONMENT & CLUSTOR for stage
+      if: endsWith(github.ref, '/stage')
+      run: |
+        echo "ENVIRONMENT=uat" >> $GITHUB_ENV
+        echo "CLUSTER=uat" >> $GITHUB_ENV
+
+    - name: Set ENVIRONMENT & CLUSTOR for master
+      if: endsWith(github.ref, '/master')
+      run: |
+        echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        echo "CLUSTER=prod" >> $GITHUB_ENV
+
+    # slack notifications at begining
+    - name: Deploy notification to Slack at Beginning
+      if: always()
+      uses: adamkdean/simple-slack-notify@develop
+      env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      with:
+          status: ${{ job.status }}
+          text: '${env.GITHUB_WORKFLOW} - #${env.GITHUB_RUN_NUMBER} started by ${env.GITHUB_ACTOR}'
+          fields: |
+           [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"},
+            { "title": "Repository", "value": "${env.GITHUB_REPOSITORY}", "short": "true"},
+            { "title": "Environment", "value": "${env.ENVIRONMENT}", "short": "true"}] 
+    
+
+    # Runs a set of commands using the runners shell
+    - name: Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v2.1.2
+      with:
+        node-version: ${{ matrix.node-version }}  
+    - name: npm install 
+      run: |
+        npm install
+    - name: npm test
+      run: |
+            export CHROME_BIN=/usr/bin/chromium-browser
+            CI=true npm run test
+            echo test cases execution is successful.         
+      env:
+           CI: true 
+    - name: npm run build
+      run: |
+        npm run build -- --c ${{ env.ENVIRONMENT }}         
+        echo Build is Successful. 
+
+    # Logging into Amazon ECR.
+    - name: Logging in to AWS ECR
+      env:
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_AP_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_AP_SECRET_KEY }}
+      run: |
+        echo Logging in to Amazon ECR...
+        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 128071099072.dkr.ecr.us-east-1.amazonaws.com
+    
+    # Creating and then pushing the container image to ECR.
+    - name: Create & Push container Image to ECR
+      env:
+        IMAGE_TAG : "latest"
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_ACCOUNT_ID	: "128071099072"
+        IMAGE_REPO_NAME : ecr-use1-ap-ubw-admintool-web-${{ env.CLUSTER }}
+      run: |
+        ls -ltrh
+        echo Building the Docker image.
+        docker build  -t $IMAGE_REPO_NAME:$IMAGE_TAG . --file Dockerfile
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+        echo Pushing the Docker image to ECR.
+        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+    
+    # Deploying ECR image to ECS
+    - name: Deploy ECR Image to ECS
+      env:
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_ECS_CLUSTER_NAME: clu-use1-ap-ubw-admintool-${{ env.CLUSTER }}
+        AWS_ECS_SERVICE_NAME: "ubw-admintool-web"
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_AP_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_AP_SECRET_KEY }}
+      run: |
+        echo Update ECS and wait for  completion.
+        aws ecs update-service --cluster $AWS_ECS_CLUSTER_NAME --service $AWS_ECS_SERVICE_NAME --force-new-deployment
+        aws ecs stop-task --cluster $AWS_ECS_CLUSTER_NAME --task $(aws ecs list-tasks --cluster $AWS_ECS_CLUSTER_NAME --service $AWS_ECS_SERVICE_NAME --output text --query taskArns[0])
+        echo Deployment Successful.
+    
+    # slack notifications at the end
+    - name: Deploy notification to Slack at End
+      if: always()
+      uses: adamkdean/simple-slack-notify@develop
+      env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      with:
+          status: ${{ job.status }}
+          success_text: '${env.GITHUB_WORKFLOW} - #${env.GITHUB_RUN_NUMBER} deployed successfully by ${env.GITHUB_ACTOR}'
+          failure_text: '${env.GITHUB_WORKFLOW} - #${env.GITHUB_RUN_NUMBER} failed'
+          cancelled_text: '${env.GITHUB_WORKFLOW} - #${env.GITHUB_RUN_NUMBER} was cancelled by ${env.GITHUB_ACTOR}'
+          fields: |
+           [{ "title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"},
+            { "title": "Repository", "value": "${env.GITHUB_REPOSITORY}", "short": "true"},
+            { "title": "Environment", "value": "${env.ENVIRONMENT}", "short": "true"}]

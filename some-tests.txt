@@ -1,0 +1,31 @@
+In describe 
+let component:AppComponent;
+let fixture: ComponentFixture<AppComponent>;
+
+In BeforeEach() 
+
+fixture = TestBed.createComponent(AppComponent);
+component = fixture.componentInstance;
+
+beforeEach(async() => {
+
+})
+is different from 
+
+beforeEach(()=>{
+
+})
+
+we have to place lines 7,8 inside beforeEach(() => {} ) not inside beforeEach(async() => {} )
+
+//adding service to the testbed
+spyOn() is used to create a dummy function which returns a dummy values.
+
+spyOn is used to check when we are calling a function and if we wants to check if the inner function is being called or not
+then we use spy on to check inner function is called or not
+
+spyOn(servicename,function name).and.returnValue(false);
+we can explicitly return a dummy value from a function using spyOn functionality.
+
+@HostBinding,@HostListener
+

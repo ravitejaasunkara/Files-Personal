@@ -1,0 +1,58 @@
+only storing few details in elastic search like price,title to show in search page.
+
+when you searched for paperback isbn elastic search will give bindings isbns also.
+
+in between ui and elastic search there is a service which is getting the requirements from ui and converting into a query to elastic search readable format and gets the response from elastic search.
+that service will converts the response as well in a readable format.
+that service will discards the irrelevant info
+the service is routledge-product-service-api.
+
+showquery=1;
+
+/products
+this api will give results of multipla isbns at a time.
+
+/search/series
+for finding series page.
+
+for debug purpose take the query and hit the /search/complex api in local
+
+username:routledge
+password:overlord
+
+changes made to products were first updated in sql then updated in elastic search
+
+who were updating ES ?
+we have an service routledge-product-api-sync
+
+sync api will take the data from sql and update the same fields in elastic search
+
+sync api will be updated whenever pcm sends some products to sql database
+
+
+elastic search does not contains all product information.
+
+you can add new fields in ES by adding a field.
+by adding properties to ProductDocument
+to add a field we should create a new mapping.x
+
+/indexer will take multiple isbns as input and index the products and updates in ES
+
+
+/_count will give you all the products that are indexed.
+
+/_settings 
+
+
+to create a new index from the existing index remove uuid,createddate
+
+creating an index is a put api.
+
+when you created a new index count of documents will be 0;
+
+once you have indexed isbns then you will get isbns count.
+
+once the isbn had indexed then you can see the data.
+
+how sale by isbn is working ?
+

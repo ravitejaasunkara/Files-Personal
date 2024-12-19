@@ -1,0 +1,20 @@
+358
+172359 - no data present in routledge web, so image not displaying
+181009 - relative bindings also dont have valid images
+
+181464 -> isbn - 9781351211307 this invoice has bindings in routledge web but the relative bindings are
+not coming in relative bindings api so displaying no image
+181466
+
+181489
+181588
+181662
+181667
+181804
+181890
+182283 invoice having book with isbn 9781498768092(no book with this isbn in routledge web)
+ which is having 3 related isbns which are "9781498768108",
+"9781498768115","9781498768122" but all these three have no images available
+no routledge web also no images available for the related bindings
+182370
+182377

@@ -1,0 +1,187 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { environment } from 'src/environments/environment';
+
+
+import { CustomerLookupService } from './customer-lookup.service';
+
+describe('CustomerLookupService', () => {
+  let service: CustomerLookupService;
+  let httpTestController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports:[HttpClientTestingModule],
+      providers:[CustomerLookupService]
+    });
+    service = TestBed.inject(CustomerLookupService);
+    httpTestController = TestBed.inject(HttpTestingController);
+  });
+  afterEach(()=>{
+    httpTestController.verify();
+  })
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+  it('Get customer data when searched with a customer name', () => {
+    let resData = [{"content":[{"id":248622,"email":"mymahadev@gmail.com","firstName":"Mahadev","middleInitial":null,"lastName":"Sannabilagi","lastLoginDate":null,"dateCreated":"2018-02-21T04:24:32.243+00:00"},{"id":248614,"email":"mahadev.sannabilagi@informa.com","firstName":"Mahadev","middleInitial":"i","lastName":"Sannabilagi","lastLoginDate":"2022-08-02T13:07:34.250+00:00","dateCreated":null}],"pageable":{"sort":{"empty":true,"sorted":false,"unsorted":true},"offset":0,"pageNumber":0,"pageSize":15,"paged":true,"unpaged":false},"totalElements":2,"totalPages":1,"last":true,"size":15,"number":0,"sort":{"empty":true,"sorted":false,"unsorted":true},"numberOfElements":2,"first":true,"empty":false}];
+    let reqUrl = environment.customer_service+'/shopper/search';
+    var body = {"keyword":'sannabilagi',"pageSize":15,"pageNumber":1};
+    service.searchCustomerData(body).subscribe(result => {
+      expect(result).toEqual(resData);
+    })
+    const req = httpTestController.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Get customer profile details', () => {
+    let resData = [{"id":248614,"email":"mahadev.sannabilagi@informa.com","firstName":"Mahadev","middleInitial":"i","lastName":"Sannabilagi","accountType":null,"activationCode":null,"lastLoginDate":"2022-08-02T13:07:34.250+00:00","dateCreated":null}];
+    let reqUrl = environment.customer_service+'/shopper/248614';
+    service.getCustomerProfile(248614).subscribe(result => {
+      expect(result.email).toEqual('mahadev.sannabilagi@informa.com');
+    })
+    const req = httpTestController.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Get new generated password', () => {
+    let resData = [{"id":251284,"password":"w?,nE*XPbG"}];
+    let reqUrl = environment.customer_service+'/shopper/generatePassword/251284';
+    service.generateNewPassword(251284).subscribe(result => {
+      expect(result.password).toEqual('w?,nE*XPbG');
+    })
+    const req = httpTestController.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Get invoices when customerId is passed as an argument', () => {
+    let resData = [{"invoiceId":304725,"transactionDate":"2022-07-26T08:58:20.74","invoiceNo":"182864","applicationName":"www.routledge.com","externalSystemName":"BP","externalSystemNumber":null,"status":"COMPLETED","affiliateCode":null,"discountCode":null,"invoiceItemCount":1,"shippingDescription":"FREE! Surface Air Lifted (Mailed by air to country then placed in surface post Up to 21 Working Days)","shippingAmount":0.0000,"subTotal":120.00,"itemTax":0.0000,"total":120.00,"currencyCode":"GBP"},{"invoiceId":304765,"transactionDate":"2022-08-02T13:51:32.887","invoiceNo":"182904","applicationName":"www.routledge.com","externalSystemName":null,"externalSystemNumber":null,"status":"INVOICE_FULLY_REVOKED","affiliateCode":null,"discountCode":null,"invoiceItemCount":1,"shippingDescription":null,"shippingAmount":null,"subTotal":44.99,"itemTax":0.0000,"total":44.99,"currencyCode":"GBP"},{"invoiceId":304764,"transactionDate":"2022-08-02T13:44:13.867","invoiceNo":"182903","applicationName":"www.routledge.com","externalSystemName":null,"externalSystemNumber":null,"status":"INVOICE_FULLY_REVOKED","affiliateCode":null,"discountCode":null,"invoiceItemCount":1,"shippingDescription":null,"shippingAmount":null,"subTotal":24.99,"itemTax":0.0000,"total":24.99,"currencyCode":"GBP"}];
+    let reqUrl = environment.order_management_service+'/invoice?customerId=251285';
+    service.getInvoices(251285).subscribe(result => {
+      expect(result[0].invoiceId).toEqual(304725);
+    });
+    const req = httpTestController.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Get invoice details when invoiceId is passed', () => {
+    let invoicesData = [{"invoiceId":304765,"billingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"shippingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"cardMask":"1111","shippingDescription":null,"invoiceItemDetails":[{"invoiceItemId":431739,"invoiceId":304765,"originalBasePrice":44.9900,"adjustedBasePrice":44.9900,"reviewedBasePrice":null,"description":"The Patentability of Software","quantity":1,"discount":0.0,"sku":"YE89810","isbn":"9781315283210","vitalSourceCode":"Revoked VMHV6PAXHY2M82DRQBDG","promoCode":null,"uniqodoCode":null,"revokeStatus":true}],"shippingAmount":null,"shippingTax":null,"subTotal":44.99,"tax":0.0000,"total":44.99,"currencyDetails":{"id":1002,"symbol":"&pound;","conversionFactor":0.597158,"name":"UK Pounds","isoName":"GBP"}}];
+    let invoiceUrl = environment.order_management_service+'/invoice/invoicedetails?invoiceId=304765';
+    service.getInvoiceDetailsByInvoiceId(304765).subscribe(result => {
+      expect(result.billingAddress.firstName).toEqual('ravi');
+    })
+    const req = httpTestController.expectOne(invoiceUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(invoicesData);
+  })
+  
+  it('Get shopping carts when cutomerId is passed', () => {
+    let resData = [{"cartId":35965017,"applicationName":"www.routledge.com","affiliate":null,"discountCode":null,"shippingId":null,"shippingCode":null,"description":null,"currencyCode":"USD","itemTax":null,"shippingTax":null,"shippingPrice":null,"adjustedShipPrice":null,"createdAt":"2022-08-03T10:16:15.173","updatedAt":"2022-08-03T10:16:15.703"},{"cartId":35965019,"applicationName":"www.routledge.com","affiliate":null,"discountCode":null,"shippingId":1074,"shippingCode":"PK","description":"FREE! Standard Shipping - USPS (*3-7 Working Days)","currencyCode":"USD","itemTax":0.0000,"shippingTax":0.0000,"shippingPrice":0.0000,"adjustedShipPrice":0.0000,"createdAt":"2022-08-03T10:18:18.953","updatedAt":"2022-08-08T08:41:39.887"}];
+    let reqUrl = environment.order_management_service+'/carts?customerId=240060';
+    service.getShopppingCartsByCustomerId(240060).subscribe(result => {
+      expect(result[0].cartId).toEqual(35965017);
+    })
+    const req = httpTestController.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Get shopping carts when a cartId is passed', () => {
+    let shoppingCartsData = [{"isbn":"9780815370314","sku":"K338082","title":"The Global City 2.0","quantity":1,"basePrice":54.9500,"adjustedPrice":54.9500,"reviewedPrice":null}];
+    let shoppingCartsUrl = environment.order_management_service+'/carts/items?cartId=35965017';
+    service.getShoppingCartItemsByCartId(35965017).subscribe(result => {
+      expect(result.title).toEqual('The Global City 2.0');
+    })
+    const req = httpTestController.expectOne(shoppingCartsUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(shoppingCartsData);
+  })
+  it('Get product details when isbn is passed', () => {
+    let productData = [{"productId":612581,"shortTitle":"Global City 2.0 (Ljungkvist)","subtitle":"From Strategic Site to Global Actor","isbn":"9781315694146","publicationDate":"2015-08-27T00:00:00.000+00:00","contributors":[{"id":9482615,"firstName":"Kristin","middleInitial":null,"lastName":"Ljungkvist","credentials":null,"affiliation":null,"bio":null,"salutation":null,"role":{"id":1,"code":"VE","description":"Author"},"validFrom":null,"validTo":null}],"pageNum":218,"bindingStyle":"e-Book","editionNumber":1,"imprint":{"id":31,"code":"IMPR","name":"Routledge","image":"unknown.gif"}}];
+    let productUrl = environment.product_management_service+'/products?isbn=9781315694146';
+    service.getProductDetailsByIsbn(9781315694146).subscribe(result => {
+      expect(result.productId).toEqual(612581);
+    })
+    const req = httpTestController.expectOne(productUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(productData);
+  })
+  it('Get shipping profiles by customerId', () => {
+    let shippingProfilesData = [{"shippingProfileId":402998,"nickName":"raviteja","billingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"shippingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"type":null}];
+    let shippingProfilesUrl = environment.shipping_management_service+'/shippingprofiles?customerId=251285';
+    service.getShippingProfilesByCustomerId(251285).subscribe(result => {
+      expect(result.nickName).toEqual('raviteja');
+    })
+    const req = httpTestController.expectOne(shippingProfilesUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(shippingProfilesData);
+  })
+  it('Get subscription details by customerId', () => {
+    let subscriptionData = [{"type":"SOFT OPT-IN","dateTime":"2022-08-02 13:08:49"}];
+    let customerId = 248614;
+    let subsscriptionUrl = environment.customer_service+'shopper/subscriptionDetails/'+customerId;
+    service.getSubscriptionDetails(customerId).subscribe(result => {
+      expect(result.type).toEqual('SOFT OPT-IN');
+    })
+    const req = httpTestController.expectOne(subsscriptionUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toEqual('json');
+    req.flush(subscriptionData);
+  })
+  it('Get special permissions by customerId', () => {
+    let customerId = 248614;
+    let specialPermissionsData = [{"shopperPrivilegeId":2689,"privilegeId":1,"shopperId":248614,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-08-08T06:44:47.803+00:00","expirationDate":null,"isActive":true},{"shopperPrivilegeId":2691,"privilegeId":3,"shopperId":248614,"code":"CRC-CW_9781439866511","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781439866511","startDate":"2022-08-08T06:37:55.510+00:00","expirationDate":null,"isActive":true},{"shopperPrivilegeId":null,"privilegeId":4,"shopperId":null,"code":"CRC-CW_9781420060751","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781420060751","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":5,"shopperId":null,"code":"CRC-CW_9781439849200","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781439849200","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":6,"shopperId":null,"code":"145yw76mc8fw","description":"9781444144147 Clinical Biochemistry and Metabolic Medicine Eighth Edition","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":7,"shopperId":null,"code":"756rp32jw9jk","description":"9781444146073 An Introduction to Radiation Protection 6E","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":8,"shopperId":null,"code":"vwhuf1","description":"9781444121490 Essential Microbiology and Hygiene for Food Professionals","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":9,"shopperId":null,"code":"152GHK91WER","description":"serial number for companion sites child nursing skills","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":10,"shopperId":null,"code":"543wgv682ks","description":"companion privilege code","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":11,"shopperId":null,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":null,"expirationDate":null,"isActive":null}];
+    let specialPermissionsUrl = environment.customer_service+'/shopper/all_privileges/'+customerId;
+    service.getSpecialPermissionsByCustomerId(customerId).subscribe(result => {
+      expect(result[0].shopperPrivilegeId).toEqual(2689);
+    })
+    const req = httpTestController.expectOne(specialPermissionsUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(specialPermissionsData);
+  })
+  it('should assign a privilege', () => {
+    let spitem = {"shopperPrivilegeId": 2692,"privilegeId": 4,"shopperId": 248614,"code": "CRC-CW_9781420060751","description": "This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781420060751","startDate": "2022-08-09T07:13:04.827+00:00","expirationDate": null,"isActive": true};
+    let assignPrivilegeUrl = environment.customer_service+'shopper/reinstate_privilege/'+spitem.privilegeId;
+    let cId = spitem.shopperId;
+    service.assignPrivileges(spitem,cId).subscribe(result => {
+      expect(result.isActive).toBe(true);
+    })
+    const req = httpTestController.expectOne(assignPrivilegeUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe(null);
+    req.flush(spitem);
+  })
+  it('should expire a privilege',() => {
+    let spitem = {"shopperPrivilegeId": 2692,"privilegeId": 4,"shopperId": 248614,"code": "CRC-CW_9781420060751","description": "This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781420060751","startDate": "2022-08-09T07:13:04.827+00:00","expirationDate": "2022-08-09T07:24:49.490+00:00","isActive": false};
+    let expirePrivilegeUrl = environment.customer_service+'/shopper/expire_privilege/'+spitem.shopperPrivilegeId;
+    service.expirePrivileges(spitem.shopperPrivilegeId).subscribe(result => {
+      expect(result.isActive).toBe(false);
+    })
+    const req = httpTestController.expectOne(expirePrivilegeUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe(null);
+    req.flush(spitem);
+  })
+  it('should re-instate a privilege', () => {
+    let spitem = {"shopperPrivilegeId": 2692,"privilegeId": 4,"shopperId": 248614,"code": "CRC-CW_9781420060751","description": "This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781420060751","startDate": "2022-08-09T07:34:02.083+00:00","expirationDate": null,"isActive": true};
+    let reinstatePrivilegeUrl = environment.customer_service+'/shopper/reinstate_privilege/'+spitem.shopperPrivilegeId;
+    service.reinstatePrivileges(spitem).subscribe(result => {
+      expect(result.isActive).toBe(true);
+    })
+    const req = httpTestController.expectOne(reinstatePrivilegeUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe(null);
+    req.flush(spitem);
+  })
+});

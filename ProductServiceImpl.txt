@@ -1,0 +1,1077 @@
+package com.tandf.ecommerce.routledge.productservice.service.impl;
+
+import com.tandf.ecommerce.routledge.productservice.Enum.ImageTypeEnum;
+import com.tandf.ecommerce.routledge.productservice.dto.*;
+import com.tandf.ecommerce.routledge.productservice.mapper.*;
+import com.tandf.ecommerce.routledge.productservice.model.*;
+import com.tandf.ecommerce.routledge.productservice.model.CategoryDto;
+import com.tandf.ecommerce.routledge.productservice.repository.*;
+import com.tandf.ecommerce.routledge.productservice.service.IProductService;
+import com.tandf.ecommerce.routledge.productservice.utils.ApiResponse;
+import com.tandf.ecommerce.routledge.productservice.utils.ValidationUtil;
+import com.tandf.ecommerce.routledgecommons.entity.*;
+import com.tandf.ecommerce.routledgecommons.exception.RoutledgeGenericException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+
+/**
+ * Product Service.
+ */
+@Service
+public class ProductServiceImpl implements IProductService {
+
+  /**
+   * LOGGER.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+  /**
+   * Product Repository.
+   */
+  @Autowired
+  private ProductRepository productRepository;
+
+  /**
+   * The instance of the DiscountsRepository class that is automatically injected.
+   */
+  @Autowired
+  private DiscountsRepository discountsRepository;
+
+  /**
+   * The instance of the IDiscountsMapper class that is automatically injected.
+   */
+  @Autowired
+  private IDiscountMapper discountMapper;
+
+  /**
+   * The instance of the InventoryStatusRepository class that is automatically injected.
+   */
+  @Autowired
+  private InventoryStatusRepository inventoryRepository;
+
+  /**
+   * The instance of the IInventoryMapper class that is automatically injected.
+   */
+  @Autowired
+  private IInventoryMapper inventoryMapper;
+
+  /**
+   * The instance of the PricingRepository class that is automatically injected.
+   */
+  @Autowired
+  private PricingRepository pricingRepository;
+
+  /**
+   * The instance of the IPricesMapper class that is automatically injected.
+   */
+  @Autowired
+  private IPricesMapper pricesMapper;
+
+  /**
+   * The instance of the OriginatorsRepository class that is automatically injected.
+   */
+  @Autowired
+  private OriginatorsRepository originatorsRepository;
+
+  /**
+   * The instance of the DownloadsRepository class that is automatically injected.
+   */
+  @Autowired
+  private DownloadsRepository downloadsRepository;
+
+  /**
+   * The instance of the IDownloadsBindingsMapper class that is automatically injected.
+   */
+  @Autowired
+  private IDownloadsMapper downloadsMapper;
+
+  /**
+   * The instance of the ProductCategoryRepository class that is automatically injected.
+   */
+  @Autowired
+  private ProductCategoryRepository productCategoryRepository;
+
+  /**
+   * The instance of the CategoryRepository class that is automatically injected.
+   */
+  @Autowired
+  private CategoryRepository categoryRepository;
+
+  /**
+   * The instance of the CategpryMapper class that is automatically injected.
+   */
+  @Autowired
+  private CategoryMapper categoryMapper;
+
+  /**
+   * The instance of the IRelatedBindingsMapper class that is automatically injected.
+   */
+  @Autowired
+  private IRelatedBindingsMapper bindingsMapper;
+
+  /**
+   * The instance of the ClassificationRepository class that is automatically injected.
+   */
+  @Autowired
+  private ClassificationRepository classificationRepository;
+
+  /**
+   * The instance of the IClassificationMapper class that is automatically injected.
+   */
+  @Autowired
+  private IClassificationMapper classificationMapper;
+
+  /**
+   * The instance of the VitalsourceInventoryRepository class that is automatically injected.
+   */
+  @Autowired
+  private VitalsourceInventoryRepository vitalsourceRepository;
+
+  /**
+   * The instance of the IVitalsourceMapper class that is automatically injected.
+   */
+  @Autowired
+  private IVitalsourceMapper vitalsourceMapper;
+
+  /**
+   * The enumeration representing the type of image.
+   */
+  @Enumerated(EnumType.STRING)
+  private ImageTypeEnum imageTypeEnum;
+
+  /**
+   * Product Originator Repository.
+   */
+  @Autowired
+  private ProductOriginatorRepository productOriginatorRepository;
+
+  /**
+   * Country Repository.
+   */
+  @Autowired
+  private CountryRepository countryRepository;
+
+  /**
+   * Product Inventory Status Repository.
+   */
+  @Autowired
+  private ProductInventoryStatusRepository productInventoryStatusRepository;
+
+  /**
+   * application repository.
+   */
+  @Autowired
+  private ApplicationRepository applicationRepository;
+
+  /**
+   * application mapper.
+   */
+  @Autowired
+  private IApplicationMapper applicationMapper;
+
+  /**
+   * Product Mapper.
+   */
+  @Autowired
+  private IProductMapper productMapper;
+
+  /**
+   * Originator Mapper.
+   */
+  @Autowired
+  private IOriginatorMapper originatorMapper;
+
+  /**
+   * The instance of ProductSeries.
+   */
+  @Autowired
+  private ProductSeriesRepository productSeriesRepository;
+
+  /**
+   * Mapper instance of series mapper.
+   */
+  @Autowired
+  private ISeriesMapper seriesMapper;
+
+  /**
+   * The instance of ProductSeries.
+   */
+  @Autowired
+  private SeriesRepository seriesRepository;
+
+  /**
+   * Instance of publishers repository.
+   */
+  @Autowired
+  private PublishRepository publishRepository;
+
+  /**
+   * Instance of imprint repository.
+   */
+  @Autowired
+  private ImprintRepository imprintRepository;
+
+  /**
+   * Instance of Subject group repository.
+   */
+  @Autowired
+  private SubjectgroupRepository subjectgroupRepository;
+
+  /**
+   * Publisher Mapper instance.
+   */
+  @Autowired
+  private IPublisherMapper publisherMapper;
+
+  /**
+   * Imprint mapper instance.
+   */
+  @Autowired
+  private IImprintMapper imprintMapper;
+
+  /**
+   * Subject mapper instance.
+   */
+  @Autowired
+  private ISubjectMapper subjectMapper;
+
+  /**
+   * binding style repository.
+   */
+  @Autowired
+  private BindingstyleRepository bindingstyleRepository;
+
+  /**
+   * binding mapper.
+   */
+  @Autowired
+  private IBindingMapper bindingMapper;
+
+  /**
+   * instance of DiscountProductRepository.
+   */
+  @Autowired
+  private DiscountProductRepository discountProductRepository;
+
+  /**
+   * The value of the property "product_jacket_url" obtained from the configuration.
+   */
+  @Value("${product_jacket_url}")
+  String product_jacket_url;
+
+  /**
+   * The value of the property "product_jacket_url_default" obtained from the configuration.
+   */
+  @Value(("${product_jacket_url_default}"))
+  String product_jacket_url_default;
+
+  /**
+   * The list of binding priorities.
+   */
+  private static final List<String> BINDING_PRIORITIES = Arrays.asList("PAPE",
+      "HARD",
+      "IEPB",
+      "IEHB",
+      "PCK",
+      "PKDV",
+      "PKWE7",
+      "PKCD8",
+      "PKCA9",
+      "PKCC10",
+      "PKEB11",
+      "MPCK12",
+      "CDRM13",
+      "DVD14",
+      "AUDC15",
+      "VID16",
+      "AUD17",
+      "EBK18",
+      "LLF19",
+      "FLC20",
+      "GME21",
+      "MEM22",
+      "MKG323");
+
+
+  /**
+   * The list of digiforms.
+   */
+  private static final List<String> DIGIFORMS = Arrays.asList("DIGIFORMEPBISBN",
+      "DIGIFORMEPB3ISBN",
+      "DIGIFORMEP3ISBN",
+      "DIGIFORMFEP3ISBN",
+      "DIGIFORMADBISBN",
+      "DIGIFORMVITBISBN");
+
+  private final String nodatafound = "No data found";
+
+  private final String datafound = "Data fetched successfully";
+  @Override
+  public ProductData productByIsbn(String isbn) {
+    final Optional<Product> resultProductOptional = productRepository.findByIsbn(isbn);
+    final Product resultProduct = resultProductOptional
+        .orElseThrow(() -> {
+          LOGGER.error("No Product found with the given ISBN!!!: {}", isbn);
+          return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+              "No Product found");
+        });
+    LOGGER.info("Result Product: {}", resultProduct);
+    return productMapper.productToProductDataMapper(resultProduct, this);
+  }
+
+  @Override
+  public List<String> getRelatedBindingsByISBN(String isbn) {
+    int productId = productRepository.getProductIdByISBN(isbn);
+    return getRelatedBindingsByProductId(productId);
+  }
+
+  private List<String> getRelatedBindingsByProductId(int productId) {
+    return productRepository.getRelatedBindingsISBNByProductId(productId);
+  }
+
+
+  /**
+   * returns  list of originators.
+   *
+   * @param productId product id of type integer.
+   */
+  public List<OriginatorData> getProductOriginator(int productId) {
+
+    final List<ProductOriginator> productOriginatorList =
+        productOriginatorRepository.findAllByIdProductIdOrderByIdOrderAsc(productId);
+    LOGGER.info("Product Originators : {} ", productOriginatorList);
+
+    final List<Originator> originatorList = productOriginatorList.stream()
+        .map(productOriginator -> productOriginator.getId().getOriginator())
+        .collect(Collectors.toList());
+    return originatorMapper.originatorListToOriginatorDataList(originatorList);
+  }
+
+  private Integer getDistributionCenterIdFromCountry(String countryCode) {
+    final Optional<Country> resultCountryOptional = countryRepository.findById(countryCode);
+
+    final Country resultCountry = resultCountryOptional.orElseThrow(() -> {
+      LOGGER.error("Error getting Country Code: {}", countryCode);
+      return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No Country found with the given code", Map.of("countyCode", ""));
+    });
+    return resultCountry.getShippingZone().getDistributionCenter().getId();
+
+  }
+
+  public Date plannedPublicationDate(int productId, String countryCode) {
+
+    final Integer distributionCenterId = getDistributionCenterIdFromCountry(countryCode);
+
+    final Optional<ProductInventoryStatus> resultProductInventoryStatusOptional =
+        productInventoryStatusRepository.findByProductIdAndDistributionCenterId(productId,
+            distributionCenterId);
+
+    final ProductInventoryStatus resultProductInventory =
+        resultProductInventoryStatusOptional.orElseThrow(() -> {
+          LOGGER.error("Error getting product inventory status from Product id: {} and Country "
+              + "Code :{}", productId, countryCode);
+          return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND, "No "
+              + "Product Inventory Status Found for give product and distribution center");
+        });
+
+    return Optional.ofNullable(resultProductInventory.getPublicationDate())
+        .orElse(resultProductInventory.getPlannedPublicationDate());
+  }
+
+  private String checkCoverImageForIsbn(String isbn, String imageType) {
+    String substringOfIsbn = isbn.substring(0, 9);
+    imageType = imageType.equalsIgnoreCase(String.valueOf(ImageTypeEnum.AMAZON))
+        ? String.valueOf(ImageTypeEnum.AMAZON.getValue()) :
+        imageType.equalsIgnoreCase(String.valueOf(ImageTypeEnum.CRCLARGE))
+            ? String.valueOf(ImageTypeEnum.CRCLARGE.getValue()) : imageType;
+
+    String url = product_jacket_url + imageType + "/" + substringOfIsbn + "/" + isbn + ".jpg";
+    try {
+      URL imageUrl = new URL(url);
+      HttpURLConnection http = (HttpURLConnection) imageUrl.openConnection();
+      http.setRequestMethod("HEAD");
+      http.setRequestProperty("Accept-Charset", "utf8");
+      http.setRequestProperty("Cache-Control", "max-age=0");
+      http.setRequestProperty("Connection", "close");
+      http.setRequestProperty("User-Agent",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+              + "Chrome/65.0.3325.181 Safari/537.36");
+      http.disconnect();
+      if (http.getResponseCode() != 200) {
+        LOGGER.info("url : {} : {}", url, http.getResponseCode());
+      }
+      LOGGER.info("url : {} : {}", url, http.getResponseCode());
+      return (http.getResponseCode() == 200) ? url : "";
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return "";
+  }
+
+  private List<String> relatedBindingWithPriority(List<String> isbnList) {
+    List<String> relatedBindings = new ArrayList<>();
+    for (String binding : BINDING_PRIORITIES) {
+      for (String isbn : isbnList) {
+        String bindingStyle = productRepository.getBindingStyleOfISBN(isbn);
+        if (bindingStyle != null && bindingStyle.equalsIgnoreCase(binding)) {
+          relatedBindings.add(isbn);
+        }
+      }
+    }
+    List<String> otherBindings = new ArrayList<>();
+    for (String isbn : isbnList) {
+      if (!relatedBindings.contains(isbn)) {
+        otherBindings.add(isbn);
+      }
+      relatedBindings.addAll(otherBindings);
+    }
+    return relatedBindings;
+  }
+
+  @Override
+  public String getRelatedIsbnImageUrl(String isbn, String imageType) {
+    String url = checkCoverImageForIsbn(isbn, imageType);
+    if (url.isEmpty()) {
+      List<String> isbnList = relatedBindingWithPriority(getRelatedBindingsByISBN(isbn));
+      for (String productIsbn : isbnList) {
+        url = checkCoverImageForIsbn(productIsbn, imageType);
+        if (!url.isEmpty()) {
+          break;
+        }
+      }
+      if (url.isEmpty()) {
+        url = product_jacket_url_default;
+      }
+      return url;
+    }
+    return url;
+  }
+
+  /**
+   * find Ebge ISbn By DigiISbn.
+   *
+   * @param digiisbn as String type.
+   * @return String value.
+   */
+  @Override
+  public String findEbgeISbnByDigiISbn(String digiisbn) {
+    final Optional<String> ebgeIsbnOptional =
+        productRepository.findEbgeISbnbyDigiIsbn(digiisbn, DIGIFORMS);
+    return ebgeIsbnOptional.orElseThrow(() -> {
+      LOGGER.info("There is no Ebge Isbn for Digital Isbn : ", digiisbn);
+      return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "There is no Ebge Isbn for Digital Isbn", Map.of("DigiISBN", digiisbn));
+    });
+  }
+
+  @Override
+  public ResponseEntity<Object> getProductDataByIsbn(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid : ", isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is Invalid",
+          Map.of("Isbn", isbn));
+    }
+    Optional<Product> result = productRepository.findByIsbn(isbn);
+    Product productDto = result.orElse(null);
+    if (result == null || productDto == null) {
+      LOGGER.info("No data found for Isbn : ", isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+              "No data found for Isbn", Map.of("Isbn", isbn));
+    }
+    ProductHelperProductDTO mapToDTO = productMapper.mapToProductDTO(productDto);
+    productDto.getRelatedProducts();
+    System.out.print(productDto.getRelatedProducts());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(
+            new ApiResponse(Boolean.TRUE, "Data fetched successfully", mapToDTO, 1, HttpStatus.OK));
+  }
+
+  @Override
+  public ResponseEntity<Object> getInventoryStatusData(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid : ", isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is Invalid",
+          Map.of("Isbn", isbn));
+    }
+    List<ProductInventoryStatus> inventoryData =
+        inventoryRepository.getProductInventoryStatusByIsbn(isbn);
+    if (inventoryData.isEmpty()) {
+      LOGGER.info("No data found for the Isbn : ", isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No data found for isbn",
+          Map.of("Isbn", isbn));
+    }
+    List<InventoryStatusDto> list =
+        inventoryData.stream().map(inventoryMapper::mapInventoryToInventoryDTO)
+            .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse(Boolean.TRUE, "Data fetched successfully", list, list.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns  list of prices.
+   *
+   * @param isbn of type string.
+   */
+  public ResponseEntity<Object> getPricingDetailsByIsbn(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is Invalid",
+          Map.of("Isbn", isbn));
+    }
+    List<Price> priceData = pricingRepository.getProductPricesByIsbn(isbn);
+    if (priceData.isEmpty()) {
+      LOGGER.info("No data found for the Isbn : ", isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No data found for isbn",
+          Map.of("Isbn", isbn));
+    }
+    List<PricesDTO> list = priceData.stream().map(pricesMapper::mapPriceToPriceDto)
+        .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse(Boolean.TRUE, "Data fetched successfully", list, list.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns  list of originators.
+   *
+   * @param isbn of type string.
+   */
+  public ResponseEntity<Object> getOriginatorsDataByIsbn(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("ISBN is invalid : " + isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is invalid", Map.of("ISBN", isbn));
+    }
+    Integer productId = productRepository.getProductIdByISBN(isbn);
+    if (productId == null) {
+      LOGGER.info("No data found for Isbn.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No data found for Isbn", Map.of("ISBN", isbn));
+    }
+    List<Originator> originatorsData = originatorsRepository.getOriginatorsByProductId(productId);
+    List<OriginatorsDto> data =
+        originatorsData.stream().map(originatorMapper::mapOriginatorToOriginatorDto)
+            .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse(Boolean.TRUE, "Data fetched successfully", data, data.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns  related bindings of a product.
+   *
+   * @param isbn of type string.
+   */
+  public ResponseEntity<Object> getRelatedBindingsDataByIsbn(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is invalid.", Map.of("ISBN", isbn));
+    }
+    Integer productId = productRepository.getProductIdByISBN(isbn);
+    if(productId == null){
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"Isbn is null.",Map.of("ISBN",isbn));
+    }
+    List<String> relatedIsbns = productRepository.getRelatedBindingsISBNByProductId(productId);
+    List<RelatedBindingsDto> relatedBindingsList = new ArrayList<>();
+    for(String ISBN:relatedIsbns){
+      Integer productIdByISBN = productRepository.getProductIdByISBN(ISBN);
+      Product data = productRepository.getRelatedBindingsDataByProductId(productIdByISBN);
+      RelatedBindingsDto res = bindingsMapper.mapProductToRelatedBindings(data);
+      relatedBindingsList.add(res);
+    }
+    if (relatedBindingsList.isEmpty()) {
+      LOGGER.info("No data found for Isbn.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "No data found for isbn", Map.of("ISBN", isbn));
+    }
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse(Boolean.TRUE, "Data fetched successfully", relatedBindingsList, relatedBindingsList.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns  list of classifications.
+   *
+   * @param isbn of type string.
+   */
+  public ResponseEntity<Object> getClassificationsDataByIsbn(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is invalid.", Map.of("ISBN", isbn));
+    }
+    Integer productId = productRepository.getProductIdByISBN(isbn);
+    if (productId == null) {
+      LOGGER.info("No data found for Isbn.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No data found for isbn.", Map.of("ISBN", isbn));
+    }
+    List<ProductClassification> data =
+        classificationRepository.getClassificationByProductId(productId);
+    List<ClassificationDTO> list = data.stream().map(classificationMapper::mapToClassificationDTO)
+        .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new ApiResponse(Boolean.TRUE, "Data fetched successfully.", list, list.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns  vital source inventory data.
+   *
+   * @param isbn of type string.
+   */
+  public ResponseEntity<Object> getVitalSourceInventoryDataByIsbn(String isbn) {
+    if (isbn.length() != 13) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is invalid", Map.of("ISBN", isbn));
+    }
+    Integer prodId = productRepository.getProductIdByISBN(isbn);
+    if(prodId == null) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"Isbn not found.",Map.of("ISBN",isbn));
+    }
+    List<String> relatedBindings = productRepository.getRelatedBindingsISBNByProductId(prodId);
+    List<VitalsourceDto> list = new ArrayList<>();
+    for(String sisbn: relatedBindings){
+      List<VitalSourceInventory> data = vitalsourceRepository.findByPrintIsbn(sisbn);
+      for(VitalSourceInventory item:data){
+        VitalsourceDto vitalsourceDto = vitalsourceMapper.mapToVitalSourceInventoryDTO(item);
+        list.add(vitalsourceDto);
+      }
+    }
+    if (list.size() == 0) {
+      LOGGER.info("No data found.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+          "No data found for the isbn", Map.of("ISBN", isbn));
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(
+        new ApiResponse(Boolean.TRUE, "Data fetched successfully", list, list.size(),
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns product data for binding style.
+   *
+   * @param isbn of type integer.
+   */
+  @Override
+  public ResponseEntity<Object> getVersionType(String isbn) {
+    if (isbn.length() != 13) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+          "Isbn is invalid", Map.of("ISBN", isbn));
+    }
+    Optional<Product> resultProductOptional = productRepository.findByIsbn(isbn);
+    Product res = resultProductOptional.orElse(null);
+    if(res == null){
+     throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found.",Map.of("ISBN",isbn));
+    }
+    BindingDto mapProductToBindingDTO = productMapper.mapProductToBindingDTO(res, this);
+    return ResponseEntity.status(HttpStatus.OK).body(
+        new ApiResponse(Boolean.TRUE, "Data fetched successfully", mapProductToBindingDTO, 1,
+            HttpStatus.OK));
+  }
+
+  /**
+   * returns series data for binding style.
+   *
+   * @param isbn of type String.
+   */
+  @Override
+  public ResponseEntity<Object> getSeries(String isbn) {
+    if (isbn.length() != 13) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "Isbn is invalid", Map.of("ISBN", isbn));
+    }
+    // Fetching product id by isbn.
+    Integer productIdByISBN = productRepository.getProductIdByISBN(isbn);
+    if (productIdByISBN == null) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+              "No data found.", Map.of("ISBN", isbn));
+    }
+    // Fetching series id from TBL_PRODUCT_SERIES by passing productID.
+    Integer seriesId = productSeriesRepository.findByProductId(productIdByISBN);
+    if (seriesId == null) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+              "No data found.", Map.of("ISBN", isbn));
+    }
+    // Fetching series data from TBL_SERIES by seriesId.
+    Optional<Series> seriesDataOptional = seriesRepository.findById(seriesId);
+    // Null check.
+    Series series = seriesDataOptional.orElse(null);
+    if(series == null){
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,
+              "No data found for isbn",Map.of("ISBN",isbn));
+    }
+    SeriesDto seriesDto = seriesMapper.mapSeriestoSeriesDto(series);
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully",seriesDto,1,HttpStatus.OK));
+  }
+
+  /**
+   * @return return a list of product objects.
+   */
+  @Override
+  public ResponseEntity<Object> SearchProduct(String keyword) {
+    String trimmedKeyword = keyword.trim();
+    if(trimmedKeyword.isEmpty()) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "Search keyword cannot be empty");
+    }
+    Optional<Product> byIsbn1 = productRepository.findByIsbn(trimmedKeyword);
+    Optional<Product> byIsbn2 = productRepository.findBySku(trimmedKeyword);
+    List<Product> byIsbn3 = productRepository.getDataByTitle(trimmedKeyword);
+    List<ProductMainDto> list = new ArrayList<>();
+    ProductMainDto listDto;
+    if(!byIsbn1.isEmpty()){
+      Product product = byIsbn1.orElse(null);
+        Product product1 = this.setBindingText(product);
+        listDto = productMapper.mapProductToProductMainDto(product1,this);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(new ApiResponse(Boolean.TRUE,listDto == null ? "No data found" : "Data fetched successfully.",listDto,1,HttpStatus.OK));
+    } else if (!byIsbn2.isEmpty()) {
+      Product product = byIsbn2.orElse(null);
+        Product product1 = this.setBindingText(product);
+        listDto = productMapper.mapProductToProductMainDto(product1,this);
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(new ApiResponse(Boolean.TRUE,listDto == null ? "No data found" : "Data fetched successfully.",listDto,1,HttpStatus.OK));
+    }
+    for(Product item:byIsbn3){
+        Product product = this.setBindingText(item);
+        ProductMainDto productMainDto = productMapper.mapProductToProductMainDto(product, this);
+      list.add(productMainDto);
+    }
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,list.size() == 0 ? "No data found" : "Data fetched successfully.",list,list.size(),HttpStatus.OK));
+  }
+
+
+
+    /**
+     * A resusable function to set binding text to PAPE,HARD,EBK.
+     * @param product
+     * @return returns a Product.
+     */
+  public Product setBindingText(Product product) {
+      if(product.getBinding().getText().equalsIgnoreCase("paperback")) {
+          product.getBinding().setText("PAPE");
+      } else if(product.getBinding().getText().equalsIgnoreCase("Hardback")) {
+          product.getBinding().setText("HARD");
+      } else if(product.getBinding().getText().equalsIgnoreCase("e-book")) {
+          product.getBinding().setText("EBK");
+      }
+      return product;
+  }
+
+
+  @Override
+  public ResponseEntity<Object> getApplicationsData(String isbn) {
+    if (isbn.length() != 13 || !ValidationUtil.isIsbnValid(isbn)) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "Isbn is Invalid",
+              Map.of("Isbn", isbn));
+    }
+    Integer productIdByISBN = productRepository.getProductIdByISBN(isbn);
+    if(productIdByISBN == null){
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "No data found",
+              Map.of("Isbn", isbn));
+    }
+    List<Application> applicationData = applicationRepository.findAllById(productIdByISBN);
+    List<ApplicationDto> collect = applicationData.stream().map(applicationMapper::mapApplicationToApplicationDto)
+            .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,datafound,collect,collect.size(),HttpStatus.OK));
+  }
+
+  Map<String,Object> dataMap = new HashMap<>();
+  @Override
+  public ResponseEntity<Object> getPublisherData(String isbn) {
+    dataMap.clear();
+    String ISBN = isbn.trim();
+    if (ISBN.length() != 13) {
+      LOGGER.info("Isbn is invalid.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "Isbn is invalid", Map.of("ISBN", isbn));
+    }
+    //publisher
+    Integer publisherId = productRepository.getPublisherId(isbn);
+    if(publisherId != null){
+      Optional<Publisher> publisherData = publishRepository.findById(publisherId);
+      Publisher publisher = publisherData.orElse(null);
+      if(publisher != null){
+        PublisherDto publisherDto = publisherMapper.mapPublisherToPublisherDto(publisher);
+        dataMap.put("publisher", publisherDto);
+      }
+    }
+    //imprint
+    Integer imprintId = productRepository.getImprintId(isbn);
+    if(imprintId != null){
+      Optional<Imprint> imprintData = imprintRepository.findById(imprintId);
+      Imprint imprint = imprintData.orElse(null);
+      if(imprint != null){
+        ImprintData imprintDto = imprintMapper.mapImprintToImprintDto(imprint);
+        dataMap.put("imprint",imprintDto);
+      }
+    }
+    //binding style
+    Optional<Product> resultProductOptional = productRepository.findByIsbn(isbn);
+    Product res = resultProductOptional.orElse(null);
+    if(res != null){
+      BindingDto mapProductToBindingDTO = productMapper.mapProductToBindingDTO(res, this);
+      dataMap.put("bindingStyle",mapProductToBindingDTO);
+    }
+    //subject groups
+    Integer subjectgroupId = productRepository.getSubjectgroupId(isbn);
+    if(subjectgroupId != null){
+      Optional<SubjectGroup> byId = subjectgroupRepository.findById(subjectgroupId);
+      SubjectGroup subjectGroup = byId.orElse(null);
+      if(res != null){
+        SubjectgroupDto subjectgroupDto = subjectMapper.mapSubjectgroupToSubjectgroupDto(subjectGroup);
+        dataMap.put("subjectGroup",subjectgroupDto);
+      }
+    }
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully",dataMap,1,HttpStatus.OK));
+    //return dataMap;
+  }
+
+  /**
+   * This function is used to fetch search results by title through pagination.
+   * @param title
+   * @param pageable
+   * @return
+   */
+  @Override
+  public ResponseEntity<Object> getSearchResults(String title, Pageable pageable) {
+    if(title.trim().length() == 0){
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Search keyword cannot be empty.");
+    }
+    Page<Product> searchResultsByTitle = productRepository.getSearchResultsByTitle(title,pageable);
+    List<ProductMainDto> productdata = new ArrayList<>();
+    for(Product item:searchResultsByTitle.getContent()){
+      ProductMainDto productMainDto = productMapper.mapProductToProductMainDto(item, this);
+      productdata.add(productMainDto);
+    }
+    PageImpl page = new PageImpl<>(productdata,pageable,searchResultsByTitle.getTotalElements());
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully.",page,page.getContent().size(),HttpStatus.OK));
+  }
+
+
+
+  /**
+   * fetches binding style data of product.
+   *
+   * @param isbn the isbn.
+   * @return binding style data.
+   */
+  @Override
+  public ResponseEntity<Object> getBindingStyle(String isbn) {
+    String Isbn = isbn.trim();
+    if(Isbn.length() != 13 || !ValidationUtil.isIsbnValid(Isbn)){
+      LOGGER.info("Isbn is invalid");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid",Map.of("ISBN",Isbn));
+    }
+    Integer bindingId = productRepository.getBindingIdByIsbn(Isbn);
+    if(bindingId == null) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found.");
+    }
+    Optional<BindingStyleGT> byId = bindingstyleRepository.findById(bindingId);
+    BindingStyleGT bindingStyleGT = byId.orElseThrow(() -> {
+      return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND, "No data found", Map.of("ISBN", Isbn));
+    });
+    BindingDto bindingDto = bindingMapper.mapBindingToBindingDto(bindingStyleGT);
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,datafound,bindingDto,1,HttpStatus.OK));
+  }
+
+  /**
+   * This method is used to fetch the related titles of a book.
+   * @param isbn ISBN of book.
+   * @return a list of related titles.
+   */
+  @Override
+  public ResponseEntity<Object> getRelatedTitles(String isbn) {
+    if(isbn.trim().length() != 13){
+      LOGGER.info("Isbn is invalid : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid",Map.of("ISBN",isbn));
+    }
+    Optional<Product> optionalProduct = productRepository.findByIsbn(isbn);
+    Product product = optionalProduct.orElseThrow(() -> {
+      return new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found.");
+    });
+    Set<Product> relatedProducts = product.getRelatedProducts();
+    if(relatedProducts.size() == 0){
+      LOGGER.info("No related titles found for ISBN"+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No Related titles found",Map.of("ISBN",isbn));
+    }
+    Iterator<Product> iterator = relatedProducts.iterator();
+    List<ProductMainDto> relatedProductsData = new ArrayList<>();
+    while(iterator.hasNext()){
+      Product next = iterator.next();
+      ProductMainDto productMainDto = productMapper.mapProductToProductMainDto(next, this);
+      relatedProductsData.add(productMainDto);
+    }
+    //this.testfunction();
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully",relatedProductsData,relatedProductsData.size(),HttpStatus.OK));
+  }
+
+  public ResponseEntity<Object> getCategoriesData(String isbn){
+    if(isbn.trim().length() != 13){
+      LOGGER.info("Isbn is invalid : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid",Map.of("ISBN",isbn));
+    }
+    Integer productId = productRepository.getProductIdByISBN(isbn);
+    List<Integer> categoryIdByProductId = productCategoryRepository.getCategoryIdByProductId(productId);
+    if(productId == null || categoryIdByProductId.size() == 0) {
+      LOGGER.info("No data found for isbn : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found.",Map.of("ISBN",isbn));
+    }
+    List<CategoryDto> categoryDtos = new ArrayList<>();
+    for(Integer item:categoryIdByProductId) {
+      Optional<Category> byId = categoryRepository.findById(item);
+      Category category = byId.orElse(null);
+      CategoryDto categoryDto = categoryMapper.mapCategoryToCategoryDto(category);
+      categoryDtos.add(categoryDto);
+    }
+    //this.getDiscountsData("9780415956338");
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully",categoryDtos,categoryDtos.size(),HttpStatus.OK));
+  }
+
+  /**
+   * @param isbn of book.
+   * @return it returns a list of discount dto's.
+   */
+  @Override
+  public ResponseEntity<Object> getDiscountsData(String isbn) {
+    if(isbn.trim().length() != 13){
+      LOGGER.info("Isbn is invalid : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid",Map.of("ISBN",isbn));
+    }
+    List<Integer> discountIds = discountProductRepository.getDiscountIdByProductId(isbn);
+    if(discountIds.size() == 0){
+      LOGGER.info("No discounts found for isbn : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND
+      ,"No discounts found.",Map.of("ISBN",isbn));
+    }
+    List<DiscountDto> discountDtoList = new ArrayList<>();
+    discountIds.forEach(item -> {
+      System.out.println(item);
+      List<Object[]> discount = discountsRepository.getDiscountByDiscountId(item);
+      //Discount discount1 = discount.orElse(null);
+      //System.out.println((String) discount[0]);
+      //Discount discountByDiscountId = discountsRepository.getDiscountByDiscountId(item);
+      discount.forEach(i -> {
+        String applicationName = (String) i[0];
+        Discount discountName = (Discount) i[1];
+        DiscountDto discountDto = discountMapper.mapDiscountToDiscountDto(discountName);
+        discountDto.setApplicationName(applicationName);
+        discountDtoList.add(discountDto);
+        //System.out.println((String) i[0]);
+      });
+    });
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully.",discountDtoList,discountDtoList.size(),HttpStatus.OK));
+    //return discountDtoList;
+  }
+
+
+
+  /**
+   * @param isbn sku of a product.
+   * @returns a list of downloads data.
+   */
+  @Override
+  public ResponseEntity<Object> getDownloadsData(String isbn) {
+    String ISBN = isbn.trim();
+    if(ISBN.length() != 13){
+      LOGGER.info("Isbn is invalid : "+isbn);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid",Map.of("ISBN",isbn));
+    }
+    String sku = productRepository.getSkuByIsbn(ISBN);
+    List<Download> skus = downloadsRepository.getdownloadsData(sku);
+    if(sku == null || skus.isEmpty()){
+      LOGGER.info("No data found");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found",Map.of("ISBN",isbn));
+    }
+    List<DownloadsDto> collect = skus.stream().map(downloadsMapper::mapDownloadToDownloadDto)
+            .collect(Collectors.toList());
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully",collect,collect.size(),HttpStatus.OK));
+  }
+
+  /**
+   * @param isbn of book.
+   * @return
+   */
+  @Override
+  public ResponseEntity<Object> getProductByIsbn(String isbn) {
+    String trimmedKeyword = isbn.trim();
+    if(trimmedKeyword.length() != 13 || !ValidationUtil.isIsbnValid(trimmedKeyword)) {
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,
+              "Isbn is invalid.");
+    }
+    Optional<Product> byIsbn1 = productRepository.findByIsbn(trimmedKeyword);
+    ProductMainDto listDto;
+    if(byIsbn1.isEmpty()) {
+      LOGGER.info("Isbn is invalid: {}",trimmedKeyword);
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_400_BAD_REQUEST,"Isbn is invalid.",Map.of("ISBN",trimmedKeyword));
+    }
+    Product product = byIsbn1.orElse(null);
+    Product product1 = this.setBindingText(product);
+    listDto = productMapper.mapProductToProductMainDto(product1, this);
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE, listDto == null ? "No data found" : "Data fetched successfully.", listDto, 1, HttpStatus.OK));
+  }
+
+  /**
+   * @param sku of book.
+   * @return product details.
+   */
+  @Override
+  public ResponseEntity<Object> getProductBySku(String sku) {
+    String trimmedKeyword = sku.trim();
+    ProductMainDto listDto;
+    Optional<Product> bySku = productRepository.findBySku(trimmedKeyword);
+    Product product = bySku.orElse(null);
+    if(product == null) {
+      LOGGER.info("No data found.");
+      throw new RoutledgeGenericException(RoutledgeGenericException.ERR_404_NOT_FOUND,"No data found.",Map.of("SKU",trimmedKeyword));
+    }
+    Product product1 = this.setBindingText(product);
+    listDto = productMapper.mapProductToProductMainDto(product1,this);
+    return ResponseEntity.status(HttpStatus.OK)
+            .body(new ApiResponse(Boolean.TRUE,"Data fetched successfully.",listDto,1,HttpStatus.OK));
+  }
+}

@@ -1,0 +1,295 @@
+what is elastic search ?
+Elasticsearch is an open-source, distributed search and analytics engine. It is designed to store, search, and analyze large volumes of data quickly and in near real-time
+Elastic search is fast because it searches data based on index rather than text.
+
+Some important terminology in ES
+Cluster
+Node
+Index
+Document
+Mapping
+Shard
+
+Cluster - A cluster is a group of nodes that work together to provide a single Elasticsearch instance. Clusters can be scaled horizontally by adding more nodes.
+
+Node - In Elasticsearch, a node is a single instance of the Elasticsearch software running on a server. Nodes work together to form a cluster, collectively storing and processing data. Each node in the cluster is responsible for specific tasks like storing and indexing data, executing search queries, and participating in the distributed nature of Elasticsearch.
+
+Index - index is like a group of documents which shares a similar structure.
+ 
+Document - document is a piece of information or data that we store in ES.
+
+Mapping - mapping of a index tells how the docuemnts in a index are stored and indexed, like mapping gives us a brief idea of what are all the fields present in document and what are the types of fields and other information.
+
+shard - An Elasticsearch shard is a logical unit of data that can be stored on one or more nodes in a cluster. Shards are used to distribute data across multiple nodes, which improves scalability and performance.
+
+
+How ES works ?
+
+whenever a new document is uploaded to ES, ES will starts indexing the document.
+so what does indexing means ? Indexing is nothing but ES will create an inverted index to the document.
+what is inverted index ?
+
+lets see the examples below
+Document 1: "The quick brown fox jumped over the lazy dog."
+Document 2: "The lazy dog slept in the sun."
+
+for these documents ES will create an inverted index like below
+
+Term    | Documents
+--------|------------
+brown   | 1
+dog     | 1, 2
+fox     | 1
+jumped  | 1
+lazy    | 1, 2
+over    | 1
+quick   | 1
+slept   | 2
+sun     | 2
+the     | 1, 2
+
+As you can see, the inverted index lists each word in the documents and the documents that contain that word. This way, when you search for a word, the search engine can quickly find all the documents that contain that word.
+
+For example, if you search for the word "dog", the search engine would look up the inverted index and find that the word "dog" appears in documents 1 and 2. The search engine would then return these two documents to you.
+
+this is how ES works, the process of creating inverted index for the documents is called indexing in ES.
+
+----------------------------------------------------------------------------------------------------------------------------
+Mappings in ES.
+A mapping in Elasticsearch defines the structure of a document and how it is stored and indexed. It specifies the data type of each field, how fields are analyzed for search and aggregation, and other metadata related to document storage and retrieval.
+
+before inserting data into ES, first we need to define mapping, Mappings provide Elasticsearch with information about the structure and data types of fields, which helps it to optimize search operations, ensure data consistency, and perform advanced text analysis and aggregation.
+
+
+Mapping is like a model for a document.
+
+example:
+
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "author": {
+        "type": "keyword"
+      },
+      "publication_date": {
+        "type": "date"
+      },
+      "price": {
+        "type": "double"
+      },
+      "genre": {
+        "type": "keyword"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "snowball"
+      }
+    }
+  }
+}
+
+this is mapping.
+
+{
+  "title": "The Lord of the Rings",
+  "author": "J.R.R. Tolkien",
+  "publication_date": "1954-07-29",
+  "price": 19.99,
+  "genre": "fantasy",
+  "description": "In an age of magic and wonder, an unassuming hobbit named Frodo Baggins is entrusted with the fate of the world when he inherits the One Ring, an artifact of immense power created by the Dark Lord Sauron. With the help of a fellowship of loyal companions, Frodo embarks on a perilous journey to destroy the Ring in the fires of Mount Doom and save Middle-earth from Sauron's dominion."
+}
+
+this is document.
+---------------------------------------------------------------------------------------------------------------------------
+ets go through the ES response fields
+{
+    "took": 4,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 13,
+            "relation": "eq"
+        },
+        "max_score": 0.54014194,
+        "hits": [
+            {
+                "_index": "products",
+                "_type": "_doc",
+                "_id": "8",
+                "_score": 0.49149442,
+                "_source": {
+                    "_class": "elastic.search.poc.entity.Product",
+                    "id": 8,
+                    "name": "Watermelon",
+                    "description": "A large, juicy fruit with a high water content."
+                }
+            }
+        ]
+    }
+}
+
+
+took time taken to execute query in milli seconds.
+timed_out - a boolean which represents if the query was timed out.
+_shards - represents no of shards that are involved in query
+hits : this is a object that consists of information about total no of documents found.
+	total: This object contains information about the total number of matching documents.
+		value: This field indicates the total number of matching documents.
+		relation: This field indicates the relationship between the actual number of matching documents and the requested number of documents. In this case, the relationship is eq, which means that the actual number of matching documents is equal to the requested number of documents (relation: "eq").
+
+		hits: This array contains an object for each matching document. Each object contains the following fields:
+			_index: This field indicates the index that the document belongs to (_index: "products").
+			_type: This field indicates the type of the document (_type: "_doc").
+			_id: This field indicates the unique identifier of the document (_id: "2").
+			_score: This field indicates the relevance score of the document. In this case, the score is 0.54014194 (_score: 0.54014194).
+			_source: This object contains the actual data of the document. In this case, the data includes the 	following fields:
+			_class: This field indicates the class of the document (_class: "elastic.search.poc.entity.Product").
+				id: This field indicates the identifier of the product (id: 2).
+				name: This field indicates the name of the product (name: "Banana").
+				description: This field indicates the description of the product (description: "A yellow fruit with a soft texture.").
+
+---------------------------------------------------------------------------------------------------------------------------
+Query DSL in ES.
+In Elasticsearch, Query DSL (Domain Specific Language) refers to a JSON-based query language that allows users to construct complex and expressive search queries.
+
+http://localhost:9200/_search
+this api will gives all the indexes and all the records in all indexes.
+
+size:50 attribute inside query object will set size of response object.
+
+1.Match query
+{
+    "query":{
+        "match":{
+            "description":"fruit"
+        }
+    }
+}
+this query search returns documents in index where the description field consists of word "fruit".
+
+2.Multi-Match query
+{
+  "query": {
+    "multi_match": {
+      "query": "apple",
+      "fields": ["name", "description"]
+    }
+  }
+}
+
+this query will search for documents where the name and description field should contains the word "apple".
+
+---------------------------------------------------------------------------------------------------------------------------
+updating a mapping in ES index
+
+suppose this is the mapping of customer index, now you want to add another field into this mapping, for that what you need to do is 
+hit a put request
+http://localhost:9200/customers/_mapping
+with request body
+{
+  "properties":{
+    address:{
+      "type":"keyword"
+    }
+  }
+}
+
+this will give you response as 
+{
+  "acknowledged":true
+}
+here address is the new field that you are adding.
+
+once you have done that go to your java code and there also add your new field private String address;
+--------------------------------------------------------------------
+to update a field in document, you can make a post request
+
+http://localhost:9200/products/_update/8
+
+8 is the document id here
+
+you need to send request body that what field you want to update with what data
+
+{
+    "doc":{
+        "tasteScore":5
+    }
+}
+
+for example you want to update totalScore field with 5 so you can make a post request as above
+
+--------------------------------------------------------------------
+to clear cache of an index do this
+http://localhost:9200/products/_cache/clear
+
+-------------------------------------------------------------------
+to add a new document to a index, you can hit a post request
+like this 
+http://localhost:9200/products/_doc
+
+with request body 
+
+{
+    "id": 55,
+    "name": "Apple fruit",
+    "description": "Apple fruit is too tasty",
+    "tasteScore":5
+}
+
+if you miss any fields in request object then those fields will be given the default values.
+--------------------------------------------------------------------------------------------
+
+deleting a document from index
+
+if you want to delete a document from index
+make a delete request with index and document id
+http://localhost:9200/products/_doc/OBio0osBRAfXBRD1SR6M
+
+
+after adding a new documents to a index, index should be re-indexed.
+reindexing can be done from ES side like this
+
+http://localhost:9200/_reindex
+
+by providing the request body
+
+{
+    "source":{
+        "index":"customers"
+    },
+    "dest":{
+        "index":"new_customers"
+    }
+}
+
+It will give you response
+
+{
+    "took": 4534,
+    "timed_out": false,
+    "total": 11,
+    "updated": 0,
+    "created": 11,
+    "deleted": 0,
+    "batches": 1,
+    "version_conflicts": 0,
+    "noops": 0,
+    "retries": {
+        "bulk": 0,
+        "search": 0
+    },
+    "throttled_millis": 0,
+    "requests_per_second": -1.0,
+    "throttled_until_millis": 0,
+    "failures": []
+}

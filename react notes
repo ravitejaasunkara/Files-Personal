@@ -1,0 +1,76 @@
+React Hooks, introduced in React 16.8, allow functional components to manage state and side effects without using class components. They provide a more straightforward and readable way to manage component logic.
+
+useState Hook:
+
+useState allows functional components to manage local component state.
+Usage: const [state, setState] = useState(initialState);
+const [count, setCount] = useState(0);
+useEffect Hook:
+
+useEffect is used for handling side effects like data fetching, DOM updates, and more.
+Usage: useEffect(callback, dependenciesArray);
+Custom Hooks:
+
+Developers can create custom hooks to reuse stateful logic across components.
+useState Example:
+
+javascript
+Copy code
+const [count, setCount] = useState(0);
+useEffect Example:
+
+javascript
+Copy code
+useEffect(() => {
+  // Side effect logic
+  document.title = `Count: ${count}`;
+}, [count]);
+Rules of Hooks:
+
+Hooks must be called at the top level of a component or custom hook.
+They should not be called conditionally or within loops.
+Common Built-in Hooks:
+
+useState: For managing component state.
+useEffect: Handling side effects.
+useContext: Accessing context values.
+useRef: Working with refs.
+useMemo and useCallback: Memoizing values and functions.
+useReducer: Managing complex state logic.
+useContext Hook:
+
+Allows access to context values without nesting components.
+Usage: const value = useContext(MyContext);
+useRef Hook:
+
+Used to access and manipulate DOM elements and create mutable variables.
+Usage: const myRef = useRef(initialValue);
+useMemo and useCallback Hooks:
+
+Used to optimize performance by memoizing values and functions.
+useMemo: Memoizes a value. Usage: const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+useCallback: Memoizes a function. Usage: const memoizedCallback = useCallback(() => { doSomething(a, b); }, [a, b]);
+useReducer Hook:
+
+A more advanced alternative to useState for managing complex state logic.
+Usage: const [state, dispatch] = useReducer(reducer, initialArg, init);
+Custom Hook Example:
+
+javascript
+Copy code
+function useCustomHook(initialValue) {
+  const [value, setValue] = useState(initialValue);
+  // More logic
+  return [value, setValue];
+}
+Benefit of Hooks:
+
+Improved code organization and reuse.
+Easier to understand and test.
+Cleaner functional components with less boilerplate.
+Cautions with Hooks:
+
+Properly handle dependencies in useEffect.
+Ensure proper cleanup in useEffect to prevent memory leaks.
+Follow best practices for naming and organizing custom hooks.
+React hooks have revolutionized how developers work with state and side effects in React applications, making code more concise and maintainable. They are widely used in modern React development.

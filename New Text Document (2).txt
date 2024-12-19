@@ -1,0 +1,20 @@
+ item.revokedAccess = res.bindingStyle == 'e-Book' ? this.getRevokeStatus(item.isbn) : false;
+ 
+ here we are calling getRevokeStatus(item.isbn) to get the revoke status of invoice
+ 
+ getRevokeStatus(isbn : number) {
+     let isRevoked : boolean = true;
+       return isRevoked;
+  }
+  
+the getRevokeStatus() function will always return true.
+
+<div *ngIf="item.bindingStyle == 'e-Book' && item.revokedAccess">
+Status: <span class="font-weight-bold text-danger">Revoked</span> </div><br />
+
+here we are displaying the revoke status when item.bindingStyle == 'e-Book' && item.revokedAccess this will always
+execute since getRevokeStatus() always returns true, if we always gets true then the Status: Revoked  will always displays
+and the Get Revoke Button never displays since it's condition is RevokeStaus == false since we are always getting
+RevokeStatus as true since getRevokeStatus() always returns true then there is no chance of 
+Revoke Access button to be displayed.
+

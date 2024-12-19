@@ -1,0 +1,238 @@
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { CustomerLookupService } from './customer-lookup.service';
+import { of } from 'rxjs';
+describe('CustomerLookupService', () => {
+  let service: CustomerLookupService;
+  let httpClientSpy: jasmine.SpyObj<HttpClient>;
+
+  beforeEach(() => {
+    httpClientSpy = jasmine.createSpyObj('HttpClient', [
+      'get',
+      'post',
+      'put',
+      'delete',
+    ]);
+    service = new CustomerLookupService(httpClientSpy, null);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, RouterTestingModule],
+    });
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+  it('should return expected data when getShippingProfilesByCustomerId() is called', () => {
+    let shippingData = [
+      {
+        shippingProfileId: 402935,
+        nickName: 'aviralUS',
+        billingAddress: {
+          firstName: 'Aviral',
+          lastName: 'Verma',
+          company: '',
+          street1: '440/12 1-B Old Hyderabad Luckn',
+          street2: '',
+          city: 'Lucknow',
+          state: 'AL',
+          countryCode: 'US',
+          postalCode: '226007',
+          phone: '08896565051',
+        },
+        shippingAddress: {
+          firstName: 'Aviral',
+          lastName: 'Verma',
+          company: '',
+          street1: '440/12 1-B Old Hyderabad Luckn',
+          street2: '',
+          city: 'Lucknow',
+          state: 'AL',
+          countryCode: 'US',
+          postalCode: '226007',
+          phone: '08896565051',
+        },
+        type: null,
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(shippingData));
+    service.getShippingProfilesByCustomerId(251181).subscribe((result) => {
+      expect(result).toEqual(shippingData);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('should return expected data when getSubscriptionDetail() is called', () => {
+    let shopperSubscriptionData = [
+      {
+        type: 'SOFT OPT-IN',
+        dateTime: '2022-07-18 10:50:10',
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(shopperSubscriptionData));
+    service.getSubscriptionDetails(251181).subscribe((result) => {
+      expect(result).toEqual(shopperSubscriptionData);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('should return expected data when getSpecialPermissionsByCustomerId() is called', () => {
+    let specialPrevilegeData = [
+      {
+        shopperPrivilegeId: 2564,
+        privilegeId: 1,
+        shopperId: 251181,
+        code: 'GS-RES-CNTR',
+        description: "Garland's Science resource center",
+        startDate: '2022-07-04T10:21:48.430+00:00',
+        expirationDate: null,
+        isActive: true,
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(specialPrevilegeData));
+    service.getSpecialPermissionsByCustomerId(251181).subscribe((result) => {
+      expect(result).toEqual(specialPrevilegeData);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('getProductDetailsByIsbn()', () => {
+    let productDetails = [
+      {
+        productId: 518289,
+        shortTitle: 'The Sustainable Self',
+        subtitle: 'A Personal Approach to Sustainability Education',
+        isbn: '9781849712408',
+        publicationDate: '2011-02-17T00:00:00.000+00:00',
+        contributors: [
+          {
+            id: 14539896,
+            firstName: 'Paul',
+            middleInitial: null,
+            lastName: 'Murray',
+            credentials: null,
+            affiliation: null,
+            bio: null,
+            salutation: null,
+            role: {
+              id: 1,
+              code: 'VE',
+              description: 'Author',
+            },
+            validFrom: null,
+            validTo: null,
+          },
+        ],
+        pageNum: 240,
+        bindingStyle: 'Paperback',
+        editionNumber: 1,
+        imprint: {
+          id: 31,
+          code: 'IMPR',
+          name: 'Routledge',
+          image: 'unknown.gif',
+        },
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(productDetails));
+    service.getProductDetailsByIsbn(9781849712408).subscribe((result) => {
+      expect(result).toEqual(productDetails);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('getShoppingCartItemsByCartId()', () => {
+    let item = [
+      {
+        isbn: '9780367519698',
+        sku: '377455',
+        title: 'Contextualising Educational Studies in India',
+        quantity: 1,
+        basePrice: 252.0,
+        adjustedPrice: 252.0,
+        reviewedPrice: null,
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(item));
+    service.getShoppingCartItemsByCartId(20957811).subscribe((result) => {
+      expect(item).toEqual(result);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalledTimes(1);
+  });
+  it('getShopppingCartsByCustomerId()', () => {
+    let item = [
+      {
+        cartId: 20957811,
+        applicationName: 'www.routledge.com',
+        affiliate: null,
+        discountCode: null,
+        shippingId: null,
+        shippingCode: null,
+        description: null,
+        currencyCode: 'AUD',
+        itemTax: null,
+        shippingTax: null,
+        shippingPrice: null,
+        adjustedShipPrice: null,
+        createdAt: '2022-05-16T11:32:36.673',
+        updatedAt: '2022-05-16T11:32:37.07',
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(item));
+    service.getShopppingCartsByCustomerId(251181).subscribe((result) => {
+      expect(result).toEqual(item);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('getInvoiceDetailsByInvoiceId()', () => {
+    let invoiceItem = [
+      {
+        invoiceId: 304707,
+        billingAddress: {
+          firstName: 'Aviral',
+          lastName: 'Verma',
+          company: 'TEST',
+          street1: 'TEST',
+          street2: '',
+          city: 'London',
+          state: 'LND',
+          countryCode: 'GB',
+          postalCode: 'E1 6AN',
+          phone: '8896565051',
+        },
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(invoiceItem));
+    service.getInvoiceDetailsByInvoiceId(304707).subscribe((result) => {
+      expect(result).toEqual(invoiceItem);
+    });
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+  it('getInvoices()', () => {
+    let invoiceItem = [
+      {
+        invoiceId: 304181,
+        transactionDate: '2021-10-29T06:09:00.62',
+        invoiceNo: '182299',
+        applicationName: 'www.routledge.com',
+        externalSystemName: 'BP',
+        externalSystemNumber: null,
+        status: 'COMPLETED',
+        affiliateCode: null,
+        discountCode: null,
+        invoiceItemCount: 1,
+        shippingDescription:
+          'FREE! Standard Shipping - UK Mail 2nd Class(3-5 Days)',
+        shippingAmount: 0.0,
+        subTotal: 43.99,
+        itemTax: 0.0,
+        total: 43.99,
+      },
+    ];
+    httpClientSpy.get.and.returnValue(of(invoiceItem));
+    service.getInvoices(251181).subscribe(
+      result => {
+        expect(result).toEqual(invoiceItem);
+      }
+    )
+    expect(httpClientSpy.get).toHaveBeenCalled();
+  });
+});

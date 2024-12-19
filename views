@@ -1,0 +1,13 @@
+instead of setting the variables we can create a folder called config/production/task-definition.json;
+in configuration it's defines as "production" so you have to use "production" as Environment variables to do "npm run build --production" where as in the config folder the task definition file for production was placed inside the config/prod folder but the path we are giving is 
+./config/${{ env.ENVIRONMENT }}/task-definition.json, 
+here if we set Environment=production then -> npm run build --production will succeded where as the path for production task-definition.json will fail because we have the folder name as config/prod and we are trying to get the folder with config/production so the deployment will fails since we have no such folder exist. so to make sure it works we can rename config/prod to config/production or to avoid any such issues we can additionally add config/production along with config/prod then the 
+- npm run build --production will succeded also 
+- ./config/production/task-definition.json also succeded.
+
+so we can use ENVIRONMENT = "production"
+and then adding a ./config/production/task-definition.json, have to create new folder named production instead of prod.
+
+that's it.
+
+

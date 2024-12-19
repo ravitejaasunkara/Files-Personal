@@ -1,0 +1,270 @@
+Polyfill js makes older browsers to support the new code.
+May be like the ES6 functions which are not supported in Internet Explorer so polyfill comes into rescue to make the IE to support the ES6 code.
+
+polyfill converts our code into older code.
+
+jsx expressions.
+const h1 = <h1>Hello</h1>
+the above is a jsx expression.
+
+//components
+Functional components
+class components
+
+functional components
+In React, a functional component is a type of component that is primarily defined as a JavaScript function. Functional components were introduced in React as a simpler way to define and manage the behavior and rendering of UI elements. They are also sometimes referred to as "stateless components" because they do not have their own internal state.
+
+A component name start with a capital letter.it is a good practice.
+
+A jsx is just a react element.
+
+a react element is a object.
+a react functional component is a function.
+
+const Title = () => 
+{
+    return <h1>Hello world</h1>;
+}
+
+
+we can use functional component inside jsx in 2 ways
+<Title /> and {Title()} since a Fucntional component is just a function we can call it inside our jsx.
+
+we can write console.log() also inside jsx.
+
+javascript jsx is very safee.
+jsx will sanitize the js code first.
+
+component composition -> using components inside a component.
+
+react reconcillation
+
+
+if we create a react app then a build tool webpack will also comes which includes babel a js code transpiler which conversts our jsx code into browser understandable language.
+
+
+
+React.Fragment will directly adds your code into the DOM without the need of any parent div tag.
+
+<div>
+    <p>Element 1</p>
+    <p>Element 2</p>
+</div>
+
+From the above to the below
+
+<React.Fragment>
+   <p>Element 1</p>
+   <p>Element 2</p>
+</React.Fragment>
+
+
+<>
+</>
+ these empty tags equals to the React.Fragment
+
+A fragement will directly adds your tags to the root tag in DOM, it avoids creating unneccesary DOM tree.
+
+when passing props 
+if you pass like <Body restaurent={somedata} />
+and while receiving you can do two wayss
+
+like 
+
+const Body = (props) => {
+}
+in this way you can access data like props.restaurent.name
+
+where as another way is 
+
+const Body = ({restaurent}) => {
+}
+
+now you can directly access restuarent.name instead of props.restaurent.name
+
+this is called destructuring.
+
+PROPS DESTRUCTURING.
+
+PROPS WITH SPREAD OPERATOR.
+
+
+VIRTUAL DOM
+keeping a copy of original DOM
+we need virtual dom for reconcillation in react.
+
+
+Reconcilliation is an algorithm that react uses to diff one dom tree from another.
+
+
+the diff algorithm finds out what needs to be modified/updated and updated that small portion instead of re-rendering entire DOM.
+
+whenever a change happened to a react application a new VirtualDom will be created with the changes happened, now the new VDOM will be compared with the old VDOM, the comparision can be done by the diffing algorithm, the diffing algorithm will detect the changes between new VDOM and old VDOM and it render the detected changes in the original DOM.
+this entire process is called react Reconcillation.
+
+
+Initial Render: When a component is initially rendered, a VDOM tree is created to represent the initial UI. React keeps a reference to this VDOM.
+
+Subsequent Renders: When a change occurs, a new VDOM tree is created to represent the updated UI. This new VDOM is compared to the most recent VDOM (not the initial one) using the diffing algorithm.
+
+Reconciliation: The differences between the new VDOM and the most recent VDOM are identified, and the actual DOM is updated accordingly.
+
+Retaining the Most Recent VDOM: Importantly, after reconciliation, React retains a reference to the newly created VDOM. This VDOM becomes the basis for comparison in the next render cycle.
+
+Next Render: When another change occurs, the newly created VDOM is compared to the most recent VDOM from the previous render. This process repeats in subsequent render cycles, with each new VDOM being compared to the most recent VDOM reference.
+
+In summary, React keeps a reference to the most recent VDOM, allowing it to perform comparisons with the new VDOMs generated in subsequent renders. The old VDOM is not entirely erased after each reconciliation; instead, it's replaced by the new most recent VDOM. This approach ensures that React can efficiently track and update the UI in response to changes in application state.
+
+
+Yes, in a typical React application, except for the most recent Virtual DOM (VDOM), all previously created VDOMs are eventually discarded. React retains a reference only to the latest VDOM, which is used as the basis for comparison during the next render cycle.
+
+The reason for discarding older VDOMs is to manage memory efficiently. As the application continues to render and update, it would be impractical to keep references to all previous VDOMs in memory. Instead, React relies on the most recent VDOM to perform the reconciliation process and update the actual Document Object Model (DOM) as needed.
+
+Here's a simplified overview of the process:
+
+During the initial render, a VDOM is created and used to generate the initial DOM.
+
+When a change occurs, a new VDOM is created to represent the updated UI.
+
+The new VDOM is compared to the most recent VDOM, and differences are identified.
+
+The actual DOM is updated based on the differences.
+
+The most recent VDOM reference is updated to point to the new VDOM.
+
+The previous VDOM is effectively discarded, and it can be cleaned up by JavaScript's garbage collector because there are no references to it.
+
+Subsequent render cycles use the updated most recent VDOM as the reference point for comparisons.
+
+By retaining only the most recent VDOM, React strikes a balance between efficient memory management and the ability to update the UI in response to changing application state. This approach allows React to perform efficiently even in applications with many render cycles and updates.
+
+
+React fiber.
+React Fiber is a new reconciliation algorithm for React that was introduced in React 16. It is a complete rewrite of the previous reconciliation algorithm, but it is backwards compatible, so you can start using it without changing your existing code.
+
+React Fiber has a number of advantages over the previous reconciliation algorithm, including:
+
+* **Incremental rendering:** React Fiber can split rendering work into chunks and spread it out over multiple frames. This makes it possible to render complex UIs without blocking the main thread.
+* **Better performance for animations and gestures:** React Fiber can prioritize rendering of animations and gestures, so that they are smooth and responsive.
+* **Concurrency support:** React Fiber makes it possible to write concurrent React applications. This means that your application can continue to respond to user input and other events even while it is rendering a complex UI.
+
+React Fiber is still under development, but it has already been used to improve the performance of many popular React applications.
+
+Here are some examples of how React Fiber can improve the performance of your application:
+
+* **Rendering a large list of items:** With the previous reconciliation algorithm, rendering a large list of items could block the main thread and cause your application to become unresponsive. With React Fiber, rendering a large list of items can be spread out over multiple frames, so your application remains responsive.
+* **Animating a complex UI:** With the previous reconciliation algorithm, animating a complex UI could cause the animation to stutter or lag. With React Fiber, React can prioritize rendering of animations, so that they are smooth and responsive.
+* **Handling user input while rendering a complex UI:** With the previous reconciliation algorithm, handling user input while rendering a complex UI could cause your application to become unresponsive. With React Fiber, React can continue to respond to user input even while it is rendering a complex UI.
+
+If you are building a React application, I encourage you to start using React Fiber. It can make a significant difference in the performance and responsiveness of your application.
+
+
+A key should not be an index in react.
+There are two main reasons why we don't use index as a key in React:
+
+Performance: When you use index as a key, React has to re-render the entire list if any item is reordered or removed. This is because React cannot tell which items have changed based on their index alone.
+Correctness: If you use index as a key, and you reorder or remove an item, React may end up re-rendering the wrong item. This is because the index of an item can change when the list is reordered.
+To avoid these problems, it is best to use a unique identifier for each item in the list as the key. This will allow React to efficiently update the list when items are reordered or removed.
+
+Here are some examples of good keys to use in React lists:
+
+The ID of the item, if it has one.
+A unique string generated for each item.
+A combination of the item's type and some other unique identifier, such as the item's timestamp.
+
+config driven UI is nothing but the UI has to be modified according to the data without any code changes.
+
+there are two types of import/exports in react/javascript.
+
+
+1.default import
+export default Hello;
+then you have to import like 
+import Hello from './Hello';
+
+2.Named import
+export Hello;
+then you have to import like 
+import {Hello} from './Hello';
+
+
+if you have a file say Details.js in which you are having two components
+
+export const PersonalDetails = () => {}
+
+export const ProfessionalDetails = () => {}
+
+you have exported both the file.
+
+now you can import like 
+import {PersonalDetails,ProfessionalDetails} from './Details';
+
+and in default import exports there is no need to import with the same component name
+
+const Hello = () => {};
+export default Hello;
+
+you can import it with any name like
+
+import Hello from './Hello';
+or 
+import Ravi from './Hello';
+
+you can either say './Hello'; or './Hello.js';
+
+named imports can also be imported like 
+import * as Something from './Details';
+then use it like <Something.PersonalDetails />
+
+a react variable is a state variable,every component in react maintains a state;
+
+
+hooks are special js functions.
+
+
+React will update the dom only when the state of variables changes, that is why react needs state variables rather than the local variables.
+
+
+when a state changes in react a component re-render will happens but that does not re-contruct or replace the entire dom tree, it will then starts the reconcillation process and through diffing algorithm it will modify the dom tree as per the results from the diffing algorithm.
+
+useEffect
+when you provide some dependencies to the useEffect dependency array then useEffect will be triggered whenever the dependencies has  been changes, when you provide an empty dependency array then useEffect will not be triggered for state updates where as component will be re-rendered.
+//empty dependency array -> called once after component render.
+
+
+//useEffect will run after the component has rendered.
+
+
+
+//REACT ROUTER
+createBrowserRouter
+RouterProvider
+
+const appRoutes = createBrowserRouter([
+  {path:'/',element:<AppLayout />,errorElement:<Error />},
+  {path:'/about',element:<About />},
+]);
+
+this is how you can mention paths and routes.
+useRouteError
+
+Link is to provide actions to links.
+
+we have <Outlet /> for dynamic routing.
+
+
+In react if you have a button that is calling a function on clicking then you should do like this 
+
+const clickHandler = () => {
+	
+}
+
+
+<button onClick={clickHandler} />
+
+you should pass the reference to the click handler(onClick).
+
+you should not do like clickHandler() because when you did like that when the component is rendered the function will be called without the actual event is being triggered that meaans without the button got clicked the function got executed that is not an expected behaviour.
+
+this behaviour sometimes may lead to an infinite looop.
+suppose lets say you have a state changing things inside a function, that function you are calling inside the button onClick as clickHandler(), so when the component renders it will calls the function then the function updates the state, when the state is updates then the component again re-renders againt the function will get called and the state updates and function called again like this the infinite loop situation arrives.

@@ -1,0 +1,23 @@
+Key events in angular
+keyup.enter is triggered when enterkey is clicked and released where as keydown is triggered when enter key is clicked.
+ref : https://www.digitalocean.com/community/tutorials/angular-binding-keyup-keydown-events
+-------------------
+Directives
+@Directive is used to manipulate the DOM elements behavior
+
+Attribute Directives
+NgCIass -Adds and removes a set of CSS classes.
+<div [ngClass]="isSpecial ? 'special' : ''">This div is special</div>
+<div [ngClass]="10%2==0 ? 'yes' : 'no'>Hello world</div>
+
+NgSty1e -Adds and removes a set of HTML styles.
+<div [ngStyle]="{'background-color':'red','font-weight':'bold'}">
+<div [ngStyle]="{'background-color':isRed ? 'red' : 'green'}">
+ref : https://codecraft.tv/courses/angular/built-in-directives/ngstyle-and-ngclass/
+
+NgMode1 -Adds two-way data binding to an HTML form element.
+it is used for 2 way data binding to capture the form values.
+---------------------
+
+
+

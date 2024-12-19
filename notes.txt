@@ -1,0 +1,15 @@
+ngOnInit()
+once the component has loaded in DOM then that component constructor() will be called then that
+component OnInit() will be called.
+
+ngOnDestroy()
+this will be called once the component has removed from the DOM,when the component is destroyed from the DOM
+we can do any cleanig activities in ngOnDestroy() like unsubscribing from the observables after changing
+the route like that.
+
+ngOnChnges()
+It will be fired whenever we are sending data from parent and whenever the data in parent has changed
+then this will be called. it has a parameter caalled SimpleChanges which gives a list of changes.
+it is not a good practice to make any expensive operations like API calls in ngOnChanges().
+
+ngDoCheck() will trigger the changes have made.

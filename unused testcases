@@ -1,0 +1,64 @@
+xit('disable minimum no of days published', () => {
+  let disableMinPubDays = fixture.debugElement.query(By.css('#fcoming')).nativeElement;
+  disableMinPubDays.click();
+  fixture.detectChanges();
+  let minDaysElement = fixture.debugElement.query(By.css('#min-days')).nativeElement;
+  expect(minDaysElement.disabled).toBeTruthy();
+  disableMinPubDays.click();
+  expect(minDaysElement.disabled).toBeFalsy();
+});
+
+xit('checkSelectedSubjects with Empty Subjects', () => {
+  component.textAreaSubjects.nativeElement.value = "";
+  fixture.detectChanges();
+  expect(component.textAreaSubjects.nativeElement.value).toBe('');
+  expect(document.getElementById("selectedSubjects").innerHTML).toBe('All Selected');
+});
+
+xit('checkSelectedSubjects with Valid, Invalid and duplicate subjects and Include Sub Category', () => {
+  var resObj = { "message": "Subject code not valid", "data": { "countofSubcategory": 25, "validSubjectCode": ["SCBE", "MTH"], "duplicateSubjectCode": ["SCBE"], "invalidSubjectCode": ["CHEM"] }, "noOfRecords": 25, "httpStatusCode": "OK", "success": true };
+  let spySubCatCount = spyDmsService.subcatCount.and.returnValue(of(resObj));
+  component.textAreaSubjects.nativeElement.value = "SCBE,CHEM,SCBE,MTH";
+  fixture.detectChanges();
+  expect(component.subjectdata.subjects).toEqual(['SCBE', 'CHEM', 'SCBE', 'MTH']);
+  expect(spySubCatCount).toHaveBeenCalled();
+  expect(document.getElementById("selectedSubjects").innerHTML).toBe('2 Selected');
+  expect(component.textAreaSubjects.nativeElement.value).toContain('SCBE,MTH');
+  expect(component.addDmsForm.controls["includeSubcategory"].enabled).toBe(true);
+})
+
+xit('checkSelectedSubjects with Valid, Invalid and duplicate subjects ', () => {
+  var resObj = { "message": "Subject code not valid", "data": { "countofSubcategory": 25, "validSubjectCode": ["SCBE", "MTH"], "duplicateSubjectCode": ["SCBE"], "invalidSubjectCode": ["CHEM"] }, "noOfRecords": 25, "httpStatusCode": "OK", "success": true };
+  let spySubCatCount = spyDmsService.subcatCount.and.returnValue(of(resObj));
+  component.textAreaSubjects.nativeElement.value = "SCBE,CHEM,SCBE,MTH";
+  fixture.detectChanges();
+  expect(component.subjectdata.subjects).toEqual(['SCBE', 'CHEM', 'SCBE', 'MTH']);
+  expect(spySubCatCount).toHaveBeenCalled();
+  expect(document.getElementById("selectedSubjects").innerHTML).toBe('2 Selected');
+  expect(component.textAreaSubjects.nativeElement.value).toContain('SCBE,MTH');
+  expect(component.addDmsForm.controls["includeSubcategory"].enabled).toBe(true);
+
+})
+
+xit('checkSelectedSubjects', () => {
+  var resObj = { "message": "Success", "data": { "countofSubcategory": 4, "validSubjectCode": ["SCBE"], "duplicateSubjectCode": [], "invalidSubjectCode": [] }, "noOfRecords": 4, "httpStatusCode": "OK", "success": true };
+  let spySubCatCount = spyDmsService.subcatCount.and.returnValue(of(resObj));
+  component.textAreaSubjects.nativeElement.value = "SCBE";
+  fixture.detectChanges();
+  expect(component.selectedSubjects.length).toEqual(1);
+  expect(component.subjectdata.subjects).toEqual(['SCBE']);
+  expect(spySubCatCount).toHaveBeenCalled();
+  expect(document.getElementById("selectedSubjects").innerHTML).toBe('1 Selected');
+  expect(component.textAreaSubjects.nativeElement.value).toContain('SCBE');
+  expect(component.addDmsForm.controls["includeSubcategory"].enabled).toBe(true);
+
+});
+
+xit('resetISBNError', async(() => {
+  component = TestBed.createComponent(DmsAddComponent).componentInstance;
+  component.invalidisbn = 'Test';
+  component.duplicateIsbn = 'Test1'
+  fixture.detectChanges();
+  fixture.detectChanges();
+  expect(component.invalidisbn).toBe('');
+}));

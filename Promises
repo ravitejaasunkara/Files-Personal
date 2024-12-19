@@ -1,0 +1,4 @@
+Promises
+-> used to handle async operations in Javascript
+-> async operation means it will take some time to execute, we exactly dont know how much time it will take. 
+const cart = ["shoes","pants","kurta"];

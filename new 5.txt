@@ -1,0 +1,326 @@
+exportDataToExcel(discountType: any){
+    // This block is to create an excel file for sales
+    if (discountType == 'sale') {
+        // Initializing sales arrays
+        this.salesActiveData = [
+            {
+                "name": "ChristmasFestivalOffersTest",
+                "startDate": "2022-09-30 15:00:00",
+                "endDate": "2023-01-30 15:00:00",
+                "regions": ['USD','NZD','GBP','AUD'],
+                "description": ["some description about ChristmasFestivalOffersTest"]
+            }
+        ];
+        this.salesScheduledData = [
+            {
+                "name": "HarvinderDescriptionTest1",
+                "startDate": "2020-12-01 11:43:00",
+                "endDate": "2020-12-31 11:43:00",
+                "regions": ['USD'],                
+                "description": ["some description about HarvinderDescriptionTest1"]
+            }
+        ];
+        this.salesExpiredData = [
+            {
+                "name": "Five Percent Off 9780415956338",
+                "startDate": "2009-12-14 19:00:00",
+                "endDate": "2022-05-31 19:00:00",
+                "regions": ['AUD'],
+                "description": ["some description about Five Percent Off 9780415956338"]
+            },
+            {
+              "name": "HarvinderDescriptionTest1",
+              "startDate": "2020-12-01 11:43:00",
+              "endDate": "2020-12-31 11:43:00",
+              "regions": ["USD","GBP","AUD"," NZD"],
+              "description": ["50% Off Print & ebook, 0% Off eBook rentals "],
+            },
+            {
+              "name": "9781138473690",
+              "startDate": "2020-12-01 11:46:00",
+              "endDate": "2021-12-02 11:46:00",
+              "description": [
+                  "10% Off Print & eBooks, 0% Off eBook Rentals 1 ISBN"
+              ],
+              "regions": ['USD','GBP','NZD','AUD']
+            },
+            {
+              "name": "HarvinderDescriptionTest4TexTypes1And1Subject",
+              "startDate": "2020-12-01 11:47:00",
+              "endDate": "2022-05-04 11:47:00",
+              "description": [
+                  "20% Off Print & ebook, 0% Off ebook rentals 3 Text Types & Chemistry"
+              ],
+              "regions": ['USD','NZD','AUD','GBP']
+            }
+        ];
+
+        //Initializing excel workbook and worksheets
+        this.workbook = new Workbook();
+        let activeSalesWorksheet = this.workbook.addWorksheet('Active Sales');
+        let scheduledSalesWorksheet = this.workbook.addWorksheet('Scheduled Sales');
+        let expiredSalesWorksheet = this.workbook.addWorksheet('Expired Sales');
+
+        // ACTIVE SALES
+        /* Creating Active Sales Workshet with the data from the salesActiveData array. */
+        if (this.salesActiveData.length > 0) {
+            activeSalesWorksheet.addRow(['SALE NAME','DESCRIPTION','CURRENCY', 'START DATE', 'END DATE', ]);
+            activeSalesWorksheet.columns = [{ key: 'SALE NAME', width: 36 },{ key: 'DESCRIPTION', width: 36 },{ key: 'CURRENCY', width: 18 },{ key: 'START DATE', width: 18 },{ key: 'END DATE', width: 18 },];
+            var headerRow = activeSalesWorksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = { size: 12, bold: true }
+            })
+            this.salesActiveData.forEach((x: any) => {
+              let item = {discountName: x.name,description: x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate, global.dateExcelViewFormat, global.locale),endDate: formatDate(x.endDate, global.dateExcelViewFormat, global.locale)};
+              activeSalesWorksheet.addRow(Object.values(item));
+            })
+        } 
+        // If no active sales data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Active Sales Data
+        Available at Present". */
+        else {
+            activeSalesWorksheet.mergeCells('A1:F1');
+            activeSalesWorksheet.getCell('A1').value = "No Active Sales Data Available at Present";
+            activeSalesWorksheet.getCell('A1').font = { size: 12, bold: true };
+            activeSalesWorksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        }
+        // SCHEDULED SALES
+        /* Creating Scheduled Sales Workshet with the data from the salesSchedulesData array. */
+        if (this.salesScheduledData.length > 0) {
+            scheduledSalesWorksheet.addRow(['SALE NAME','DESCRIPTION','CURRENCY', 'START DATE', 'END DATE', ]);
+            scheduledSalesWorksheet.columns = [{ key: 'SALE NAME', width: 36 },{ key: 'DESCRIPTION', width: 36 },{ key: 'CURRENCY', width: 18 },{ key: 'START DATE', width: 18 },{ key: 'END DATE', width: 18 },];
+            var headerRow = scheduledSalesWorksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = { size: 12, bold: true }
+            })
+            this.salesScheduledData.forEach((x: any) => {
+              let item = {discountName: x.name,description: x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate, global.dateExcelViewFormat, global.locale),endDate: formatDate(x.endDate, global.dateExcelViewFormat, global.locale)};
+              scheduledSalesWorksheet.addRow(Object.values(item));
+            })
+        }
+        // If no scheduled sales data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Schedules Sales Data
+        Available at Present". */ 
+        else {
+            scheduledSalesWorksheet.mergeCells('A1:F1');
+            scheduledSalesWorksheet.getCell('A1').value = "No Scheduled Sales Data Available at Present";
+            scheduledSalesWorksheet.getCell('A1').font = { size: 12, bold: true };
+            scheduledSalesWorksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        }
+        // ExPIRED SALES
+        /* Creating Expired Sales Workshet with the data from the salesExpiredData array. */
+        if (this.salesExpiredData.length > 0) {
+            expiredSalesWorksheet.addRow(['SALE NAME','DESCRIPTION','CURRENCY', 'START DATE', 'END DATE', ]);
+            expiredSalesWorksheet.columns = [{ key: 'SALE NAME', width: 36 },{ key: 'DESCRIPTION', width: 36 },{ key: 'CURRENCY', width: 18 },{ key: 'START DATE', width: 18 },{ key: 'END DATE', width: 18 },];
+            var headerRow = expiredSalesWorksheet.getRow(1);
+            headerRow.eachCell(function (cell) {
+                cell.font = { size: 12, bold: true }
+            })
+            this.salesExpiredData.forEach((x: any) => {
+                let item = {discountName: x.name,description: x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate, global.dateExcelViewFormat, global.locale),endDate: formatDate(x.endDate, global.dateExcelViewFormat, global.locale)};
+                expiredSalesWorksheet.addRow(Object.values(item));
+            })
+        }
+        // If no EXPIRED SALES data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Expired Sales Data
+        Available at Present". */ 
+        else {
+            expiredSalesWorksheet.mergeCells('A1:F1');
+            expiredSalesWorksheet.getCell('A1').value = "No Expired Sales Data Available at Present";
+            expiredSalesWorksheet.getCell('A1').font = { size: 12, bold: true };
+            expiredSalesWorksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+        }
+        /* Writing the data to the workbook with three worksheets which are Active,Scheduled,Expired */
+        this.workbook.xlsx.writeBuffer().then((data: any) => {
+            let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const fileName = "routledge-"+status+"-promotions-report" + "-" + new Date().getDate() + "-" + global.months[new Date().getMonth()] + "-" + new Date().getFullYear() + ".xlsx";
+            fs.saveAs(blob, fileName);
+        })
+    }
+    // This block is to create an excel file for promotions
+    else if (discountType == 'promo') {
+        // Initializing the promotion arrays
+        this.promotionsActiveData = [
+          {
+            "startDate": "2022-09-01 00:45:00",
+            "endDate": "2032-12-31 00:45:00",
+            "promoCode": "LOYAL",
+            "description": [
+                "20% Off Print, eBooks & ebook rentals"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2009-12-14 19:00:00",
+            "endDate": "2022-05-31 19:00:00",
+            "promoCode": "FIVEPERCENT",
+            "description": ["5% Off Print & ebook, 0% Off eBook rentals "],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2006-10-18 20:00:00",
+            "endDate": "2020-12-30 19:00:00",
+            "promoCode": "CIS2606IAHR",
+            "description": [
+                "80% Off Print & eBooks, 0% Off eBook Rentals 611 ISBNs"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+        ];
+        this.promotionsScheduledData = [
+          {
+            "startDate": "2022-09-01 00:45:00",
+            "endDate": "2032-12-31 00:45:00",
+            "promoCode": "LOYAL",
+            "description": [
+                "20% Off Print, eBooks & ebook rentals"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2009-12-14 19:00:00",
+            "endDate": "2022-05-31 19:00:00",
+            "promoCode": "FIVEPERCENT",
+            "description": ["5% Off Print & ebook, 0% Off eBook rentals "],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2006-10-18 20:00:00",
+            "endDate": "2020-12-30 19:00:00",
+            "promoCode": "CIS2606IAHR",
+            "description": [
+                "80% Off Print & eBooks, 0% Off eBook Rentals 611 ISBNs"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+        ];
+        this.promotionsExpiredData = [
+          {
+            "startDate": "2009-12-14 19:00:00",
+            "endDate": "2022-05-31 19:00:00",
+            "promoCode": "FIVEPERCENT",
+            "description": ["5% Off Print & ebook, 0% Off eBook rentals "],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2006-10-18 20:00:00",
+            "endDate": "2020-12-30 19:00:00",
+            "promoCode": "CIS2606IAHR",
+            "description": [
+                "80% Off Print & eBooks, 0% Off eBook Rentals 611 ISBNs"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2009-11-11 19:00:00",
+            "endDate": "2010-04-30 20:00:00",
+            "promoCode": "LES20PERCENT",
+            "description": [
+                "20% Off Print & eBooks, 0% Off eBook Rentals 3 ISBNs"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2009-11-11 19:00:00",
+            "endDate": "2010-04-30 20:00:00",
+            "promoCode": "LES20PERCENT",
+            "description": [
+                "20% Off Print & eBooks, 0% Off eBook Rentals 3 ISBNs"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          },
+          {
+            "startDate": "2009-12-14 19:00:00",
+            "endDate": "2010-01-12 19:00:00",
+            "promoCode": "FIVEPERCENT",
+            "description": [
+                "5% Off Print & eBooks, 0% Off eBook Rentals 1 ISBN"
+            ],
+            "regions": ['USD','NZD','AUD','GBP'],
+          }
+        ];
+        // Inititialzing the workbook and worksheets
+        this.workbook1 = new Workbook();
+        let activePromotionsWorksheet = this.workbook1.addWorksheet('Active Promotions');
+        let scheduledPromotionsWorksheet = this.workbook1.addWorksheet('Scheduled Promotions');
+        let expiredPromotionsWorksheet = this.workbook1.addWorksheet('Expired Promotions');
+
+        // Active Promotions
+        /* Creating Active Promotions Workshet with the data from the promotionsActiveData array. */
+        if (this.promotionsActiveData.length > 0) {
+          activePromotionsWorksheet.addRow(['PROMOCODE','DESCRIPTION','CURRENCY','START DATE','END DATE']);
+          let headerRow = activePromotionsWorksheet.getRow(1);
+          headerRow.eachCell(function(cell){
+            cell.font = {size:12,bold:true};
+          })
+          activePromotionsWorksheet.columns = [{ key:'PROMOCODE',width:18},{ key:'DESCRIPTION',width:36},{ key:'CURRENCY',width:18},{ key:'START DATE',width:18},{ key:'END DATE',width:18},];
+          this.promotionsActiveData.forEach((x:any) => {
+            let item = {promoCode:x.promoCode,description:x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate,global.dateExcelViewFormat,global.locale),endDate:formatDate(x.endDate,global.dateExcelViewFormat,global.locale)};
+            activePromotionsWorksheet.addRow(Object.values(item));
+          })
+        }
+        // If no ACTIVE PROMOTIONS data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Active Promotions Data
+        Available at Present". */ 
+        else {
+          activePromotionsWorksheet.mergeCells('A1:F1');
+          activePromotionsWorksheet.getCell('A1').value = 'No Active Promotions Data available at present';
+          activePromotionsWorksheet.getCell('A1').font = {size:12,bold:true};
+          activePromotionsWorksheet.getCell('A1').alignment = {vertical:'middle',horizontal:'center',wrapText:true};
+        }
+
+        // Scheduled Promotions
+        /* Creating Scheduled Promotions Workshet with the data from the promotionsScheduledData array. */
+        if (this.promotionsScheduledData.length > 0) {
+          scheduledPromotionsWorksheet.addRow(['PROMOCODE','DESCRIPTION','CURRENCY', 'START DATE', 'END DATE']);
+          let headerRow = scheduledPromotionsWorksheet.getRow(1);
+          headerRow.eachCell(function(cell){
+            cell.font = { size: 12, bold: true};
+          })
+          scheduledPromotionsWorksheet.columns = [{ key:'PROMOCODE',width:18},{ key:'DESCRIPTION',width:36},{ key:'CURRENCY',width:18},{ key:'START DATE',width:18},{ key:'END DATE',width:18}];
+          this.promotionsScheduledData.forEach((x:any) => {
+            let item = {promoCode:x.promoCode,description:x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate,global.dateExcelViewFormat,global.locale),endDate:formatDate(x.endDate,global.dateExcelViewFormat,global.locale)};
+            scheduledPromotionsWorksheet.addRow(Object.values(item));
+          })
+        }
+        // If no SCHEDULED PROMOTIONS data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Scheduled Promotions Data
+        Available at Present". */ 
+        else {
+          scheduledPromotionsWorksheet.mergeCells('A1:F1');
+          scheduledPromotionsWorksheet.getCell('A1').value = 'No scheduled promotions available a present';
+          scheduledPromotionsWorksheet.getCell('A1').font = { size: 12, bold: true};
+          scheduledPromotionsWorksheet.getCell('A1').alignment = { vertical:'middle', horizontal:'center',wrapText:true};
+        }
+
+        // Expired Promotions
+        /* Creating Expired Promotions Workshet with the data from the promotionsExpiredData array. */
+        if (this.promotionsExpiredData.length > 0) {
+          expiredPromotionsWorksheet.addRow(['PROMOCODE','DESCRIPTION','CURRENCY', 'START DATE', 'END DATE']);
+          let headerRow = expiredPromotionsWorksheet.getRow(1);
+          headerRow.eachCell(function(cell){
+            cell.font = { size: 12, bold: true};
+          })
+          expiredPromotionsWorksheet.columns = [{ key:'PROMOCODE',width:18},{ key:'DESCRIPTION',width:36},{ key:'CURRENCY',width:18},{ key:'START DATE',width:18},{ key:'END DATE',width:18}];
+          this.promotionsExpiredData.forEach((x:any) => {
+            let item = {promoCode:x.promoCode,description:x.description[0],currency: x.regions.length == 4 ? 'All' : x.regions[0],startDate: formatDate(x.startDate,global.dateExcelViewFormat,global.locale),endDate:formatDate(x.endDate,global.dateExcelViewFormat,global.locale)};
+            expiredPromotionsWorksheet.addRow(Object.values(item));
+          })
+        }
+        // If no Expired PROMOTIONS data is present
+        /* Merging cells A1:F1 and then setting the value of cell A1 to "No Expired Promotions Data
+        Available at Present". */ 
+        else {
+          expiredPromotionsWorksheet.mergeCells('A1:F1');
+          expiredPromotionsWorksheet.getCell('A1').value = 'No expired promotions available at present';
+          expiredPromotionsWorksheet.getCell('A1').font = { size: 12, bold: true};
+          expiredPromotionsWorksheet.getCell('A1').alignment = { vertical:'middle', horizontal:'center',wrapText:true};
+        }
+        /* Writing the data to the workbook with three worksheets which are Active,Scheduled,Expired */
+        this.workbook1.xlsx.writeBuffer().then((data: any) => {
+          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          const fileName = "routledge-"+status+"-promotions-report" + "-" + new Date().getDate() + "-" + global.months[new Date().getMonth()] + "-" + new Date().getFullYear() + ".xlsx";;
+          fs.saveAs(blob, fileName);
+      });
+    }
+}

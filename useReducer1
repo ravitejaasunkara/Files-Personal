@@ -1,0 +1,41 @@
+//React useReducer example with TODO App.
+
+import "./styles.css";
+import { useReducer,useState } from 'react';
+const TODO_STATE = {
+  ADD_TODO:'add'
+}
+const reducer = (todos,action) => {
+  switch(action.type){
+    case TODO_STATE.ADD_TODO:
+      return [...todos,addTodo(action.payload.name)]
+    default:
+      return todos;
+  }
+}
+const addTodo = (name) => {
+  return { name : name, id: Math.random()*10 };
+}
+export default function App() {
+  const [todos,dispatch] = useReducer(reducer,[]);
+  const [name,setName] = useState('');
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch({ type : TODO_STATE.ADD_TODO ,payload : { name : name }});
+    setName('');
+  }
+  console.log(todos);
+  return (
+    <div className="App">
+      <form>
+        <input type='text' value={name} onChange={e => setName(e.target.value)}/>
+        <button type='submit' onClick={submitHandler}>Submit</button>
+      </form>
+      {
+        todos.map(item => {
+          return <li>{item.name}</li>
+        })
+      }
+    </div>
+  );
+}

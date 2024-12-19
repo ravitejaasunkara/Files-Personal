@@ -1,0 +1,78 @@
+import React from "react";
+import styles from "../Card/Card.module.css";
+const Card = (props) => {
+  return (
+    <div className={styles.card}>
+      <div className={styles.header}>
+        <div className={styles.icon}>
+          <i
+            class="fa-solid fa-circle-user fa-2x"
+            style={{ color: "#B8B8B8" }}
+          ></i>
+        </div>
+        <div className={styles.titleAndRole}>
+          <p
+            style={{
+              fontSize: "16px",
+              marginBottom: "2px",
+              fontWeight: "bold"
+            }}
+          >
+            {props.title}
+          </p>
+          <label style={{ fontSize: "12px", marginTop: "0px" }}>
+            {props.rolee}
+          </label>
+        </div>
+      </div>
+      <div className={styles.body}>
+        <small style={{ marginTop: "0px" }}>{props.description}</small>
+      </div>
+    </div>
+  );
+};
+export default Card;
+
+
+.card {
+  width: 300px;
+  min-height: 150px;
+  background-color: #fff;
+  border: 1px solid #707070;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.card > .header {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  margin-right: 12px;
+}
+.card > .header > .icon {
+  width: 30px;
+  height: 30px;
+  /* background-color: black; */
+  border-radius: 100px;
+  margin-right: 12px;
+  margin-top: 14px;
+}
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 30px 10px 30px;
+}
+.body {
+  margin: 12px 30px 10px 30px;
+  text-align: left;
+}
+.titleAndRole {
+  text-align: left;
+}
+
+add font awesome kit in index.html under public folder
+
+<script
+      src="https://kit.fontawesome.com/1d4296eca1.js"
+      crossorigin="anonymous"
+></script>

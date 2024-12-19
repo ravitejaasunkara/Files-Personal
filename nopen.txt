@@ -1,0 +1,22 @@
+I have few components in my angular app,so i have made a global loading spinner following your video,and it works fine but there is small issue exists,it is
+Let's say i have components A,B,C.
+component A makes a big http call and it does takes around 1minute to fetch the data,
+Component B also makes an api call and it takes
+around 20seconds to gets the data,
+If i click on component A and then immediately i click on component B then component B loads its data in 20seconds and after component B
+loads its data the spinner is not stopped loading,it is loading continuosly for 1minute(loading until component A gets the data) and after component A 
+gets it's data then the spinner stops loading.
+I don't want the spinner to be loaded in component B after B gets it's data,I dont want the spinner to wait for A to load it's data.
+i hope you understand this and clarify my doubt,thanks for the reply...
+
+
+
+
+for more better understanding, My "component A" makes an API call and gets it's data after 1minute so the loading spinner spins for 1minute
+
+And My "component C" does not makes any API calls it's just an "about us" page with no API calls just a static page.
+
+so now if i click on COMPONENT A and immediately clicks on COMPONENT C then the loading spinner is showing in COMPOONENT C even if the COMPONENT C is a static page 
+with no API calls.
+the spinner of COMPONENT A is loading in COMPONENT C until the COMPONENT A gets it's data.
+once component A gets the data then the spinner stops displaying in COMPONENT C 

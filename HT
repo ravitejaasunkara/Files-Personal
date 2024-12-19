@@ -1,0 +1,12 @@
+whenever any issue with pcm events then go to old admin tool and db and check if the product exists or not,
+if not exists then it could be an issue with pcm-processor that pcm processor failed to process the data that is being sent by the pcm
+so now go to ecs then search for pcm and in dev or uat or prod check  logs for that isbn which is not getting processed.
+
+if you want to send a pcm message for testing purpose go to aws and sqs and then enter the palyload that you want to send.
+then it will be processed and appear in our db.
+
+the flow is like 
+
+pcm sends payload -> active mq -> pcm processor -> s3 bucket -> our db.
+
+issus with pcm go and check logs in ecs pcm instance for your environmanet.

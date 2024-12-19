@@ -1,0 +1,43 @@
+In pagination there is no need to display the << and < symbols when we are in firstpage and lastpage as well because << is used to take you to very first page and < is used to take you to the previous page
+so technically we are in first page and we cannot go to the very first page from first page and also when we are in first page then there is no previous page so we cannot go to the previous page from first page so for this the modification in pagination are like below
+
+<li *ngIf="total_records_count>page_size && curr_page > 1" class="page-item"><a class="page-link" href="javascript:void(0);" 
+(click)="loadCurrentPageData(1)" >&laquo;</a></li>
+
+this is for the << symbol
+
+<li *ngIf="curr_page < total_pages && total_records_count > page_size" class="page-item"><a class="page-link" href="javascript:void(0);" 
+(click)="loadCurrentPageData(total_pages)" >&raquo;</a></li>
+
+this is for the >> symbol
+
+
+------------------------------------------------------------------
+
+if we want to use custom pagination based on value selected from the dropdown ? we can do that as follows;
+
+component.html
+
+<div class="col-10 col-md-3 form-select">
+    <select class="form-select" [(ngModel)]="noOfPagesSelectedValue" (ngModelChange)="getDataBasedOnDropdownSelection()" 
+    [ngModelOptions]="{standalone: true}">
+		<option *ngFor="let item of pagesArray" [value]="item">{{item}}</option>
+	</select>
+</div>
+
+component.ts 
+
+pagesArray = [10,25,50]; 
+noOfPagesSelectedValue:number = this.pagesArray[0]; --> setting default value in dropdown;
+
+page_size: number = this.noOfPagesSelectedValue;
+
+and while forming the request body we have to set page_size to the dropdown selected value as follows
+
+getDataBasedOnDropdownSelection(){
+    console.log(this.noOfPagesSelectedValue);
+    if (this.sdate_empty === false && this.edate_empty === false && this.sdate_invalid === false && this.edate_invalid === false && this.sdate_prior_invalid === false && this.dateForm.valid) {
+    this.page_size = +this.noOfPagesSelectedValue;
+    this.getEventLogs(1);
+    }
+}

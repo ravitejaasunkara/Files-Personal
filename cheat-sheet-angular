@@ -1,0 +1,55 @@
+(ngModelChange) is used to grab the changes occured on an input event and this will only works if there is an [(ngModel)] on the same input field like this <input type="text" [(ngModel)]="username" (ngModelChange)="changeInput($event)">, now ngModelChange will be called for every input key stroke on the input field whether the value is added or removed, any change has occured then the ngModelChange event is fired.
+at the same time you can't use ngModelChangw with input type="file" for that we need to use (change) event handler
+you can use (change) without [(ngModel)], (change) is used to handle any file changes happened to the input event.
+
+template reference variables
+you can add a reference to any input tag and grab the value of it like
+
+<input type="text" #password>
+<button (click)="logPassword(password.value)">Log</button>
+
+howewer template reference variables can be used inside the template only, if you want to use the same inside component we can use the @ViewChild decorators.
+
+The constructor executes first before the any life cycle hook exeuted. that means constructor will executes first then the ngOnInit will be executed.
+
+
+if we want to bind the value that is being declared in component then we can use [value] like [value]='myValue', here my value is a variable declared in component
+where as if we want to bind a custom value then we can use value, like value='USD';
+
+here is an example of dropdown change using [(ngModel)] and (ngModelChange);
+https://codesandbox.io/s/dropdown-change-hl09et?file=/src/app/app.module.ts
+
+ng g c --skip-tests=true component-name 
+to skip tests
+
+
+[routerLink]="['/product-helper/finder']"
+[queryParams]="{title:item.title,isbn:item.ISBN,sku:item.SKU}"
+
+you can pass information from one route another using queryParams like above
+
+this._router.navigate(['/product-helper/products'], { state: { data: { title: this.title, isbn: this.isbn, sku: this.sku } } });
+
+you can pass information to another route by using this way also and in receiving component you have to get the data by doing in constructor like this.router.getCurrentNavigation()?.extras.state;
+this will give you the object for the information that you are getting from the sending route.
+
+constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+    console.log(this.router.getCurrentNavigation()?.extras.state);
+}
+
+want to pass data through routerLink like this
+
+<a [routerLink]=['/component-name'] [queryParams]="{countryName : name}">Go</a>
+
+and in receiving component do this
+
+constructor(private actRoute:ActivatedRoute)
+
+ngOnInit(){
+    data = this.actRoute.snapshot.queryParams;
+}
+
+please note that this.router.getCurrentNavigation() will only works inside the constructor.
+
+
+

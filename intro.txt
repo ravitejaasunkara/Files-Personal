@@ -1,0 +1,9 @@
+Good morning everyone, my name is Raviteja, and I am delighted to be here today. I have nearly 3 years of experience in full-stack development, working with technologies such as ReactJS and Java.
+
+Currently, I am working at Tricon Infotech as a Software Engineer, where I have been responsible for creating microservices and developing front-end applications for Routledge.com. This role has allowed me to gain valuable skills in API development and microservices architecture.
+
+Prior to this, I served as an Associate Software Engineer in the same company, where i'm responsible for developing full stack solutios for routledge ecommerce admintool, which is an internal tool.
+
+during my journey at tricon one of the biggest contribution I've made is developing the Product Helper application. I was deeply involved in building this application from scratch, where I implemented REST APIs and integrated them into the front end. This experience helped me gain expertise in API implementation and React development.
+
+yeah that's all about myself,Thank you for the opportunity. 

@@ -1,0 +1,584 @@
+DAY 1
+Springboot annotations
+
+What is an annotation ?
+In simple terms, an annotation in Java is a special marker or tag that you can add to your code to give extra information. This information can be used by the Java compiler, development tools, or even at runtime to make your code work in specific ways without you having to write extra code.
+
+@SprinBootApplication
+The main class is usually the entry point of the application, meaning it's the first class that gets executed when the application starts. By placing @SpringBootApplication on the main class, you centralize all the configuration settings and bootstrap logic in one place.
+this annotation itself includes multiple other annotation like @Configuration @EnableAutoConfiguration @ComponentScan
+
+@Configuration
+Marks the class as a source of bean definitions for the application context.
+In simpler terms this annotation provides configuration to the application
+
+
+@EnableAutoConfiguration
+This annotation is used to automatically configure the spring application based on the classpath and environment.
+For example, if spring-boot-starter-web is on the classpath, it will automatically configure the application to be a web application with an embedded server like Tomcat.
+It eliminates the need to manually configure beans that are often required for the application, leveraging Spring Boot's auto-configuration capabilities.
+At its heart, @EnableAutoConfiguration is Spring Boot's magic wand for simplifying your application setup. It tells Spring Boot to automatically configure beans (the building blocks of your application) based on:
+1.Jar ependencies
+2.Property settings
+Let's say you're building a Spring Boot web application. If you include the spring-boot-starter-web dependency, @EnableAutoConfiguration kicks in and does the following behind the scenes:
+Detects Tomcat: It sees that you have Tomcat (a web server) on your classpath.
+Configures Tomcat: It automatically sets up Tomcat to run your application.
+Enables Spring MVC: It configures the Spring MVC framework to handle web requests.
+
+@ComponentScan
+This annotation is used to find and discover the components which are annotated with @Service @Repository @Controller
+This component scans all the packages from which the main class has been located.
+Think of your Spring Boot application as a big factory. Inside this factory, there are different machines (components) that do specific tasks, like processing orders, managing inventory, or handling customer requests. @ComponentScan is like a supervisor that walks around the factory floor, looking for these machines so they can be put to work.
+How It Works
+Scanning for Components: When you start your Spring Boot application, @ComponentScan starts scanning specific areas (packages) within your project. It's looking for classes that have special labels on them. These labels are other annotations like @Component, @Service, @Repository, or @Controller. These annotations tell Spring Boot: "Hey, this class is a machine in the factory!"
+Registering with Spring: When @ComponentScan finds a class with one of these labels, it does two important things:
+It creates an instance (object) of that class.
+It registers this instance with the Spring container. This container is like the central control room of the factory, where all the machines are registered and managed.
+Ready for Use: Now that the machine is registered with the control room, other parts of your application can easily ask for it and use it. This is how the different parts of your application work together seamlessly.
+
+
+@RestController
+This annotaion is used to manage the HTTP Request and responses and returns the responses in various forms like Json or Xml.
+
+@Controller
+This annotation is similar to @RestController but this will return the HTML view as a respponse instead of the json or xml response.
+
+@Service,@Repository,@Component
+are all annotations used to tell Spring Framework that a particular class should be managed as a Spring bean.
+Spring Beans:  These are the objects that form the backbone of your Spring application. Spring creates and manages these beans, handling their lifecycle (creation, initialization, destruction) and injecting them where needed.
+
+Spring Container: Also known as the Application Context, this is the heart of Spring. It's responsible for creating, managing, and wiring up all the beans in your application.
+
+@Autowired
+this is an annotation in Spring used for automatic dependency injection. It allows Spring to automatically inject the necessary dependencies into a Spring-managed bean without the need for explicit configuration.
+
+@RequestMapping
+This annotation is used to route a specific http request to the handlers mentioned in your controller classes
+The request mapping annotation can be used at 2 levels. The first one is at the class level, and the 2nd one is at the method level.
+This request mapping annotation is also acts like a parent path for your studio methods inside a class. And all the http methods should be followed by this path only with their path.
+
+@RequestBody
+The request body annotation is used to map the http request body to A jawa object.
+For example, if the http request is containing R Json object like name, age and phone number that Jason object, you can map it to a Java object may be called as a person details.
+
+@ResponseBody
+Response body annotation in spring boot indicates that the response of a http request should be in a specific format, or either it could be a xml or json format, anything it can be. This response body annotation is a part of wrist controller. If you are using pest controller and attention, then you no need to explicitly provide this response body annotation.
+In Spring Boot, @ResponseBody is an annotation that tells Spring to convert the return value of a controller method directly into the HTTP response body. This is particularly useful when creating RESTful web services, where you often need to return data (like JSON or XML) directly to the client.
+
+@PathVariable
+The path variable annotation is used to extract the values from the URF htp url path and map those values to the specific Java variables. And you can use those variables whenever or wherever you want.
+
+@RequestParam
+This request forum annotation is used to fetch the Request Params in a http url.
+
+
+@Qualifier
+Qualifier annotation is used to indicate which bean has to be injected into a spring component when two beans of same type are found.  At this time, if you provide this qualifier annotation to anyone of the bin, then that bin will be injected auto void
+
+
+@Value
+Is value addition is used to fetch the values from the properties files or environment variables or from the class path. Into spring components.
+
+@Primary
+
+@Bean
+I've been in springboard is an object that is created and managed by the spring application contest, or spring IOC, or spring container, anything it can be.
+IF you are using @Service,@Controller,@Repository then Then a beam is automatically created for you and has been registered in the spring container or spring application context.
+Whereas if you're trying to create a beam for a 3rd party library or a classroom, some other repository or some other other class at that time, you can create beam further class using this admin in addition. Remember this can be in the at configuration classes like that means in the configuration clause only you can create a bean for 3rd party libraries or 3rd party classes.
+That way you can create a beam for a class which is actually not created by you. So you're taking control of that class into your application using this add bean annotation.
+This had been addition or creating a bean should happen in the configuration files. That means the class which is added with @Configuration and addition.
+@Bean is used to create a bean for a class and register in spring application context.
+@Autowired is used to inject the bean into a class.
+
+
+@Transaction
+This, in addition, we can use at two levels, at class level, 100 method level. When we are using this at the method level, so we can use it when. more database operations are going on South. At that time, inside. that method is something wrong happened. Then spring will automatically roll back the changes happen to the database because some exception has occurred in between the method
+
+
+@PostConstruct
+In Spring, the @PostConstruct annotation is used to mark a method that needs to be executed after dependency injection is done and before the bean is put into service. This method is called only once during the bean's lifecycle, right after the bean is fully initialized.
+
+@PreDestroy is an annotation used in Spring to mark a method that will be called before the bean is destroyed or removed from the Spring application context. It is useful for performing cleanup tasks, such as releasing resources, closing connections, or stopping background threads, to ensure that the application shuts down gracefully.
+- to close connections
+- to cleanup resources
+
+------------------------------------
+DAY2 & DAY3
+Streams in Java
+Intermediate Operations - map,filter,flatMap,distinct,sorted,peek,limit,skip
+Terminal Operations - collect,forEach,reduce,toArray,count,anyMatch,allMatch,noneMatch,findFirst,findAny
+findFirst and findAny should be used with Optional
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+
+public class Example {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+        List<String> uppercase = names.stream().map(String::toUpperCase).collect(Collectors.toList());
+        System.out.println(uppercase);
+
+        System.out.println(names.stream().peek());
+
+        List<Person> people = Arrays.asList(
+                new Person("Alice", 30),
+                new Person("Bob", 25),
+                new Person("Charlie", 35),
+                new Person("David", 40)
+        );
+
+        System.out.println(people.stream().map(Person::getName).collect(Collectors.toList()));
+
+        List<Integer> numbers = Arrays.asList(1,2,3,4,5,5,5,6,7,6);
+
+        List<Integer> squaredNumbers = numbers.stream()
+                .filter(num -> num % 2 != 0)
+                .map(item -> item * item)
+                .sorted()
+                .collect(Collectors.toList());
+
+        //List<Integer> collect = numbers.stream().map(this::modify).collect(Collectors.toList());
+
+        System.out.println("multiple operations - "+squaredNumbers);
+
+        System.out.println("distinct() - "+numbers.stream().distinct().collect(Collectors.toList()));
+
+        System.out.println("limit() - "+numbers.stream().limit(4).collect(Collectors.toList()));
+
+        System.out.println("skip() - "+numbers.stream().skip(4).collect(Collectors.toList()));
+
+        names.stream().filter(item -> item.startsWith("A")).forEach(item-> System.out.println(item));
+
+        System.out.println(numbers.stream().noneMatch(n -> n > 0));
+
+        System.out.println(numbers.stream().allMatch(n -> n > 0));
+
+        System.out.println(numbers.stream().anyMatch(n -> n == 4));
+
+        System.out.println(names.stream().count());
+
+        List<Integer> numberss = Arrays.asList(1, 2, 3, 4, 5);
+
+        Optional<Integer> product = numberss.stream().reduce((a, b) -> a * b);
+
+        product.ifPresent(result -> System.out.println("Product: " + result));
+        //System.out.println(collect);
+    }
+
+    public int modify(Integer i) {
+        return i + i;
+    }
+}
+
+
+------------------------
+
+DAY4 - DAY5
+
+Threads
+
+The thread is a unit of execution within a process,the thread can run independently from other threads and multiple threads can run concurrently at the same time
+
+For example if you have an application there are multiple processes going on like if you are playing a game you are driving a car that is one process and audience are cheering for you that is another process and you are applying a break that is another process so all these process bundled together to make an application work so all these processes are called as like single single threads these single single threads make the application to run perfectly so we have different number of threads in a single application these threads will run concurrently or simultaneously at the same time independent from each other
+
+For example a new laptop you have multiple applications opened at the same time and you are working on all those applications at the same time so we can call it as multitasking whereas in a single application you are doing multiple things like for example in visual studio code you are typing the code and at the same time visual studio code is showing the errors in your code and also it is showing some suggestions in your code all these things are happening at the same time so if you consider the code typing is a single thread and showing errors is another threat and suggestions is one more thread so all these threads are working together to make the application running smoothly
+
+Threads place a major role if you are building an application that has to do multiple tasks at the same time in that case we can make use of threads
+
+what is multithreading ?
+Multi threading is nothing but like creating and executing multiple threads within a single process so these multiple threads can run and execute multiple things independently at the same time so this this helps us to improve the application performance under resource utilisation etc
+
+Synchronization in threads
+Thread synchronisation is nothing but allowing a single thread to access a resource at the same time it won't allow multiple threads to accept the same resource at the same time once the allowed thread execution has been completed then the next thread will get a chance to use the resource so at a time only 1 thread can access the resource and do the operations and that thread is done the next thread will get a chance.
+If you are not using synchronization means that it is not thread safe.
+
+Inter thread communication
+It allows synchronized threads to communicate with each other which helps to work together share data to accomplish a common task;
+ check about wait(),notify(),notifyAll()
+
+join() - Join method is used to stop the execution of all currently executing threads until the thread on which the join has been applied completes its execution.
+
+sleep() is used to pause the execution of thread for a specific time.
+
+synchronization example
+
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    public synchronized void withdraw(double amount) {
+        // Check if sufficient balance is available
+        if (amount > balance) {
+            System.out.println("Insufficient funds!");
+            return;
+        }
+
+        // Simulate some delay (for demonstration purposes)
+        try {
+            Thread.sleep(100); // Simulate processing time
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Deduct the amount from balance
+        balance -= amount;
+        System.out.println(Thread.currentThread().getName() + " withdrew $" + amount + ", remaining balance: $" + balance);
+    }
+
+    // Other methods: deposit, getBalance, etc.
+}
+
+class ClientThread extends Thread {
+    private BankAccount account;
+    private double amount;
+
+    public ClientThread(BankAccount account, double amount) {
+        this.account = account;
+        this.amount = amount;
+    }
+
+    @Override
+    public void run() {
+        account.withdraw(amount);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000);
+        // Create multiple client threads to withdraw money
+        ClientThread client1 = new ClientThread(account, 300);
+        ClientThread client2 = new ClientThread(account, 500);
+        ClientThread client3 = new ClientThread(account, 700);
+        // Start the threads
+        client1.start();
+        client2.start();
+        client3.start();
+    }
+}
+-----------------------------
+
+DAY 6 - revision of that week
+
+---------------------------
+
+DAY-7 & DAY -8
+
+Collections in Java
+
+
+Sure, let's dive into the essential Java collections, why they are important, and when to use one over another.
+
+### What are Collections?
+
+In Java, collections are objects that group multiple elements into a single unit. They provide a way to store, retrieve, manipulate, and communicate aggregate data. The Java Collections Framework provides a set of interfaces and classes to represent collections of objects.
+
+### Why Collections are Important:
+
+1. **Flexibility**: Collections provide flexible ways to store and manipulate data structures, catering to various needs like ordered, unordered, unique elements, etc.
+
+2. **Efficiency**: They offer efficient algorithms for common operations (like adding, removing, and accessing elements), ensuring optimal performance based on the specific collection type.
+
+3. **Reusability**: Collections are reusable components that reduce the effort needed to write custom data structures, promoting code reuse and maintainability.
+
+### Important Collections with Examples:
+
+Let's cover some of the key collections in Java, their characteristics, and examples of when to use each:
+
+#### 1. **List Interface**
+
+- **Description**: Ordered collection (sequence) that allows duplicate elements.
+- **Implementations**: `ArrayList`, `LinkedList`
+- **Example Usage**:
+
+   ```java
+   List<String> arrayList = new ArrayList<>();
+   arrayList.add("Apple");
+   arrayList.add("Banana");
+   arrayList.add("Cherry");
+
+   List<String> linkedList = new LinkedList<>();
+   linkedList.add("Dog");
+   linkedList.add("Cat");
+   linkedList.add("Cow");
+   ```
+
+   **When to Use**:
+   - Use `ArrayList` when you need fast access to elements by index.
+   - Use `LinkedList` when you need efficient insertion and deletion operations.
+
+   add(element),add(index,element),addAll(),get(index),size(),isEmpty(),remove(element),remove(index),removeAll(),indexOf(),lastIndexOf()
+   contains()
+
+   Use ArrayList when:
+
+You need fast random access to elements.
+You have a large number of read operations compared to write operations.
+You are working with a fixed-size or infrequently modified list.
+
+Use LinkedList when:
+
+You have a large number of insertions and deletions, especially at the beginning or end of the list.
+Memory overhead due to pointers is not a concern.
+You do not need fast random access.
+
+Definition: O(1) means that the time it takes to complete an operation is constant and does not depend on the size of the input.
+
+Definition: O(n) means that the time it takes to complete an operation grows linearly with the size of the input.
+
+#### 2. **Set Interface**
+
+- **Description**: Collection that does not allow duplicate elements.
+- **Implementations**: `HashSet`, `LinkedHashSet`, `TreeSet`
+- **Example Usage**:
+
+   ```java
+   Set<String> hashSet = new HashSet<>();
+   hashSet.add("Red");
+   hashSet.add("Green");
+   hashSet.add("Blue");
+
+   Set<String> treeSet = new TreeSet<>();
+   treeSet.add("Yellow");
+   treeSet.add("Blue");
+   treeSet.add("Pink");
+   ```
+
+   **When to Use**:
+   - Use `HashSet` when order doesn't matter and you want unique elements.
+   - Use `TreeSet` when elements need to be sorted automatically.
+
+#### 3. **Map Interface**
+
+- **Description**: Maps unique keys to values.
+- **Implementations**: `HashMap`, `LinkedHashMap`, `TreeMap`,ConcurrentHashMap
+- **Example Usage**:
+
+   ```java
+   Map<String, Integer> hashMap = new HashMap<>();
+   hashMap.put("John", 25);
+   hashMap.put("Jane", 30);
+   hashMap.put("Jack", 20);
+
+   Map<String, Integer> treeMap = new TreeMap<>();
+   treeMap.put("Orange", 1);
+   treeMap.put("Apple", 2);
+   treeMap.put("Banana", 3);
+   ```
+
+   **When to Use**:
+   - Use `HashMap` for general-purpose mapping with fast access times.
+   - Use `TreeMap` when you need keys to be sorted automatically.
+
+#### 4. **Queue Interface**
+
+- **Description**: Collection used to hold elements about to be processed.
+- **Implementations**: `PriorityQueue`, `LinkedList` (as `Deque`)
+- **Example Usage**:
+
+   ```java
+   Queue<String> priorityQueue = new PriorityQueue<>();
+   priorityQueue.add("A");
+   priorityQueue.add("B");
+   priorityQueue.add("C");
+
+   Queue<String> linkedListQueue = new LinkedList<>();
+   linkedListQueue.add("X");
+   linkedListQueue.add("Y");
+   linkedListQueue.add("Z");
+   ```
+
+   **When to Use**:
+   - Use `PriorityQueue` when you need elements processed based on priority.
+   - Use `LinkedList` (as `Deque`) when you need a queue that can also function as a deque (double-ended queue).
+
+#### 5. **Deque Interface**
+
+- **Description**: Double-ended queue that supports insertion and removal at both ends.
+- **Implementation**: `ArrayDeque`, `LinkedList` (as `Deque`)
+- **Example Usage**:
+
+   ```java
+   Deque<String> arrayDeque = new ArrayDeque<>();
+   arrayDeque.addFirst("First");
+   arrayDeque.addLast("Last");
+
+   Deque<String> linkedListDeque = new LinkedList<>();
+   linkedListDeque.addFirst("Front");
+   linkedListDeque.addLast("Back");
+   ```
+
+   **When to Use**:
+   - Use `ArrayDeque` when you need a resizable array implementation of a deque.
+   - Use `LinkedList` when you need a doubly linked list implementation that can also function as a deque.
+
+### Choosing Between Collections:
+
+- **Performance**: Consider the operations you'll perform most frequently (insertion, deletion, access) and choose a collection that optimizes these operations.
+- **Order**: Decide if maintaining insertion order or sorting elements is necessary.
+- **Duplicates**: Choose a collection that allows or disallows duplicates based on your needs.
+
+By understanding the characteristics and trade-offs of each collection type, you can select the most appropriate one for your specific programming task in Java.
+
+-------------------------------------------------------------
+
+
+DAY 9 - REST
+
+------------------------------------------------------
+
+DAY 10 - Studied JS
+
+------------------------------
+
+DAY11 - REST
+
+----------------------------
+
+DAY12 - exceptions
+
+Exceptions in Java is a mechanism to handle the runtime errors or the awesome exceptional events that may disturb the flow or the execution of a program.
+
+Checked Exceptions
+checked exceptions are the exceptions which are checked at runtime,
+if a method can throw a checked exception then it should be handled either by using try catch block or by declaring the method with the throws keyword
+Examples:
+IOException,SQLException,ClassNotFoundException.
+
+Unchecked exceptions
+Unchecked exception are not checked at compile time,these are checked at runtime time, these unchecked exceptions occurs
+basically due to some logical errors like Improper use of APIs.
+Examples:
+NulPointerException
+ArrayIndexOutOfBoundException
+ArithmeticException
+Unchecked exceptions are subclasses of 'java.lang.RuntimeException`
+
+
+Errors
+Errors indicate serious problems that are often outside the program's control.
+These can be system issues, resource exhaustion, or unexpected events.
+In general, errors are unrecoverable.
+This means the program can't be expected to continue running normally after encountering an error.
+
+Errors are serious issues that indicate a fundamental problem with the Java Virtual Machine (JVM) or the environment in which the application is running. They are represented by subclasses of the Error class in Java, which is part of the java.lang package.
+
+
+OutOfMemoryError: Occurs when the JVM cannot allocate more memory for new objects, indicating that the application has used up all available heap space.
+StackOverflowError: Results from deep or infinite recursion, causing the call stack to exceed its limit.
+InternalError: Indicates an internal inconsistency in the JVM.
+UnknownError: Represents an unknown error that does not fit into other categories.
+LinkageError: Occurs when there are compatibility issues during class linking, such as mismatched versions of classes.
+
+Examples of Errors:
+
+OutOfMemoryError: Indicates that the JVM has run out of memory.
+public class OutOfMemoryErrorExample {
+    public static void main(String[] args) {
+        try {
+            long[] array = new long[Integer.MAX_VALUE]; // Attempting to allocate a huge array
+        } catch (OutOfMemoryError e) {
+            System.out.println("Error caught: " + e);
+        }
+    }
+}
+
+StackOverflowError: Indicates that the stack has overflowed, typically due to deep or infinite recursion.
+public class StackOverflowErrorExample {
+    public static void main(String[] args) {
+        recursiveMethod(); // Calling the recursive method
+    }
+
+    public static void recursiveMethod() {
+        recursiveMethod(); // Recursive call without a base case
+    }
+}
+
+InternalError: Indicates an internal error in the JVM.
+VirtualMachineError: A superclass of OutOfMemoryError and StackOverflowError, indicating a problem with the JVM itself.
+
+throw keyword is used to throw an exception explicitly where as throws is used to declare in a method which may throw one or more exceptions.
+
+The finally block is used to execute important code such as closing resources, regardless of whether an exception is thrown or not. It always executes, except when the JVM exits during the try or catch block due to a call to System.exit().
+
+final is a keyword used to declare constants, prevent method overriding, and inheritance.
+finally is a block used to execute important code such as resource cleanup.
+finalize is a method used by the garbage collector to perform cleanup operations before an object is destroyed.
+
+--------------------
+
+DAY 13-14 weekend revision
+
+------------
+
+Day15 - nothing
+
+--------------
+
+DAY 16 - JDK,JRE,JVM
+
+------------------
+
+DAY17 - JS
+------------------------
+You can catch errors in Java using a try-catch block, but it's generally not advisable to handle them directly in your application code. Errors indicate serious problems that usually require attention and resolution, and attempting to recover from them can lead to unstable application behavior.
+
+Error:
+Represents serious issues that a typical application should not try to catch or handle.
+Usually indicates problems with the Java Virtual Machine (JVM) or system-level issues.
+Examples include OutOfMemoryError, StackOverflowError, InternalError, etc.
+
+Exception:
+Represents conditions that a program might catch and handle.
+Indicates issues that a program can anticipate and potentially recover from.
+Examples include IOException, SQLException, NullPointerException, etc.	
+
+
+
+
+
+A class is a template for creating objects, it acts as a blueprint to create the objects, it will define some properties(fields) and behaviours(methods) that a object will have.
+
+
+an object is an instance of a class, that means an object is the entity that is being create from the blueprint/template(class), a class is just a blue print it just a representation, an object is the thing which is created from that defined blueprint.
+
+
+encapsulation is a oop principle which helps to achieve dat hiding and controlled access to data in a class, that can be done by declaring the variables as private and updation can be done through getters and setters.
+
+
+Kafka is a distributed streaming platform used to process and distribute large amounts of data in real time. It's like a high-speed highway for data, allowing applications to send, receive, and process data quickly and efficiently.
+
+
+Producer: a producer is a application or service which publish messages to kafka topics, a producer can decide to which topic a event should be sent/published.
+
+kafka topic : Kafka topics are the categories used to organize messages. Each topic has a name that is unique across the entire Kafka cluster. Messages are sent to and read from specific topics. In other words, producers write data to topics, and consumers read data from topics. Kafka topics are multi-subscriber.
+
+kafka broker: a kafka broker is a server which stores and serves messages, a kafka cluster is made up of one or more cluster.
+Brokers receive messages from producers and store them in the appropriate topics and partitions.
+Brokers handle requests from consumers to read messages from topics and send responses.
+Example: If you have a Kafka cluster with three brokers, each broker may host some partitions of topics, allowing for distributed data storage and processing.
+
+Kafka Consumer
+Definition: A consumer is an application or service that reads (or subscribes to) messages from Kafka topics.
+
+
+

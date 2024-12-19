@@ -1,0 +1,162 @@
+let arr = [1,2,3,4,5,25];
+
+const output = arr.reduce((acc,curr) => {
+  console.log(acc,curr)
+  if(curr > acc){
+    acc = curr;
+  }
+  return acc;
+},0);
+console.log(output)
+
+// at first the acc will be the 2nd parameter of the reduce function and the curr is equals to 
+// first value in array.
+
+const names = [
+  {"fname":'ravi',lname:'teja',"age":23},
+  {"fname":'raju',lname:'s',"age":23},
+  {"fname":'pradeep',lname:'a',"age":250},
+  {"fname":'charan',lname:'naidu',"age":230}
+];
+const ageArray = names.reduce((acc,curr) => {
+  if(acc.hasOwnProperty(curr.age)){
+    acc[curr.age]++;
+  }else{
+    acc[curr.age] = 1;
+  }
+  return acc;
+},{});
+console.log(ageArray);
+
+const result = names.reduce((acc,curr) => {
+    if(curr.age < 30){
+      acc.push(curr.fname);
+    }
+  return acc;
+},[])
+console.log(result)
+
+const lineItems = [
+  { description: 'Eggs (Dozen)', quantity: 1, price: 3, total: 3 },
+  { description: 'Cheese', quantity: 0.5, price: 5, total: 2.5 },
+  { description: 'Butter', quantity: 2, price: 6, total: 12 }
+];
+
+const res = lineItems.reduce((acc,curr) => {
+  acc = acc + curr['total'];
+  return acc;
+},0);
+console.log(res);
+
+const characters = [
+  { name: 'Jean-Luc Picard', age: 59 },
+  { name: 'Will Riker', age: 29 },
+  { name: 'Deanna Troi', age: 29 }
+];
+
+const resu = characters.reduce((acc,curr) => {
+  if(acc[curr.age]){
+    acc[curr.age]++;
+  }else{
+    acc[curr.age] = 1;
+  }
+  return acc;
+},{})
+console.log(resu);
+
+//Summing Values in an Object Array Using Array Reduce JavaScript
+let obj = [{n: 5}, {n: 9}, {n: 13}, {n: 25}, {n: 40}]
+const res1 = obj.reduce((acc,curr) => {
+  acc = acc+curr.n;
+  return acc;
+},0)
+console.log(res1);
+
+//Flattening an Array of Arrays With Reduce Method
+let mulArray = [[3, 5], [1, 7], [12, 9]]
+const res2 = mulArray.reduce((acc,item) => {
+  acc.push(...item);
+  return acc;
+},[])
+console.log(res2);
+
+//Counting instances of an array
+let myCars = ['Mercedes-Benz', 'Jeep', 'Ferrari', 'Lamborghini', 'Mercedes-Benz', 'BMW', 'Ferrari']
+const res3 = myCars.reduce((acc,curr) => {
+  if(acc[curr]){
+    acc[curr]++;
+  }else{
+    acc[curr] = 1;
+  }
+  return acc;
+},{})
+console.log(res3)
+
+let student = [
+  { name: 'David', age: 23, hobby: 'fishing' },
+  { name: 'Rachel', age: 25, hobby: 'cooking' },
+  { name: 'Rahul', age: 22, hobby: 'fishing' }
+];
+
+const res4 = student.reduce((acc,curr) => {
+  let key = curr.hobby;
+  if(!acc[key]){
+    acc[key] = [];
+  }else{
+    acc[key].push(curr);
+  }
+  return acc;
+},{})
+console.log(res4);
+
+
+let students = [
+
+  { name: 'David', age: 23, hobby: 'fishing' },
+
+  { name: 'Rachel', age: 25, hobby: 'cooking' },
+
+  { name: 'Rahul', age: 22, hobby: 'fishing' }
+
+];
+
+function myFunc(obj, prop) {
+
+  return obj.reduce(function (acc, item) {
+    let key = item[prop];
+
+    if (!acc[key]) {
+
+      acc[key] = []
+
+    }
+
+    acc[key].push(item)
+
+    return acc
+
+  }, {})
+
+}
+
+let groupedStudent = myFunc(students, 'hobby')
+
+console.log(groupedStudent)
+
+
+let array1 = [2, 5, 7, 5, 12, 9, 7, 5, 4, 3, 5, 2, 4, 15]
+const res5 = array1.reduce((acc,curr) => {
+  if(!acc.includes(curr)){
+    acc.push(curr);
+  }
+  return acc;
+},[])
+console.log(res5);
+
+uniqueArray = [];
+array1.map(item => {
+  if(!uniqueArray.includes(item)){
+    uniqueArray.push(item);
+  }
+})
+console.log(uniqueArray);

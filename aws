@@ -1,0 +1,20 @@
+IAM
+- Identity and Access Management
+- here we create users and assign them to a group
+- for example if we create an AWS account we will create a root user account, after that we don't use that account, we will create users under that account and login as a some user.
+- we can create users under IAM and group them.
+- for example we have 6 users under the oranisation say alice,bob,fred,charles,david,edward
+- alice,bob,fred are developers so we can group them into one group and create a group say developer-group.
+- charles and edward belongs to operations.
+- david is alone.
+- one user can be part of multiple groups.
+- if fres and edward work for deployment also they both can be a part of new group let's say deployment-group.
+- why we create groups ? -> because we allow them to use specific services of aws.
+- users and groups were assigned with some policies which describes what users and groups are alllowed to do allowed to access.
+- these policies helps us define permissions.
+- in aws we dont allow everyone to do everything.
+- we dont need more permissions than a user wants.
+- if a user require 3 services we will give 3 services only.
+- IAM does not require a region selection since it is a global service.
+- To create an IAM user Go to IAM dashboard. Then click on. Users. Click on Add User. Now. Click on. Add username. Password. Permissions. You want to give to that user. Add the user role. If you want to add the user to a specific group. Then create a group.
+- Now you can login with your IAM user and password.

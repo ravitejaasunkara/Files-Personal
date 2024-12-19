@@ -1,0 +1,75 @@
+final testcases for dms.component.spec.ts
+	it('download Sales',() => {
+      let spySalesData = SpyDashBoardService.getSalesData.and.returnValue(of(salesData));
+      component.exportDataToExcel('sale');
+      expect(spySalesData).toHaveBeenCalled(); 
+    })
+    it('download promotions',() => {
+      let spyPromotionsData = SpyDashBoardService.getPromotionsData.and.returnValue(of(promotionsData));
+      component.exportDataToExcel('promo');
+      expect(spyPromotionsData).toHaveBeenCalled();
+    })
+    it('check sales worksheet data',() => {
+      let SalesData = {"message":"Success","data":[{"id":38831,"type":{"id":1,"discountType":"SALE"},"name":"HarvinderDescriptionTest4TexTypes1And1Subject","startDate":"2020-12-01 11:47:00","endDate":"2022-05-04 11:47:00","promoCode":"HarvinderDescriptionTest4TexTypes1And1Subject","description":[null],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},			{"id":40711,"type":{"id":1,"discountType":"SALE"},"name":"salescheduled","startDate":"2022-11-11 11:27:00","endDate":"2022-11-26 11:27:00","promoCode":"salescheduled","description":["0% Off Print, eBooks & ebook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Scheduled"},{"id":40369,"type":{"id":1,"discountType":"SALE"},"name":"TestUpdateDiscount3","startDate":"2021-06-16 11:29:00","endDate":"2021-06-16 11:29:00","promoCode":"TestUpdateDiscount3","description":[null],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},{"id":41772,"type":{"id":1,"discountType":"SALE"},"name":"salebyisbn","startDate":"2022-11-01 18:30:00","endDate":"2022-11-09 18:30:00","promoCode":"salebyisbn123456","description":["10% Off Print, 20% Off eBooks & 0% Off eBook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Active"},{"id":41773,"type":{"id":1,"discountType":"SALE"},"name":"sale444","startDate":"2022-11-06 10:45:00","endDate":"2022-11-08 10:46:00","promoCode":"sale444","description":["50% Off Print & eBooks, 0% Off eBook Rentals 1 ISBN"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Active"}],"noOfRecords":0,"httpStatusCode":"OK","success":true};
+      let spySalesData = SpyDashBoardService.getSalesData.and.returnValue(of(SalesData));
+      component.exportDataToExcel('sale');
+      let header1 = component.salesWorksheet.getRow(1).getCell(1).value;
+      expect(header1).toEqual('SALE NAME');
+      let header2 = component.salesWorksheet.getRow(1).getCell(2).value;
+      expect(header2).toEqual('DESCRIPTION');
+      let header3 = component.salesWorksheet.getRow(1).getCell(3).value;
+      expect(header3).toEqual('CURRENCY');
+      let firstSaleName = component.salesWorksheet.getRow(2).getCell(1).value;
+      expect(firstSaleName).toEqual('salebyisbn');
+      let firstSaleDescription = component.salesWorksheet.getRow(2).getCell(2).value;
+      expect(firstSaleDescription).toEqual('10% Off Print, 20% Off eBooks & 0% Off eBook rentals');
+      let headerRowHeight = component.salesWorksheet.getRow(1).height;
+      expect(headerRowHeight).toEqual(20);
+      expect(component.salesActiveData.length).toBe(2);
+      expect(component.salesScheduledData.length).toBe(1);
+      expect(component.salesExpiredData.length).toBe(2);
+    })
+    it('check promotions data',() => {
+      let promoData = {"message":"Success","data":[{"id":38181,"type":{"id":2,"discountType":"PROMOTION"},"name":"Five Percent Off 9780415956338","startDate":"2009-12-14 19:00:00","endDate":"2022-05-31 19:00:00","promoCode":"FIVEPERCENT","description":[null],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},{"id":38182,"type":{"id":2,"discountType":"PROMOTION"},"name":"IAHR-RE-a","startDate":"2006-10-18 20:00:00","endDate":"2020-12-30 19:00:00","promoCode":"CIS2606IAHR","description":[null],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},{"id":38236,"type":{"id":2,"discountType":"PROMOTION"},"name":"International Assn of Forensic Mental Health Servi","startDate":"2026-06-23 20:00:00","endDate":"2009-07-25 20:00:00","promoCode":"EX4029","description":[null],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Scheduled"},{"id":41775,"type":{"id":2,"discountType":"PROMOTION"},"name":"active promo1","startDate":"2022-11-06 16:21:00","endDate":"2022-11-09 16:21:00","promoCode":"activepromo1","description":["0% Off Print, eBooks & ebook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Active"}],"noOfRecords":0,"httpStatusCode":"OK","success":true};
+      let spyPromoData = SpyDashBoardService.getPromotionsData.and.returnValue(of(promoData));
+      component.exportDataToExcel('promo');
+      let header1 = component.promotionsWorksheet.getRow(1).getCell(1).value;
+      expect(header1).toEqual('PROMOCODE');
+      let header4 = component.promotionsWorksheet.getRow(1).getCell(4).value;
+      expect(header4).toEqual('START DATE(MM-DD-YYYY)');
+      let header5 = component.promotionsWorksheet.getRow(1).getCell(5).value;
+      expect(header5).toEqual('END DATE(MM-DD-YYYY)');
+      let promoCode = component.promotionsWorksheet.getRow(2).getCell(1).value;
+      expect(promoCode).toEqual('activepromo1');
+      let scheduledStatus = component.promotionsWorksheet.getRow(3).getCell(6).value;
+      expect(scheduledStatus).toEqual('SCHEDULED');
+      expect(component.promotionsActiveData[0].id).toEqual(41775);
+      expect(component.promotionsScheduledData[0].name).toEqual("International Assn of Forensic Mental Health Servi");
+      expect(component.promotionsExpiredData[1].regions[3]).toBe(" NZD");
+    })
+
+final working test cases for dashboard.service.spec.ts
+  it('download Sales data', () => {
+    let salesData = [{"message":"Success","data":[{"id":38827,"type":{"id":1,"discountType":"SALE"},"name":"HarvinderDescriptionTest1","startDate":"2020-12-01 11:43:00","endDate":"2020-12-31 11:43:00","promoCode":"HarvinderDescriptionTest1","description":["50% Off Print & ebook, 0% Off eBook rentals "],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},{"id":40695,"type":{"id":1,"discountType":"SALE"},"name":"ChristmasFestivalOffersTest","startDate":"2022-09-30 15:00:00","endDate":"2023-01-30 15:00:00","promoCode":"CHTOFFR-2829","description":["20% Off Print & ebook, 0% Off eBook rentals "],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Active"},{"id":40711,"type":{"id":1,"discountType":"SALE"},"name":"salescheduled","startDate":"2022-11-11 11:27:00","endDate":"2022-11-26 11:27:00","promoCode":"salescheduled","description":["0% Off Print, eBooks & ebook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Scheduled"}]}];
+    let reqUrl = environment.apiUrl+'/discount?type=SALE';
+    let spySalesData = SpyDashBoardService.getSalesData.and.returnValue(of(salesData));
+    service.getSalesData().subscribe();
+    const req = httpMock.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(salesData);
+  })
+  it('download Promotions data',() => {
+    let promoData = [{"message":"Success","data":[{"id":38181,"type":{"id":2,"discountType":"PROMOTION"},"name":"Five Percent Off 9780415956338","startDate":"2009-12-14 19:00:00","endDate":"2022-05-31 19:00:00","promoCode":"FIVEPERCENT","description":["5% Off Print & ebook, 0% Off eBook rentals "],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Expired"},{"id":40694,"type":{"id":2,"discountType":"PROMOTION"},"name":"LOYAL","startDate":"2022-09-01 00:45:00","endDate":"2032-12-31 00:45:00","promoCode":"LOYAL","description":["20% Off Print, eBooks & ebook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Active"},{"id":40712,"type":{"id":2,"discountType":"PROMOTION"},"name":"promotionscheduled","startDate":"2022-11-11 11:31:00","endDate":"2022-11-19 11:31:00","promoCode":"promotionscheduled","description":["0% Off Print, eBooks & ebook rentals"],"regions":["USD"," GBP"," AUD"," NZD"],"status":"Scheduled"}]}];
+    let reqUrl = environment.apiUrl+'/discount?type=PROMOTION';
+    let spyPromoData = SpyDashBoardService.getPromotionsData.and.returnValue(of(promoData));
+    service.getPromotionsData().subscribe();
+    const req = httpMock.expectOne(reqUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(promoData);
+  })
+  
+  

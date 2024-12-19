@@ -1,0 +1,20 @@
+- React is a JS Library not a Framework
+- npx create-react-app [app-name] to create a react app;ication
+- package.json contains details about all the dependecies required to run the application.
+- functional components
+  - a javascript functions
+  - create a js file
+  - then import react
+  - then write a function
+  - then export it.export default Greet.
+  - example
+  	import React from '.react'
+	function Greet() {
+		return <h1>Hello</h1>
+	}
+	export default Greet
+
+-jsx
+-props
+-state
+ - using setState() the things are re-rendered in browser if any changes were happened

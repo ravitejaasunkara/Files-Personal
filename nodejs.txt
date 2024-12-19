@@ -1,0 +1,243 @@
+- NodeJS is asynchronous in nature means taskB doesn't wait for
+taskA to complete.
+NodeJS is single threaded, it can only serve one request at a time
+
+- BASIC CREATION OF SERVER -
+// create server
+const http = require('http');
+const PORT = 3000;
+const server = http.createServer((req,res) => {
+    res.write('Hello from server');
+    res.end();
+})
+
+server.listen(PORT);
+
+
+---------------------------
+// create server
+const http = require('http');
+const PORT = 3000;
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+        JSON.stringify(
+            { data: "Hello From Server" }
+    ));
+})
+
+server.listen(PORT);
+
+
+- EXPORTING FROM ANOTHER FILE -
+
+let's create a file circle.js
+circle.js 
+class Circle {
+    area(r){
+        return Math.PI * r *r;
+    }
+    perimeter(r){
+        return Math.PI * 2 * r
+    }
+}
+module.exports = Circle;
+
+now in app.js
+
+const Circle = require('./circle')
+const circle = new Circle();
+console.log(circle.area(5));
+console.log(circle.perimeter(10));
+
+output:
+78.53981633974483
+62.83185307179586
+
+--------------------------------
+
+
+- NodeJS Basic Routing -
+
+const PORT = 3000;
+const http = require('http');
+const server1 = http.createServer((req,res) => {
+    let url = req.url;
+    if(url == '/'){
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(
+            {data:"This is home page"}
+        ))
+    }
+    else if(url == '/login'){
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(JSON.stringify(
+            {data:"This is login page"}
+        ))
+    }
+    else if(url == '/signup'){
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(JSON.stringify(
+            {data:"This is signup page"}
+        ))
+    }
+    else{
+        res.write('Page not found');
+        res.end();
+    }
+})
+
+If we want to send the response as JSON then we use {"Content-Type":"application/json"}
+If we wantn to send the response as HTML then {"Content-Type":"text/html"} in writeHead() and the html tagged content in write()
+
+server1.listen(PORT);
+
+------------------------------------------
+
+File system in NodeJS
+we normally serving the html content in write() but if we want to serve the html files how can we do that ?
+we can do that by using FileSystem in NodeJS
+Reading a file
+
+reading and serving the html files for different routes
+
+const http = require('http');
+const fs = require('fs');
+const server = http.createServer((req,res) => {
+    let url = req.url;
+    if(url == '/'){
+        res.writeHead(200,{"Content-Type":"text/html"});
+        fs.readFile("pages/home.html",(err,data) => {
+            if(err) throw err;
+            res.write(data);
+            res.end();
+        })
+    }
+    else if(url == '/login'){
+        res.writeHead(200,{"Content-Type":"text/html"});
+        fs.readFile("pages/login.html",(err,data) => {
+            res.write(data);
+            res.end();
+        })
+    }
+    else if(url == '/signup'){
+        res.writeHead(200,{"Content-Type":"text/html"});
+        fs.readFile("pages/signup.html",(err,data) => {
+            res.write(data);
+            res.end();
+        })
+    }
+    else{
+        res.writeHead(404,{"Content-Type":"text/html"});
+        fs.readFile("pages/page-not-found.html",(err,data) => {
+            res.write(data);
+            res.end();
+        })
+    }
+})
+server.listen(3000);
+
+----------------------------------------------------
+
+- Writing the files using file-system in nodeJS -
+
+
+const http = require('http');
+const fs = require('fs');
+
+const server = http.createServer((req,res) => {
+    if(req.url == '/'){
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+        fs.writeFile('temp/home.html',"<h1>Helllo Iam writing a new file using writeFile()</h1>",(err) => {
+            if(err) throw err;
+            res.write('file is created');
+            res.end();
+        });
+    }else if(req.url == '/create-file'){
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+        fs.writeFile('temp/file1.html','this is a new file',(err) => {
+            if(err){
+                throw err;
+            }
+            res.write('File has been created successfully, check in the destination folder');
+            res.end();
+        })
+    }
+})
+
+server.listen(4000);
+
+
+writeFile() will overwrite the data to the file where as appendFile() appends the data to the file without over-writing the old content
+----------------------------------------------------------------
+ExpressJS
+- HELLO WORLD IN EXPRESSJS -
+
+const express = require('express')
+const app = express()
+const PORT = 4444;
+app.get('/',(req,res) => {
+    res.send('Hello from Express Server');
+})
+app.get('/home',(req,res) => {
+    res.send('<h1>Home Page</h1>');
+})
+app.listen(PORT,() => {
+    console.log(`server is running at http://localhost:${PORT}`);
+})
+------------------------------------------------
+- Normal express things -
+
+const express = require('express');
+const app = express();
+const PORT = 4444;
+
+app.get('/book', (req, res) => {
+    res.json({ data: "All books" });
+})
+
+app.post('/book', (req, res) => {
+    res.send('Book is stored..!');
+})
+
+app.get('/book/:id', (req, res) => {
+    let id = req.params.id;
+    res.json({ data: `Book ${id}` });
+})
+
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+})
+
+- express routing chains -
+
+const express = require('express');
+const app = express();
+const PORT = 4444;
+
+app.get('/book', (req, res) => {
+    res.json({ data: "All books" });
+})
+
+app.route('/book')
+    .get((req, res) => {
+        res.json({ data: 'Book is fetched' });
+    })
+    .post((req, res) => {
+        res.json({ data: 'Book is stored' });
+    })
+	
+app.get('/book/:id', (req, res) => {
+    let id = req.params.id;
+    res.json({ data: `Book ${id}` });
+})
+
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+})
+
+- Express loading html file -
+
+app.get('/',(req,res) => {
+	res.sendFile(path.join(__dirname,'/../pages/home.html');
+})

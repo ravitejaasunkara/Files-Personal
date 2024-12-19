@@ -1,0 +1,50 @@
+//Seating Arrangement Algorithm for IRCTC
+const fetchIrctcTravellersData = () => {
+    const userdata = [];
+    seniorCitizens = [];
+    femalesAgeGreaterThan40AndLessThan60 = [];
+    teenageBoysAndMalePeopleAgeLessThan30 = [];
+    teenageGirlsAndFemalePeopleAgeLessThan35 = [];
+    girlsWithNoBoysCoach = [];
+    fetch('https://irctc.com/data/date=07-04-2023?trainName=seshadri')
+    .then(response => {
+        userdata = response;
+    })
+    userdata.filter(ele => {
+        if(ele.age > 60){
+            seniorCitizens.push(ele);
+        }
+        if(ele.age < 30 && ele.gender == 'male'){
+            teenageBoysAndMalePeopleAgeLessThan30.push(ele);
+        }
+        if(ele.age >= 18 && age <= 35 && ele.gender == 'female'){
+            teenageGirlsAndFemalePeopleAgeLessThan35.push(ele);
+        }
+        if(ele.age >= 40 && ele.age <= 60){
+            femalesAgeGreaterThan40AndLessThan60.push(ele);
+        }
+    })
+    const arrangeSeatsForTeenageBoys = mapTeenagersWithSeniorCitizens();
+    console.log('Seating arrangement is now done!! and here is the  prepared chart',arrangeSeatsForTeenageBoys);
+}
+const mapTeenagersWithSeniorCitizens = () => {
+    const seatingArrangement = seniorCitizens.map((element,index) => {
+        return [element,teenageBoysAndMalePeopleAgeLessThan30[index]];
+    })
+    return seatingArrangement;
+}
+const mapGirls = () => {
+    const mappingGirlsWithNoBoysOrMen = teenageGirlsAndFemalePeopleAgeLessThan35.map(element => {
+        if(element.nextSeat.gender == 'Male' && element.nextSeat.age >= 18 && element.nextSeat.age <= 30){
+            girlsWithNoBoysCoach.push(element);
+        }
+    })
+    mapGirlsWithPeopleOfAgeBetween40AndSixtyToMakeSureAllTeenageAndMiddleAgedWomanNotSeatedBesidesMenWhoseAgeLessthan30();
+
+}
+const mapGirlsWithPeopleOfAgeBetween40AndSixtyToMakeSureAllTeenageAndMiddleAgedWomanNotSeatedBesidesMenWhoseAgeLessthan30 = () => {
+    girlsWithNoBoysCoach.map((element,index) => {
+        return [element,femalesAgeGreaterThan40AndLessThan60[index]];
+    })
+    console.log('Successfully allocated seats for all girls with no boys!! Happy journey boys -- IRCTC');
+}

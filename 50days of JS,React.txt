@@ -1,0 +1,97 @@
+DAY 1 - 09/07/2024
+
+Execution context
+Hoisting
+How functions works
+
+
+DAY2-3
+let var const hoisting
+
+DAY4-5
+closures
+
+function closure() {
+    var x = 10;
+    return {
+         increment :function increment() {
+        x++;
+        console.log(x)
+    },
+    decrement: function decrement() {
+        x--;
+        console.log(x);
+    }
+
+}
+}
+var counter1 = closure();
+counter1.increment();
+counter1.decrement();
+
+var counter2 = closure();
+counter2.increment();
+counter2.decrement();
+
+DAY6(14/07) - Revision of whatever studied till now
+
+
+DAY7 DAY8
+
+functions statements vs function expressions
+callback functions
+higher order functions
+named functions
+anonymous functions
+first class functions
+
+
+DAY 9 - Rest
+
+DAY 10 - Eventloop basics
+
+
+DAY 11 -rest
+
+DAy12 - java
+
+DAY13-14 weekend revision
+
+DAY15 - rest.
+--------------------------------------
+DAY16 - Promises.
+A promise is an object which represents the eventual completion of a async operation.
+A placeholder which will be filled with a value which will come from the completion of a async operation.
+A placeholder for a future value.
+
+promise states - pending,fulfilled,rejected.
+
+promises are immutable.
+
+a promise will be resolved only once.
+
+promises will avoid callbackhell.
+
+promise chaining.
+-------------------------------
+DAY 17 - promises part 2
+
+we can create promise using new Promise();
+a promise takes two parameters resolve,reject;
+
+create promises
+we can either resolve or reject a promise;
+ we can write then() even after catch() so that then() will be called no matter what;
+
+a catch() is responsible for then() callbacks to the top of it;
+
+promise chaining;
+
+a return should be present in a promise;
+
+
+
+
+  
+
+

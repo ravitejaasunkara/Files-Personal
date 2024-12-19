@@ -1,0 +1,198 @@
+custoemer-lookup
+const spyCustomerLookupService = jasmine.createSpyObj('CustomerLookupService',['searchCustomerData','getCustomerProfile','generateNewPassword','getInvoices','getInvoiceDetailsByInvoiceId', 'getShippingProfilesByCustomerId','getShopppingCartsByCustomerId','getShoppingCartItemsByCartId','getProductDetailsByIsbn','getSubscriptionDetails',
+                                                        'getPaymentChargesByCustomerId','getRefundDetailsByCustomerId', 'getPaymentDetailsByCustomerId','getSpecialPermissionsByCustomerId','assignPrivileges','expirePrivileges','reinstatePrivileges','getRelatedImageUrl']) ;
+														
+														
+														it('Should get customers list (searchCustomerData)',()=>{
+    let resData = [{"content":[{"id":248622,"email":"mymahadev@gmail.com","firstName":"Mahadev","middleInitial":null,"lastName":"Sannabilagi","lastLoginDate":null,"dateCreated":"2018-02-21T04:24:32.243+00:00"},{"id":248614,"email":"mahadev.sannabilagi@informa.com","firstName":"Mahadev","middleInitial":"i","lastName":"Sannabilagi","lastLoginDate":"2022-08-22T14:28:53.617+00:00","dateCreated":null}],"pageable":{"sort":{"empty":true,"sorted":false,"unsorted":true},"offset":0,"pageNumber":0,"pageSize":15,"paged":true,"unpaged":false},"totalElements":2,"totalPages":1,"last":true,"size":15,"number":0,"sort":{"empty":true,"sorted":false,"unsorted":true},"numberOfElements":2,"first":true,"empty":false}];
+    let resBody = [{keyword: "sanna", pageSize: 15, pageNumber: 1}];
+    let spyResData = spyCustomerLookupService.searchCustomerData.and.returnValue(of(resData));
+    let resUrl = environment.customer_service+'/shopper/search';
+    service.searchCustomerData(resBody).subscribe();
+    expect(resData).not.toBeNull();
+    const req = httpTestingController.expectOne(resUrl);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('POST');
+    req.flush(resData);
+  })
+  it('Should get customer profile data (getCustomerProfile)', () => {
+    let resData = [{"id":248614,"email":"mahadev.sannabilagi@informa.com","firstName":"Mahadev","middleInitial":"i","lastName":"Sannabilagi","accountType":null,"activationCode":null,"lastLoginDate":"2022-08-22T14:28:53.617+00:00","dateCreated":null}];
+    let reqUrl = environment.customer_service+'/shopper/'+248614;
+    let spyResData = spyCustomerLookupService.getCustomerProfile.and.returnValue(of(resData));
+    service.getCustomerProfile(248614).subscribe();
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(resData[0].id).toBe(248614);
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(resData);
+  })
+  it('Should get new generated password (generateNewPassword)', () => {
+    let resData = [{"id":251285,"password":"aVN9Y@XF3)"}];
+    let reqUrl = environment.customer_service+'/shopper/generatePassword/'+251285;
+    let spyResData = spyCustomerLookupService.generateNewPassword.and.returnValue(of(resData));
+    service.generateNewPassword(251285).subscribe();
+    expect(resData[0].password).toEqual('aVN9Y@XF3)');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(resData);
+  })
+  it('Should get invoices (getInvoices)', () => {
+    let resData = [{"invoiceId":304725,"transactionDate":"2022-07-26T08:58:20.74","invoiceNo":"182864","applicationName":"www.routledge.com","externalSystemName":"BP","externalSystemNumber":null,"status":"COMPLETED","affiliateCode":null,"discountCode":null,"invoiceItemCount":1,"shippingDescription":"FREE! Surface Air Lifted (Mailed by air to country then placed in surface post Up to 21 Working Days)","shippingAmount":0.0000,"subTotal":120.00,"itemTax":0.0000,"total":120.00,"currencyCode":"GBP"}];
+    let reqUrl = environment.order_management_service+'/invoice?customerId='+251285;
+    let spyResData = spyCustomerLookupService.getInvoices.and.returnValue(of(resData));
+    service.getInvoices(251285).subscribe();
+    expect(resData.length).toEqual(1);
+    expect(resData[0].invoiceId).toEqual(304725);
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(resData);
+  })
+  it('Should get invoice details by invoiceId (getInvoiceDetailsByInvoiceId)',()=>{
+    let resData = [{"invoiceId":304725,"billingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"shippingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"cardMask":"1111","shippingDescription":"FREE! Surface Air Lifted (Mailed by air to country then placed in surface post Up to 21 Working Days)","invoiceItemDetails":[{"invoiceItemId":431675,"invoiceId":304725,"originalBasePrice":150.0000,"adjustedBasePrice":120.0000,"reviewedBasePrice":null,"description":"Chiral Organic Pollutants","quantity":1,"discount":20.0,"sku":"337777","isbn":"9780367429232","vitalSourceCode":null,"promoCode":"searchtest10","uniqodoCode":null,"revokeStatus":false}],"shippingAmount":0.0000,"shippingTax":0.0000,"subTotal":120.00,"tax":0.0000,"total":120.00,"currencyCode":"GBP"}];
+    let reqUrl = environment.order_management_service+'/invoice/invoicedetails?invoiceId='+304725;
+    let spyResData = spyCustomerLookupService.getInvoiceDetailsByInvoiceId.and.returnValue(of(resData));
+    service.getInvoiceDetailsByInvoiceId(304725).subscribe();
+    expect(resData[0].billingAddress.postalCode).toEqual('533464');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Should get shopping carts (getShoppingCartItemsByCustomerId)',()=>{
+    let resData = [{"cartId":20958464,"applicationName":"www.routledge.com","affiliate":null,"discountCode":null,"shippingId":null,"shippingCode":null,"description":null,"currencyCode":"GBP","itemTax":null,"shippingTax":null,"shippingPrice":null,"adjustedShipPrice":null,"createdAt":"2022-07-26T09:02:35.853","updatedAt":"2022-07-26T09:04:15.743"}];
+    let reqUrl = environment.order_management_service+'/carts?customerId='+251285;
+    let spyResData = spyCustomerLookupService.getShippingProfilesByCustomerId.and.returnValue(of(resData));
+    service.getShopppingCartsByCustomerId(251285).subscribe();
+    expect(resData[0].cartId).toEqual(20958464);
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.responseType).toEqual('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(resData);
+  })
+  it('Should get shopping carts by cartId (getShoppingCartItemsByCartId)',() => {
+    let resData = [{"isbn":"9781032133652","sku":"464289","title":"Women in Solitary","quantity":1,"basePrice":19.9900,"adjustedPrice":19.9900,"reviewedPrice":null}];
+    let reqUrl = environment.order_management_service+'/carts/items?cartId='+20957924;
+    let spyResData = spyCustomerLookupService.getShoppingCartItemsByCartId.and.returnValue(of(resData));
+    service.getShoppingCartItemsByCartId(20957924).subscribe();
+    expect(resData[0].isbn[0]).toEqual('9');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.responseType).toEqual('json');
+    expect(req.request.method).toBe('GET');
+    req.flush(resData);
+  })
+  it('Should get product details (getProductDetailsByIsbn)',() => {
+    let resData = [{"productId":896522,"shortTitle":"Sanganyado - Chiral Organic Pollutants","subtitle":"Monitoring and Characterization in Food and the Environment","isbn":"9780367429232","publicationDate":"2020-12-31T00:00:00.000+00:00","contributors":[{"id":14785658,"firstName":"Edmond","middleInitial":null,"lastName":"Sanganyado","credentials":null,"affiliation":"Marine Biology Institute, Shantou University, Shantou, China","bio":null,"salutation":null,"role":{"id":2,"code":"HG","description":"Editor"},"validFrom":null,"validTo":null},{"id":14785659,"firstName":"Basil K.","middleInitial":null,"lastName":"Munjanja","credentials":null,"affiliation":"National University of Science and Technology, Zimbabwe","bio":null,"salutation":null,"role":{"id":2,"code":"HG","description":"Editor"},"validFrom":null,"validTo":null},{"id":14785660,"firstName":"Leo M.L.","middleInitial":null,"lastName":"Nollet","credentials":null,"affiliation":"University College Ghent - retired","bio":null,"salutation":null,"role":{"id":2,"code":"HG","description":"Editor"},"validFrom":null,"validTo":null}],"pageNum":396,"bindingStyle":"Hardback","editionNumber":1,"imprint":{"id":30,"code":"IMPCR","name":"CRC Press","image":"unknown.gif"}}];
+    let reqUrl = environment.product_management_service+'/products?isbn='+9780429295997;
+    let spyResData = spyCustomerLookupService.getProductDetailsByIsbn.and.returnValue(of(resData));
+    service.getProductDetailsByIsbn(9780429295997).subscribe();
+    expect(resData[0].contributors[0].firstName).toEqual('Edmond');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.responseType).toEqual('json');
+    req.flush(resData);
+  })
+  it('Should get shipping profiles (getShippingProfilesByCustomerId)',()=>{
+    let resData = [{"shippingProfileId":402998,"nickName":"raviteja","billingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"shippingAddress":{"firstName":"ravi","lastName":"teja","company":"","street1":"east godavari","street2":"","city":"amalapuram","state":"AP","countryCode":"IN","postalCode":"533464","phone":"9603603181"},"type":null}];
+    let reqUrl = environment.shipping_management_service+'/shippingprofiles?customerId='+251285;
+    let spyResData = spyCustomerLookupService.getShippingProfilesByCustomerId.and.returnValue(of(resData));
+    service.getShippingProfilesByCustomerId(251285).subscribe();
+    expect(resData[0].billingAddress.postalCode).toEqual('533464');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Should get subscription details (getSubscriptionDetailsByCustomerId)', () => {
+    let resData = [{"type":"SOFT OPT-IN","dateTime":"2022-08-02 13:51:16"}];
+    let reqUrl = environment.customer_service+'/shopper/subscriptionDetails/'+251285;
+    let spyResData = spyCustomerLookupService.getSubscriptionDetails.and.returnValue(of(resData));
+    service.getSubscriptionDetails(251285).subscribe();
+    expect(resData[0].type).toBe('SOFT OPT-IN');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Should get special permissions (getSpecialPermissionsByCustomerId)',() => {
+    let resData = [{"shopperPrivilegeId":2693,"privilegeId":1,"shopperId":251285,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-08-18T10:23:40.243+00:00","expirationDate":null,"isActive":true},{"shopperPrivilegeId":2694,"privilegeId":3,"shopperId":251285,"code":"CRC-CW_9781439866511","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781439866511","startDate":"2022-09-05T10:38:15.637+00:00","expirationDate":"2022-09-05T10:38:37.410+00:00","isActive":false},{"shopperPrivilegeId":null,"privilegeId":4,"shopperId":null,"code":"CRC-CW_9781420060751","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781420060751","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":5,"shopperId":null,"code":"CRC-CW_9781439849200","description":"This privilege allows users to access Instructor Resources on the CRC Companion Website for the book 9781439849200","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":6,"shopperId":null,"code":"145yw76mc8fw","description":"9781444144147 Clinical Biochemistry and Metabolic Medicine Eighth Edition","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":7,"shopperId":null,"code":"756rp32jw9jk","description":"9781444146073 An Introduction to Radiation Protection 6E","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":8,"shopperId":null,"code":"vwhuf1","description":"9781444121490 Essential Microbiology and Hygiene for Food Professionals","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":9,"shopperId":null,"code":"152GHK91WER","description":"serial number for companion sites child nursing skills","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":10,"shopperId":null,"code":"543wgv682ks","description":"companion privilege code","startDate":null,"expirationDate":null,"isActive":null},{"shopperPrivilegeId":null,"privilegeId":11,"shopperId":null,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":null,"expirationDate":null,"isActive":null}];
+    let reqUrl = environment.customer_service+'/shopper/all_privileges/'+251285;
+    let spyResData = spyCustomerLookupService.getSpecialPermissionsByCustomerId.and.returnValue(of(resData));
+    service.getSpecialPermissionsByCustomerId(251285).subscribe();
+    expect(resData[1].isActive).toBe(false);
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  it('Should get payment details (getPaymentDetailsByCustomerId)', ()=> {
+    let resPayments = [{"id":14401,"invoiceId":304765,"invoiceNo":"182904","paymentNumber":3,"date":"2022-08-02T13:51:33.180+00:00","amount":44.99,"cardType":"Visa","cardNumber":"1111","transCode":"6594482906656313304003","shopper":"ravitejasunkara1@gmail.com","currencyCode":"GBP"},{"id":14400,"invoiceId":304764,"invoiceNo":"182903","paymentNumber":2,"date":"2022-08-02T13:44:14.177+00:00","amount":24.99,"cardType":"Visa","cardNumber":"1111","transCode":"6594478510946173904005","shopper":"ravitejasunkara1@gmail.com","currencyCode":"GBP"},{"id":14362,"invoiceId":304725,"invoiceNo":"182864","paymentNumber":1,"date":"2022-07-26T08:58:20.780+00:00","amount":120.0,"cardType":"Visa","cardNumber":"1111","transCode":"6588258973566245804003","shopper":"ravitejasunkara1@gmail.com","currencyCode":"GBP"}];
+    let custId = 251285;
+    let spyResPayments = spyCustomerLookupService.getPaymentDetailsByCustomerId.and.returnValue(of(resPayments));
+    let resUrl = environment.customer_service+'/shopper/payment/'+custId;
+    service.getPaymentDetailsByCustomerId(custId).subscribe();
+    const req = httpTestingController.expectOne(resUrl);
+    expect(req.request.responseType).toBe('json');
+    req.flush(resPayments);
+  })
+
+  it('Should get payment charges (getPaymentChargesByCustomerId)',()=>{
+    let resCharges = [{"id":7238,"paymentId":14401,"date":"2022-08-02T13:51:33.977+00:00","status":1,"mcasId":"2059108","authCode":null,"amount":44.9900,"message":"SUCCESS: Transaction details have been saved.","currencyCode":"GBP"},{"id":7237,"paymentId":14400,"date":"2022-08-02T13:44:15.083+00:00","status":1,"mcasId":"2059107","authCode":null,"amount":24.9900,"message":"SUCCESS: Transaction details have been saved.","currencyCode":"GBP"},{"id":7208,"paymentId":14362,"date":"2022-07-26T08:58:21.593+00:00","status":1,"mcasId":"2058736","authCode":null,"amount":120.0000,"message":"SUCCESS: Transaction details have been saved.","currencyCode":"GBP"}];
+    let spyResCharges = spyCustomerLookupService.getPaymentChargesByCustomerId.and.returnValue(of(resCharges));
+    let custId = 251285;
+    let reqUrl = environment.customer_service+'/shopper/paymentcharge/'+custId;
+    service.getPaymentChargesByCustomerId(custId).subscribe();
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.responseType).toBe('json');
+    expect(req.request.method).toBe('GET');
+    expect(req.cancelled).toBeFalsy();
+    req.flush(resCharges);
+  });
+  it('Should get payment refunds (getPaymentRefundsByCustomerId)', () => {
+    let resRefunds = [{"id":71,"currencyCode":"GBP","shopper":"g.guru1989@gmail.com","invoiceNo":"182635","invoiceId":304498,"invoiceDate":"2022-08-02T12:42:05.723+00:00","invoiceAmount":45.9900,"refundAmount":45.9900},{"id":61,"currencyCode":"GBP","shopper":"g.guru1989@gmail.com","invoiceNo":"182636","invoiceId":304499,"invoiceDate":"2022-07-26T09:22:52.000+00:00","invoiceAmount":22.1000,"refundAmount":22.1000},{"id":60,"currencyCode":"GBP","shopper":"g.guru1989@gmail.com","invoiceNo":"182791","invoiceId":304652,"invoiceDate":"2022-07-26T09:16:28.963+00:00","invoiceAmount":39.9900,"refundAmount":39.9900}];
+    let spyResRefunds = spyCustomerLookupService.getRefundDetailsByCustomerId.and.returnValue(of(resRefunds));
+    let custId = 251243;
+    let reqUrl = environment.customer_service+'/shopper/paymentrefund/'+custId;
+    service.getRefundDetailsByCustomerId(custId).subscribe();
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toBe('GET');
+    req.flush(resRefunds);
+  })
+  it('Should get imageurl (getRelatedImageUrl)',() => {
+    let resData = [{"imageUrl":"https://images-cdn.routledge.com/crclarge/978158488/9781584883999.jpg"}];
+    let reqUrl = environment.product_management_service+'/products/image?imageType='+'crclarge'+'&isbn='+9780203008836;
+    let spyResData = spyCustomerLookupService.getRelatedImageUrl.and.returnValue(of(resData));
+    service.getRelatedImageUrl(9780203008836,'crclarge').subscribe();
+    expect(resData[0].imageUrl).toEqual('https://images-cdn.routledge.com/crclarge/978158488/9781584883999.jpg');
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('json');
+    req.flush(resData);
+  })
+  
+  ------------------------------------------
+  
+  it('update Privilege - assign',() => {
+      let spitem = [{"shopperPrivilegeId":null,"privilegeId":1,"shopperId":null,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":null,"expirationDate":null,"isActive":null}];
+      let result = [{"shopperPrivilegeId":2697,"privilegeId":1,"shopperId":251290,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-11-15T09:26:09.493+00:00","expirationDate":null,"isActive":true}];
+      let AssignPrivilege = spyCustomerLookupService.assignPrivileges.and.returnValue(of(result));
+      component.updatePrivilege(spitem);
+      expect(AssignPrivilege).toHaveBeenCalled();
+    })
+    xit('update privilege - expire',() => {
+      let spitem = [{"shopperPrivilegeId":2697,"privilegeId":1,"shopperId":251290,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-11-15T09:26:09.493+00:00","expirationDate":null,"isActive":true}];
+      let result = [{"shopperPrivilegeId":2697,"privilegeId":1,"shopperId":251290,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-11-15T09:26:09.493+00:00","expirationDate":"2022-11-15T10:52:32.007+00:00","isActive":false}];
+      let ExpirePrivilege = spyCustomerLookupService.expirePrivileges.and.returnValue(of(result));
+      component.updatePrivilege(spitem);
+      expect(ExpirePrivilege).toHaveBeenCalled();
+    })
+    xit('update privilege - reinstate',() => {
+      let spitem = [{"shopperPrivilegeId":2697,"privilegeId":1,"shopperId":251290,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-11-15T09:26:09.493+00:00","expirationDate":"2022-11-15T10:52:32.007+00:00","isActive":false}];
+      let result = [{"shopperPrivilegeId":2697,"privilegeId":1,"shopperId":251290,"code":"GS-RES-CNTR","description":"Garland's Science resource center","startDate":"2022-11-15T10:59:29.887+00:00","expirationDate":null,"isActive":true}];
+      let ReinstatePrivilege = spyCustomerLookupService.reinstatePrivileges.and.returnValue(of(result));
+      component.updatePrivilege(spitem);
+      expect(ReinstatePrivilege).toHaveBeenCalled();
+    })

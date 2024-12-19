@@ -1,0 +1,20 @@
+// how to push changes to github through git command line
+
+1.open git cmd
+2.navigate to project folder
+3.navigate to your branch
+	to get to know about all branches use "git branch"
+4.now to navigate to your branch use "git checkout <your branch name>"
+5.once navigated to your branch do your changes
+6.now use "git add ." to stage your changes
+7.use "git status" to check the changes
+8.once you verified the changes commit your changes using "git commit -m <commit message you want to add here>"
+	git commit -m "updated testcases"
+9.once committed push the changes to your branch using
+	git push origin <your branch name>
+
+	git push origin GSD-6931-UI-Changes-required-to-process-Currency-Exchange-Rate-core-API-response
+
+10. the changes will be committed to your branch, you can raise a Pull Request if you want to.
+
+11.git checkout -- filename --> to discard changes done to a file.

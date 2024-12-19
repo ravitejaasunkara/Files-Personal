@@ -1,0 +1,77 @@
+docker
+docker commands
+> docker version
+> docker --version
+> docker images  - to see all the available images
+> docker pull
+> docker ps - to see all the containers
+> docker start container- id - to start a container
+> docker stop container-id - to stop a container
+> docker system df - to get disk usage of docker.
+> docker rmi imageName - to remove a docker image.
+> docker rmi containerName/containerID - to remove a docker container.  
+
+-> when we run an image a container will be created from that image.
+ > docker inspect imageName - will give all the details about an image.
+
+ -> containers are the running instance of an image
+ -> once you pull an image from docker hub then a container of that image will be created.
+
+ -> once we pull any image from docker hub then the image will be pulled and stored in our local system.
+ docker pull hello-world
+ hello-world image will be pulled and stored in our local.
+
+ -> once we run the image then the container will be created for that image.
+
+ -> we can create as many as docker containers from a single docker image.
+
+ -> a docker file is like giving instructions to create a docker image
+
+ -> docker file starts with command 
+ FROM -imageName
+ FROM scratch
+
+ FROM ubuntu
+
+ MAINTAINER - to find out who is the maintainer like you can give your name here
+
+ MAINTAINER ravi <ravisunkara@gmail.com>
+
+ RUN apt-get update
+
+ CMD ["echo","Hello world from my first docker image"]
+
+difference between run and cmd is 
+
+run gets executed during the building of the image
+
+the command inside CMD will be executed only when you create a container from the image.
+
+FROM - is used to pull the base image
+RUN - to run any linux or bash commands
+CMD - to provide defaults for existing container,we will use it when we want to run any default commands
+ENTRYPOINT - 
+WORKDIR - to set the working directory
+COPY - when you want to copyy any files from base system to container.
+EXPOSE - application port number can be informed to docker.
+ENV - to set environment variables.
+
+
+Dockerfile - Install tomcat on centos
+steps
+- pull centos from dockerhub
+- install java to run tomcat
+- create /opt/tomcat directory to store the things which gets downloaded
+- download tomcat packages
+- Extract tar.gz file
+- rename to tomcat directory.
+- tell to docker that it is running on port 8080
+- at last start tomcat services
+
+
+
+
+
+
+
+

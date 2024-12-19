@@ -1,0 +1,10 @@
+[dataSource] - this is where the tree is getting its data from
+[treeControl] - this property is responsible for expanding and collapsing the nodes
+<mat-tree-node> is used to display leaf nodes
+*matTreeNodeDef is used to access the nodes data in the template.
+<mat-nested-tree-node> is used to display the expandable nodes
+the when function is used to differentiate between the leaf nodes and expandable nodes
+if a template has when function then it is an expandable node otherwise it is an leaf node
+and if when function returns false then the template will not be expanded
+the length of children > 0 that means it is an expandable node in that case it returns the true so that the tree will be expanded otherwise it returns false and the tree will not be expanded
+matTreeNodeOutlet directive is used to display the children

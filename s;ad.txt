@@ -1,0 +1,24 @@
+xit('expire privileges',() => {
+    let spitem = [{"shopperPrivilegeId":2702,"privilegeId":11,"shopperId":251284,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":"2022-11-22T08:04:30.030+00:00","expirationDate":null,"isActive":true}];
+    let resItem = [{"shopperPrivilegeId":2702,"privilegeId":11,"shopperId":251284,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":"2022-11-22T08:04:30.030+00:00","expirationDate":"2022-11-22T08:11:18.340+00:00","isActive":false}];
+    let spId = 2702;
+    let reqUrl = environment.customer_service+'/shopper/expire_privilege/'+spitem[0].shopperPrivilegeId;
+    service.expirePrivileges(spitem).subscribe();
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(spitem);
+  })
+  it('reinstate privilege',() => {
+    let spitem = [{"shopperPrivilegeId":2702,"privilegeId":11,"shopperId":251284,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":"2022-11-22T08:04:30.030+00:00","expirationDate":"2022-11-22T08:11:18.340+00:00","isActive":false}];
+    let resItem = [{"shopperPrivilegeId":2702,"privilegeId":11,"shopperId":251284,"code":"355jw33cc5fn","description":"epidural anesthecia code","startDate":"2022-11-22T08:25:41.793+00:00","expirationDate":null,"isActive":true}];
+    let spId = 2702;
+    let reqUrl = environment.customer_service+'/shopper/reinstate_privilege/'+spitem[0].shopperPrivilegeId;
+    service.reinstatePrivileges(spitem).subscribe();
+    const req = httpTestingController.expectOne(reqUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.cancelled).toBeFalsy();
+    expect(req.request.responseType).toBe('json');
+    req.flush(spitem);
+  })

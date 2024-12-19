@@ -1,0 +1,235 @@
+search API 
+	- if we enter valid ISBN or SKU or TITLE the API should give the matching results
+	- If ISBN/SKN is entered since ISBN/SKN is unique so API has to return only one result
+	- where as if the book TITLE is entered since all the three versions PAPERBACK/HARDBACK/EBOOK all three versions has the    same  name so the API should give all the three versions details or all the versions available details.
+	getProductsListBasedOnIsbnOrSKUorTITLE()
+	- required fields were
+	  - versionType
+	  - sku
+	  - isbn
+	  - title
+
+product data API 
+	-getProductData()
+	- when clicked on particular ISBN then all the product data of that ISBN has to be returned.
+	- required fields were
+	 - name
+	 - title
+	 - subtitle
+	 - sku
+	 - isbn
+	 - isbn10
+	 - projectNo
+	 - id
+	 - groupOfCo
+	 - ownership
+	 - versionType
+	 - bindingStyle
+	 - subgroup
+	 - salesEval
+	 - imprint
+	 - publisher
+	 - metatags
+	 - description
+	 - features
+	 - reviews
+	 - reviewsForExport
+	 - seasionalBlurb
+	 - authorsBio
+	 - toc
+	 - shortBlurb
+	 - additionalBlurb
+	 - gtUpdate
+	 - pubdate
+	 - plannedPubdate
+	 - actualPubdate
+	 - copyright
+	 - homeDiscountCode
+	 - editionNo
+	 - noOfVolumes
+	 - pages
+	 - bwIllus
+	 - colorIllus
+	 - dimensionsUk
+	 - dimensionsUs
+	 - previousIsbn
+	 - isBestSeller
+	 - creditNoteHold
+	 - distributionHold
+	 - inspectionCopyAvailable
+	 - tablesColor
+	 - lineArtsBw
+	 - lineArtColor
+	 - gtProductId
+	 - editionId
+	 - titleId
+	 - division
+	 - subscription
+	 - halftonesBw
+	 - halftonesColor
+	 - doi
+	 - doiStatus
+
+categories & classifications API
+	getCategoriesAndClassificationsData()
+	- categories table
+		-> required fields
+		 - id
+		 - code
+		 - title
+		 - parentId
+		 - parentCode
+		 - parentTitle
+	- VSINV SET ISBN table
+		-> required fields
+		 - isbn
+		 - code
+	- CLASSIFICATIONS table
+		-> required fields
+		 - id
+		 - priority
+		 - level
+		 - sequence
+		 - fixed
+		 - variable
+		 - code
+		 - text
+		 - value
+		 - stringValue
+
+downloads data API
+	- getDownloadsData();
+		-> required fields
+		 - id
+		 - subtitle
+		 - platform
+		 - filename
+		 - instruction
+		 - lastUpdate
+
+imprint & publisher API
+	- getImprintAndPublishersData();
+	- IMPRINT & PUBLISHER table
+		-> required fields
+		 - id
+		 - code
+		 - description
+		 - image
+	- APPLICATIONS TABLE
+		-> required fields 
+		 - id
+		 - name
+		 - categoryCode
+		 - categoryTitle
+
+inventory status API
+	- getInventoryStatusData();
+	- INVENTORY STATUS table
+		-> required fields 
+		 - distributionCenterId
+		 - distributionCenterCode
+		 - distributionCenter
+		 - inventoryStatusCode
+		 - inventoryStatus
+	- VITAL SOURCE INVENTORY table
+		-> required fields 
+		 - isbn
+		 - print
+		 - title
+		 - lastUpdate
+
+originatios API
+	- getOriginatorsData()
+		-> required fields 
+		 - id
+		 - order
+		 - last
+		 - first
+		 - credentials
+		 - affiliation
+		 - biography
+		 - saluation
+		 - role
+		 - description
+
+pricing & discounts API
+	- getPricingAndDiscounts()
+	- PRICES table
+		-> required fields 
+		 - id
+		 - effective
+		 - expire
+		 - typeId
+		 - type
+		 - list
+		 - real
+		 - iso
+		 - name
+	- DISCOUNTS table
+		-> required fields 
+		 - id
+		 - application
+		 - code
+		 - name
+		 - description
+		 - effective
+		 - expire
+
+series & bindings API
+	- getSeriesAndBindings()
+	- SERIES table
+		-> required fields 
+		 - id
+		 - code
+		 - subtitle
+		 - description
+		 - text
+	- VERSION TYPE table
+		-> required fields 
+		 - id
+		 - code
+		 - description
+	- BINDING STYLES table
+		-> required fields 
+		 - id
+		 - code
+		 - description
+	- RELATED BINDINGS table
+		-> requried fields 
+		 - id
+		 - sku
+		 - isbn
+		 - versionType
+		 - bindingStyle
+		 - title
+	- RELATED TITLES table
+		-> required fields 
+		 - id
+		 - sku
+		 - isbn
+		 - versionType
+
+product resources API
+	- getProductResources()
+	- SECTION RESOURCES table
+		-> required fields 
+		 - action
+		 - id
+		 - sectionName
+		 - priority
+		 - access
+		 - type
+		 - title
+		 - caption
+		 - data
+	- ALL RESOURCES table
+		-> required fields 
+		 - action
+		 - id
+		 - priority
+		 - access
+		 - type
+		 - title
+		 - caption
+		 - data
+

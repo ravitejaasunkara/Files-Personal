@@ -1,0 +1,9 @@
+startdate
+enddate
+
+send 
+
+totaldata - 120 records
+
+pagination has to be came for 120 records of 10 records per page as iam getting only 10 records per single api call when click on next another api call will happend for 2nd page with 10 records per page,when i make first api call i'll get an total records count with 10 records data,the pagination has to be set for those total records with 10 records per page when next button was clicked another api call has to be made which again fetches the next page 10 records and so on until we reach all the records <= totalRecords
+using angular material table

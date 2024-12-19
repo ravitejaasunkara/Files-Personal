@@ -1,0 +1,17 @@
+For the loader issue
+I did like cancelling the previous API calls if we navigate from oone route to another route,
+if we navigate from Currency Exchange Rate to MONTHLY/WEB ORDER REPORT then the API calls in CURRENCY EXCHANGE RATES will be cancelled,
+
+but it is working partially like only 1 out of 4 API calls in CURRENCY EXCHANGE RATES are cancelling if we navigate from CURRENCY EXCHANGE RATES
+to another component may be because of the sequential API calling in CURRENCY EXCHANGE RATES.
+
+It works fine if we navigate from MONTHLY ORDER REPORT Report to WEB ORDER REPORT since there is only one API call in MONTHLY ORDER REPORT so whenever we
+navigate from MONTHLY ORDER REPORT to another COMPONENT then that one API call will be cancelled.
+
+so it works fine incase from MONTHLY ORDER REPORT - ANOTHER COMPONENT
+
+I tried once by removing the sequential API calling in CURRENCY EXCHANGE RATES then it works fine,
+it is cancelling all the  4 API calls in CURRENCY EXCHANGE RATES when we navigate from CURRENCY EXCHANGE RATES to another component 
+incase of the non-synchronous API calling.
+
+need a small fix of how to cancel all the 4 calls in CER then it's finished

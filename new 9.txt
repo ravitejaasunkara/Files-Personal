@@ -1,0 +1,104 @@
+ye service ni mock cheyyali anukuntunnamo ah service ni ila raskovali and then first argument is the ServiceClass name
+and second argument is an array with all the functions names in that service.
+
+let spyCustomerLookupService = jasmine.createSpyObj('CustomerLookupService',[])
+
+//Testing a service in angular.
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+
+  constructor(private http:HttpClient) { }
+  
+  getData(){
+    return this.http.get('https://jsonplaceholder.typicode.com/posts');
+  }
+}
+for example we have the above service which is having one function which makes service calls which is getData();
+so to write testcases for it, we do the following steps.
+
+step-1 : add describe 
+
+describe('Data Service', () => {
+  beforeEach(() => {
+
+  })
+  describe('it should return expected data when getData() is called',() => {
+
+  })
+})
+
+step-2 : now create an instance for DataService, after 1st describe
+
+describe('Data Service', () => {
+  let dataService: DataService;
+  beforeEach(() => {
+
+  })
+  describe('it should return expected data when getData() is called',() => {
+
+  })
+})
+
+since this DataService depends upon the HttpClient we have to create a spy object for httpclient
+
+describe('Data Service', () => {
+  let dataService: DataService;
+  httpClientSpy: jasmine.SpyObj<HttpClient>;
+  beforeEach(() => {
+
+  })
+  describe('it should return expected data when getData() is called',() => {
+
+  })
+})
+
+instantiate the DataService object and assgin the httpClientSpy to the DataService object
+
+describe('Data Service', () => {
+  let dataService: DataService;
+  httpClientSpy: jasmine.SpyObj<HttpClient>;
+  beforeEach(() => {
+  httpClientSpy = jasmine.CreateSpyObj('HttpClient',['get']);
+	dataService = new DataService(httpClientSpy);
+  })
+  describe('getData()',() => {
+	it('it should return expected data when getData() is called',()=>{
+	
+	})
+  })
+})
+
+now what we are doing is creating a mock data that the http call is about to return and checking with the mock data;
+
+describe('Data Service', () => {
+  let dataService: DataService;
+  httpClientSpy: jasmine.SpyObj<HttpClient>;
+  let data = 
+  [
+    {
+      userId: 1,
+      id: 1,
+      title: 'quidem molestiae enim',
+    }
+  ];
+  beforeEach(() => {
+	httpClientSpy = jasmine.CreateSpyObj('HttpClient',['get']);
+	dataService = new DataService(httpClientSpy);
+  })
+  describe('getData()',() => {
+	it('it should return expected data when getData() is called',()=>{
+		httpClientSpy.get.and.returnValue(of(data));
+		dataService.getData().subscribe(result => {
+			expect(result).toEquals(data);
+		})
+		expect(httpClientSpy.get).toHaveBeenCalled();
+	})
+  })
+})
+

@@ -1,0 +1,32 @@
+I have 2 branches develop and stage, usually i push code from custom branch to develop and then from develop to stage, now i mistakenly pushed to stage, so now how can make my develop to equal with stage
+
+If you have mistakenly pushed your changes to the stage branch instead of the develop branch, you can follow these steps to bring the develop branch up to date with the changes in the stage branch:
+
+Make sure you are on the develop branch:
+
+Copy code
+git checkout develop
+Merge the changes from the stage branch into the develop branch:
+
+sql
+Copy code
+git merge stage
+This will bring the changes from the stage branch into your develop branch.
+
+If there are any conflicts during the merge process, you will need to resolve them. Git will mark the conflicted files, and you can use a text editor or a merge tool to manually resolve the conflicts.
+
+Once you have resolved any conflicts, you can commit the changes to the develop branch:
+
+sql
+Copy code
+git commit -m "Merge changes from stage branch into develop branch"
+This will commit the changes to your develop branch.
+
+Finally, you can push the changes to the remote develop branch:
+
+perl
+Copy code
+git push origin develop
+This will update the remote develop branch with the changes from the stage branch.
+
+After following these steps, your develop branch should be up to date with the changes from the stage branch.

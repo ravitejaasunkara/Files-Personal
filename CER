@@ -1,0 +1,151 @@
+understanding currency exchange rates component
+
+getyears()
+- inside this function after calling API 
+if (res.data != null && res.data != undefined) {
+ if data is not null and undefined then going inside the if block.
+
+ now inside the if block looping through each obj in res.data 
+
+ let's consider the data from API is
+
+ {
+  "metadata": {
+    "code": 200,
+    "description": "Successfully got the exchange from SAP",
+    "timestamp": "2023-01-26T09:11:02.498Z"
+  },
+  "data": [
+    {
+      "2023-01-01": [
+        
+        {
+          "local_currency": "GBP",
+          "foreign_currency": "AUD",
+          "exchange_rate": "1.77430"
+        },
+        {
+          "local_currency": "GBP",
+          "foreign_currency": "NZD",
+          "exchange_rate": "1.90390"
+        },
+        {
+          "local_currency": "GBP",
+          "foreign_currency": "USD",
+          "exchange_rate": "1.20560"
+        },
+        
+      ]
+    }
+  ]
+}
+
+now inside the if block we have 
+
+res.data.forEach(obj => {
+
+here obj = {
+  '2023-01-01': [
+    {
+      local_currency: 'GBP',
+      foreign_currency: 'AUD',
+      exchange_rate: '1.77430'
+    },
+    {
+      local_currency: 'GBP',
+      foreign_currency: 'NZD',
+      exchange_rate: '1.90390'
+    },
+    {
+      local_currency: 'GBP',
+      foreign_currency: 'USD',
+      exchange_rate: '1.20560'
+    }
+  ]
+}
+
+exchangeRateMonthly = { exchangeDate: Object.keys(obj)[0] --> 2023-01-01, aud: null, usd: null, nzd: null, gbp: 1, month: 0, year: 2019 };
+
+currencyDetails = Object.values(obj)[0]; 
+currencyDetails = [
+  {
+    local_currency: 'GBP',
+    foreign_currency: 'AUD',
+    exchange_rate: '1.77430'
+  },
+  {
+    local_currency: 'GBP',
+    foreign_currency: 'NZD',
+    exchange_rate: '1.90390'
+  },
+  {
+    local_currency: 'GBP',
+    foreign_currency: 'USD',
+    exchange_rate: '1.20560'
+  }
+];
+currencies = ['USD', 'AUD', 'NZD'];
+let month: number = new Date(exchangeRateMonthly.exchangeDate).getMonth() --> 01
+let year: number = new Date(exchangeRateMonthly.exchangeDate).getFullYear(); --> 2023
+
+//Now looping over the currency details object.
+currencyDetails.forEach(country => {
+	//setting the exchange rate monthly object with values.
+	exchangeRateMonthly.month = month +1 --> 1
+	exchangeRateMonthly.year = 2023;
+
+	for now the object is 
+	{exchangeDate : 2023-01-01,aud:null,usd:null,nzd:null,month:1,year:2023}
+
+	now setting the region values
+	if from the objects grabbing usd,nzd,aud objects and setting those values to the object values.
+	if (country.foreign_currency == 'USD') {
+		exchangeRateMonthly.usd = parseFloat(country.exchange_rate).toFixed(4);
+    }
+    if (country.foreign_currency == 'AUD') {
+		exchangeRateMonthly.aud = parseFloat(country.exchange_rate).toFixed(4);
+    }
+	if (country.foreign_currency == 'NZD') {
+		exchangeRateMonthly.nzd = parseFloat(country.exchange_rate).toFixed(4);
+    }
+
+    so after this the object will be filled with values 
+
+    so forming an array of objects like
+    [
+    	{"exchangeDate": "2023-01-01","aud": "1.7743","usd": "1.2056","nzd": "1.9039","gbp": 1,"month": 1,"year": 2023}
+    ]
+    like this we have all the data for all the months in a year;
+
+    after this we are pushing this to the 
+    exchange_rate_data array;
+
+    now after every month data is filled into exchange_rate_data then we are forming the monthly object model.
+})
+
+now dd months to years function()
+
+addMonthsToYears(){
+	this function is used to create a empty month data model array with all the empty values for all the months for all the years till now.
+	the monthly_data array looks like 
+	{
+		id:null,
+		exchangeDate:null,
+		aud:null,usd:null,gbp:null,nzd:null,
+		year:2023,month_number:1,month_name:January
+	}
+	like this forming the month model for all the months we had.
+
+	after that we are calling the getMonthlyData() function to copy the values from exchange_rate_data to monthly_data 
+
+	and finally usign the monthly_data to display in HTML.
+
+}
+
+
+
+
+
+
+
+})

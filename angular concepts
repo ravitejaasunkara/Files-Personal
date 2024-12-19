@@ -1,0 +1,33 @@
+Key events in angular
+keyup.enter is triggered when enterkey is clicked and released where as keydown is triggered when enter key is clicked.
+ref : https://www.digitalocean.com/community/tutorials/angular-binding-keyup-keydown-events
+-------------------
+Directives
+@Directive is used to manipulate the DOM elements behavior
+
+Attribute Directives
+NgCIass -Adds and removes a set of CSS classes.
+<!-- toggle the "special" class on/off with a property -->
+<div [ngClass]="isSpecial ? 'special' : ''">This div is special</div>
+NgSty1e -Adds and removes a set of HTML styles.
+NgMode1 -Adds two-way data binding to an HTML form element.
+
+
+if you are writing a testcase for a function which makes http calls inside and that function is being called in ngOnInit then you should mock the response in beforeEach() that means before the fixture.detectChanges() executes you have to mock the response.
+
+it('render data in UI',() => {
+  component.preloadProductSettings();
+  expect(component.b4pub_value).toEqual(data[0].value);
+})
+
+beforeEach(() => {
+    fixture = TestBed.createComponent(ProductSettingsComponent);
+    component = fixture.componentInstance;
+    spyproductSettingsService.getProductSettingsValues.and.returnValue(of(data));
+    fixture.detectChanges();
+  });
+
+
+  like this!.
+
+

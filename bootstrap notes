@@ -1,0 +1,8 @@
+col-md-6
+
+means screen sizes greater than medium(md) will take 6units if it is less than medium then it will take 12 units.
+anything smaller than medium it will take full width.
+
+col-lg-3 taking 3 units in large screens and anything less than larger screens it will take 12columns
+
+col-md-4 on medium size and above it will take 4units width 

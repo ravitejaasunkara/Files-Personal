@@ -1,0 +1,153 @@
+login to aws ec2 from powershell -
+first go to path where key.pem file is located
+enter command in powershell - ssh -i filename(key-pair name) ec2-user@public ip idress from created ec2 instance in aws ece
+
+default path - /var/lib
+
+install docker -y to install docker in linux
+
+systemctl start docker - to start docker in linux.
+
+systmctl stop docker - stop docker
+
+yum install tree - to install tree structure to view the files folders etc..,
+
+remove a directory -> rm -rf [directory-name]
+
+systemctl status docker -> to check docker status.
+
+rsync -aqxp /var/lib/docker /new/vinay/docker -> to sync all your new changes to your required path
+
+systemctl deamon-reload -> to reload the docker engine.
+
+docker volume create ravi -> to create a docker voulme.
+
+docker pull httpd
+
+even the docker was uninstalled all the voulmes and images still exists not gone.
+
+yum remove docker -y -> to uninstall docker
+
+yum install docker -> to install docker.
+
+systemctl start docker -> to start docker engine.
+
+docker pull httpd -> pulling httpd image
+
+docker run -it -d --name cont1 --volume ravi:/tmp httpd /bin/bash -> to create a container and attatch the volume ravi to container cont1;
+
+defaault path where all the docker things were saved -> /var/lib/systemd/system/docker.service -> to change the path go to docker.service file and then add your path at ExecStart start your path after docker d like -g /new/vinay/docker
+
+before that stop the docker engine with command -> systemctl stop docker.service to stop all the docker services
+
+to stop the socket use command docker.socket
+
+before doing any changes stop docker engine
+after did your changes start the docker engine. 
+
+docker exec --it cont2 /bin/bash -> to run contaainer
+
+go to path /new/vinay/docker 
+then create a file then whatver the files created will comes under the container because the volume is attatched to that container.
+
+to mount a directory from one place to another place use command -> docker run -it -d --name cont3 --mount type=bind,src=/root/sync,dst=/tmp httpd /bin/bash
+-sync is directory name created using mkdir sync.
+-src = host path 
+-dst = container path.
+
+docker volume inspect [volume-name] - inspect is used to check all the details 
+
+shared volume
+
+linking a volume from one container to another container
+
+docker run -it -d --name cont4 --privileged=true --volumes-from cont2 httpd /bin/bash
+
+that is how you caan share volume with another container
+
+now try writing some data into cont2
+
+docker exec -it cont4 /bin/bash
+ls
+go inside v1 - cd v1
+ls
+touch my1
+
+file created in cont2 now go to cont4 to check my1 also synced to cont4 or not as it is using the shared volume
+
+apt-get install git and yum install git are same.
+
+creating an new image from an exisitng container and then if we create a new container from the new image then all the data from the old contianer will be copied to new container.
+
+docker commit cont6 vinay:v1
+
+new image[vinay:v1] will be created from cont6.
+
+docker exec -d cont7 mkdir udp
+
+docker network ls -> to check all available networks
+
+docker create volume - to create a volume
+
+docker run -it -d --name cont8 --mount type=bind,src=/root/sync,dst=/tmp --network vinay --cpus 0.25 --expose 8081/tcp --hostname vinay --memory 6mb --pull centos
+
+
+docker run -it -d --name cont1 -p 80:80/tcp httpdimage:new /bin/bash
+docker exec -it cont1 /bin/bash
+
+docker volume ls-> to check the list of volume created.
+
+docker volume create [volume-nam] ->  to create a volume in docker.
+docker volume create ravi1 -> here ravi1 is a volume created.
+
+all the docker related stuff stored in the path /var/lib/docker here we can see all the things like the containers,volumes,images and everything.
+
+cd ~ -> to go to the root path.
+
+
+docker run -it -d --name cont2 -v ravi1 httpd
+this is a command to create a new container and attatch a volume which is already created.
+-ravi1 is the volume which was previously created.
+
+docker run -it -d -v volume1:/tmp --name cont10 httpd
+creating a new container named cont10 from image httpd and attatching the volume[volume1] to it
+
+
+how to go inside a docker container
+docker exec -it hello /bin/bash
+here hello is the container name
+
+achieving shared volume in docker containers
+here we are using the same volume for multiple containers
+first create a volume 
+	docker volume create volume1
+now create the container and mounting the volume1 to it
+	docker run -it -d -v volume1 --name container1 httpd
+	so here we have a container created and volume1 is attatched to the container.
+now create another container and mount volume1 to it.
+	docker run -it -d -v volume1 --name container2 httpd
+	so here we have a container created and volume1 is attached to the container.
+	we can check that by going inside the container by the command mentioned in #L96
+now if you create anything by going into container2 the same will be reflected in volume1 and if you create anything in container1 also the things will be stored in volume1 because here volume1 acts as a shared volume.
+
+create a docker file
+then build the docker file using the command - docker build -t [repository-name:tagname] imagename .
+
+pushing an Dockerfile into dockerhub
+create a Dockerfile and add data 
+For example 
+
+FROM httpd:latest
+CMD ["echo","Hello World"]
+
+this is the Dockerfile content
+
+now build the dockerfile with tab using 
+docker build -t errorsolver/ravirep:v1.0 .
+	- here errorsolver is your dockerhub username
+	- ravirep is your repository name
+	- v1.0 is a tagname
+	- .(dot) is the default location of your dockerfile
+now push the docker file using command
+	docker push errorsolver/ravirep:v1.0
+	-successfully pushed to docker hub

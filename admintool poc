@@ -1,0 +1,12 @@
+Edit Countries/Subdivisions - POC - done
+Product Helper - poc -done
+Invalid orders component - enter text,enter page size,search -> get data ->  display it in table with pagination.
+Bp Orders component - select page size,search,display,pagination
+Bp Cos Taken Orders component - same as Bp Orders
+Bp Cos Orders to ship - same as Bp Orders
+Pt Orders - same as Bp Orders
+Ebook orders - startdate,enddate,items to show,one check box,search,display,paginaation
+Conference Order Report - startdate,enddate,conference id,dropdown - line items,all -> search,display with pagination.
+Gt Messages - search box input,search, display with pagination
+Invoices - It is also like enter invoice no/isbn get the data display as table,when clicked on view open a popup like in customer-lookup invoices section and load the particular invoice data same as in customer-lookup
+Admintool user configuration - we can search for a existing user,pagination was there,can edit an existing user,when clicked on edit a form will be opened with the existing details,we click on delete the user will be deleted,when we click on new a form will be opened to fill the details of a new user and save it.

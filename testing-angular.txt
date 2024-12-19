@@ -1,0 +1,44 @@
+spyOn()
+oka function lopala inko function
+vunnappudu ah inner function anedhi
+call avthundha or work avthundha
+ledha ani check cheyyataniki spies
+use chestham
+
+for example manaki oka function vundhi
+app.component.ts lo
+handleLogin(){
+	this.service.redirect();
+}
+e handleLogin() lopala oka service function 
+ni call chesthunnam
+so ippudu e inner function call
+avthundha ledha ani check cheyyataniki
+ila chestham like
+
+let spy = spyOn(service,'redirect');
+deeni syntax kosam matladukovali ante
+2 arguments vuntay first argument 
+service class instance,2nd argument is
+the inner function name.
+
+ippudu ila cheyyali
+already service class ki instance 
+create chesi define chesukuntam like
+let service:LoadingService;
+service = new LoadingService(); ila
+
+let spy = spyOn(service,'redirect');
+
+ippudu outer function ni call cheyyali
+
+component.handleLogin();
+
+outer function ni call chesam,so outer 
+function lopala vunna inner function call 
+avthundha ledha ani check cheyyataniki
+ippudu assertion chestham
+like
+expect(spy).toHaveBeenCalled();
+
+ila chestham.

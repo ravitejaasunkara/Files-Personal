@@ -1,0 +1,438 @@
+Elastic search is mainly used for searching purpose.
+It gives the search results fast because it will search for index rather than text.
+
+
+Cluster
+A node is a single server that is part of a cluster. A cluster is a group of nodes that work together to provide a single Elasticsearch instance. Clusters can be scaled horizontally by adding more nodes.
+
+The data is getting stored in cluster and the data is stored as a parts in nodes, i mean whatever the data in cluster which is distributed among all the nodes.
+
+the data in the cluster is distributed among the nodes. This is done by dividing the data into shards and then assigning each shard to a node. This allows Elasticsearch to scale horizontally by adding more nodes to the cluster.
+
+
+When a client performs a search or indexing operation, the request is routed to the master nodes. The master nodes then coordinate the operation across the data nodes. For example, if a client performs a search, the master nodes will route the search request to all of the data nodes that contain shards of the index that is being searched. The data nodes will then perform the search on their respective shards and return the results to the master nodes. The master nodes will then aggregate the results and return them to the client.
+
+
+
+Data nodes: Data nodes store data and perform indexing and search operations.
+Master nodes: Master nodes are responsible for managing the cluster and coordinating the activities of other nodes.
+Coordinating nodes: Coordinating nodes forward search requests to data nodes and coordinate the aggregation of results.
+Client nodes: Client nodes forward search and indexing requests to other nodes in the cluster.
+
+
+An Elasticsearch shard is a logical unit of data that can be stored on one or more nodes in a cluster. Shards are used to distribute data across multiple nodes, which improves scalability and performance.
+
+Yes, that is correct. A shard is responsible for distributing data across multiple nodes in an Elasticsearch cluster. This is done by dividing the data into multiple shards, and then assigning each shard to one or more nodes.
+
+the data in ES Cluster will be devided into multiple parts, let's name the parts as shards and these shards are being given to multiple nodes in a Cluster.
+
+Each shard can bu places in multiple nodes.
+
+Each shard in Elasticsearch is replicated across multiple nodes. This is done to improve redundancy and availability. If one node fails, the data is still available on the other nodes.
+
+
+No, an index does not consist of clusters. An index is a logical collection of documents, and it is stored on one or more nodes in a cluster.
+
+A cluster is a group of nodes that work together to store and manage data. Indices are distributed across multiple nodes in a cluster to improve scalability and performance.
+
+However, it is possible to have multiple indices on a single node. This is useful for storing different types of data on the same node, or for storing data that is frequently accessed together.
+
+Here is an example of how multiple indices can be used on a single node:
+
+```
+Node 1
+  Index 1 (product data)
+  Index 2 (customer data)
+  Index 3 (order data)
+```
+
+In this example, all three indices are stored on the same node. This can improve performance for queries that need to access data from multiple indices, such as a query that searches for products that have been purchased by a specific customer.
+
+Overall, indices are not stored on clusters, but they can be distributed across multiple nodes in a cluster to improve scalability and performance.
+
+I hope this helps to clarify the relationship between indices and clusters in Elasticsearch.
+
+An Elasticsearch index is a logical collection of documents. It is similar to a database table in a relational database. Each index has its own schema, which defines the fields that can be stored in the index.
+
+Documents in an index are stored in shards, which are distributed across multiple nodes in the cluster. This allows Elasticsearch to scale horizontally and to improve the performance of search and aggregation queries.
+
+
+index consists of multiple doscuments which are devided into shards ans shards are distributed to different nodes.
+
+An index allows you to:
+
+Store and manage data in a logical way.
+Search for data quickly and efficiently.
+Aggregate data to generate insights.
+Visualize data using dashboards and reports.
+
+
+
+creating an inverted index to the documents is called indexing.
+
+whenever a document is uploaded to ES, ES will start the process of inverted index for the document means lets see the following example
+
+Document 1: "The quick brown fox jumped over the lazy dog."
+Document 2: "The lazy dog slept in the sun."
+
+the inverted index will be created as follows.
+
+Term | Documents
+-----|------------
+brown | 1
+dog | 1, 2
+fox | 1
+jumped | 1
+lazy | 1, 2
+over | 1
+quick | 1
+slept | 2
+sun | 2
+the | 1, 2
+
+As you can see, the inverted index lists each word in the documents and the documents that contain that word. This way, when you search for a word, the search engine can quickly find all the documents that contain that word.
+
+For example, if you search for the word "dog", the search engine would look up the inverted index and find that the word "dog" appears in documents 1 and 2. The search engine would then return these two documents to you.
+
+this is how ES works, the process of creating inverted index for the documents is called indexing in ES.
+
+
+
+Mappings in ES.
+A mapping in Elasticsearch defines the structure of a document and how it is stored and indexed. It specifies the data type of each field, how fields are analyzed for search and aggregation, and other metadata related to document storage and retrieval.
+
+before inserting data into ES, first we need to define mapping, Mappings provide Elasticsearch with information about the structure and data types of fields, which helps it to optimize search operations, ensure data consistency, and perform advanced text analysis and aggregation.
+
+Mapping is like a model for a document.
+
+example:
+
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "standard"
+      },
+      "author": {
+        "type": "keyword"
+      },
+      "publication_date": {
+        "type": "date"
+      },
+      "price": {
+        "type": "double"
+      },
+      "genre": {
+        "type": "keyword"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "snowball"
+      }
+    }
+  }
+}
+
+this is mapping.
+
+{
+  "title": "The Lord of the Rings",
+  "author": "J.R.R. Tolkien",
+  "publication_date": "1954-07-29",
+  "price": 19.99,
+  "genre": "fantasy",
+  "description": "In an age of magic and wonder, an unassuming hobbit named Frodo Baggins is entrusted with the fate of the world when he inherits the One Ring, an artifact of immense power created by the Dark Lord Sauron. With the help of a fellowship of loyal companions, Frodo embarks on a perilous journey to destroy the Ring in the fires of Mount Doom and save Middle-earth from Sauron's dominion."
+}
+
+this is document.
+
+-------------------------------------------------------
+
+{
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "keyword"
+      },
+      "address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "text",
+            "analyzer": "standard"
+          },
+          "city": {
+            "type": "text",
+            "analyzer": "standard"
+          },
+          "state": {
+            "type": "keyword"
+          },
+          "zip_code": {
+            "type": "keyword"
+          }
+        }
+      },
+      "tags": {
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+this is a mapping.
+
+{
+  "name": "John Doe",
+  "address": {
+    "street": "123 Main Street",
+    "city": "Anytown",
+    "state": "CA",
+    "zip_code": "98765"
+  },
+  "tags": [
+    "programming",
+    "basketball",
+    "music"
+  ]
+}
+
+
+this is a sample document that has been inserted.
+
+
+{
+  "query": {
+    "match": {
+      "name": "John Doe"
+    }
+  }
+}
+
+this is a query to fetch documents.
+
+
+If you have given the query {"query": {"match": {"firstName": "John Doe" }}} even though there is no field named firstName in the mapping, Elasticsearch will return an error message saying that it cannot find the field. This is because Elasticsearch uses the field names defined in the mapping to identify the fields that it should search. If the field name does not match, Elasticsearch will not be able to find the field and will not be able to perform the search.
+
+
+http://localhost:9200/products/_search
+the above endpoint will give you all the products present in index "products" here "products" is an index.
+
+for querying purpose do this
+http://localhost:9200/products/_search
+
+give a request body 
+{
+  "query": {
+    "match": {
+      "name": "fruit"
+    }
+  }
+}
+then it will fetches all the documents which is having the word "fruit".
+
+for pagination you can hit 
+http://localhost:9200/products/_search?from=10
+
+you'll get products from 10th index.
+
+
+lets go through the ES response fields
+{
+    "took": 4,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 13,
+            "relation": "eq"
+        },
+        "max_score": 0.54014194,
+        "hits": [
+            {
+                "_index": "products",
+                "_type": "_doc",
+                "_id": "8",
+                "_score": 0.49149442,
+                "_source": {
+                    "_class": "elastic.search.poc.entity.Product",
+                    "id": 8,
+                    "name": "Watermelon",
+                    "description": "A large, juicy fruit with a high water content."
+                }
+            }
+        ]
+    }
+}
+
+took - time taken to execute query.
+timed_out - a boolean which represents if the query was timed out.
+_shards - represents no of shards that are involved in query
+hits : this is a object that consists of information about total no of documents found.
+	total: This object contains information about the total number of matching documents.
+		value: This field indicates the total number of matching documents.
+		relation: This field indicates the relationship between the actual number of matching documents and the requested number of documents. In this case, the relationship is eq, which means that the actual number of matching documents is equal to the requested number of documents (relation: "eq").
+
+		hits: This array contains an object for each matching document. Each object contains the following fields:
+			_index: This field indicates the index that the document belongs to (_index: "products").
+			_type: This field indicates the type of the document (_type: "_doc").
+			_id: This field indicates the unique identifier of the document (_id: "2").
+			_score: This field indicates the relevance score of the document. In this case, the score is 0.54014194 (_score: 0.54014194).
+			_source: This object contains the actual data of the document. In this case, the data includes the 	following fields:
+			_class: This field indicates the class of the document (_class: "elastic.search.poc.entity.Product").
+				id: This field indicates the identifier of the product (id: 2).
+				name: This field indicates the name of the product (name: "Banana").
+				description: This field indicates the description of the product (description: "A yellow fruit with a soft texture.").
+
+
+Query DSL in ES.
+In Elasticsearch, Query DSL (Domain Specific Language) refers to a JSON-based query language that allows users to construct complex and expressive search queries.
+
+http://localhost:9200/_search
+this api will gives all the indexes and all the records in all indexes.
+
+size:50 attribute inside query object will set size of response object.
+
+1.Match query
+{
+    "query":{
+        "match":{
+            "description":"fruit"
+        }
+    }
+}
+this query search returns documents in index where the description field consists of word "fruit".
+
+2.Multi-Match query
+{
+  "query": {
+    "multi_match": {
+      "query": "apple",
+      "fields": ["name", "description"]
+    }
+  }
+}
+
+this query will search for documents where the name and description field should contains the word "apple".
+
+-----------------------------------
+updating a mapping in ES
+
+{
+    "customers": {
+        "mappings": {
+            "properties": {
+                "_class": {
+                    "type": "keyword",
+                    "index": false,
+                    "doc_values": false
+                },
+                "email": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "firstname": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "id": {
+                    "type": "long"
+                },
+                "lastname": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "phone_number": {
+                    "type": "keyword"
+                },
+                "profession": {
+                    "type": "text"
+                }
+            }
+        }
+    }
+}
+
+suppose this is the mapping of customer index, now you want to add another field into this mapping, for that what you need to do is 
+hit a put request
+http://localhost:9200/customers/_mapping
+with request body
+{
+  "properties":{
+    address:{
+      "type":"keyword"
+    }
+  }
+}
+
+this will give you response as 
+{
+  "acknowledged":true
+}
+
+once you have done that go to your java code and there also add your new field private String address;
+--------------------------------------------------------------------
+to update a field in document, you can make a post request
+
+http://localhost:9200/products/_update/8
+
+8 is the document id here
+
+you need to send request body that what field you want to update with what data
+
+{
+    "doc":{
+        "tasteScore":5
+    }
+}
+
+for example you want to update totalScore field with 5 so you can make a post request as above
+
+--------------------------------------------------------------------
+to clear cache of an index do this
+http://localhost:9200/products/_cache/clear
+
+-------------------------------------------------------------------
+to add a new document to a index, you can hit a post request
+like this 
+http://localhost:9200/products/_doc
+
+with request body 
+
+{
+    "id": 55,
+    "name": "Apple fruit",
+    "description": "Apple fruit is too tasty",
+    "tasteScore":5
+}
+
+if you miss any fields in request object then those fields will be given the default values.
+
+
+cluster is a group of nodes
+data in nodes is splitted into shards, shard is like a unit of a data.
+index is like a group of documents which shares a similar structure.
+document is whatever the data that we have supplied to ES
+mapping - mapping of a index tells how the docuemnts in a index are stored and indexed.
+queries - are like commands to retrieve specific data from ES.

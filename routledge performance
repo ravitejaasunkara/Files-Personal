@@ -1,0 +1,41 @@
+first one - from india to /india
+middle on - us to homepage
+lastone - india to homepage
+
+
+
+https://www.google-analytics.com/analytics.js
+this is being called 2 times in /india and once in /us homepage,/india homepage
+
+
+https://static.hotjar.com/c/hotjar-2769776.js?sv=7
+no there in /us hompage
+
+https://snap.licdn.com/li.lms-analytics/insight.min.js
+not there in /us homepage
+
+/js/jquery.blockUI.js
+not there in /india homepage
+
+https://pi.pardot.com/pd.js
+2 times calling in /india
+not present in /us homepage,/india homepage
+
+https://cdn-live.conductor.com/v1/b552ca32-716a-43e9-b064-9088a94d2f77/live.js
+not present in /us homepage,/india homepage
+
+(bundle) ../../js/src/tooltip.js
+not in /us homepage,/india homepage
+
+https://pi.pardot.com/analytics?ver=3&visitor_id=2397036709&visitor_id_sign=55766bfcdc49ecd4f4ed79e0c0b0b102760dc8fae70cc8382ce9ac89f71837575c609623df7fb431199119ee336d1888811af44c&pi_opt_in=&campaign_id=81779&account_id=112042&title=Routledge%20-%20Publisher%20of%20Professional%20%26%20Academic%20Books&url=https%3A%2F%2Fwww.routledge.com%2Findia&referrer=
+called 2 times in /india 
+not in /us homepage
+
+(bundle) ../../js/src/carousel.js
+not present in /us homepage,/india homepage
+
+https://go.taylorandfrancis.com/analytics?conly=true&visitor_id=2397036709&visitor_id_sign=55766bfcdc49ecd4f4ed79e0c0b0b102760dc8fae70cc8382ce9ac89f71837575c609623df7fb431199119ee336d1888811af44c&pi_opt_in=&campaign_id=81779&account_id=112042&title=Routledge%20-%20Publisher%20of%20Professional%20%26%20Academic%20Books&url=https%3A%2F%2Fwww.routledge.com%2Findia&referrer=
+2 times in /india
+
+https://connect.facebook.net/en_US/fbevents.js
+the call is happening 2 times in all 3 places 	

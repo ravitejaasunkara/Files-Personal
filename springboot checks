@@ -1,0 +1,22 @@
+some checks while mapping data
+1.If you are getting a single object of data from repository then assign it to Optional
+for example
+	     Optional<Product> findByIsbn(String isbn);
+2.now in service file recieve the data like below
+		 Optional<Product> result = prodRepository.findByIsbn(isbn);
+3.now do a null check like below 
+		 Product productData = result.orElseThrow(() ->{
+				logger.error("error occured");
+				return new NotFoundException("No data found for isbn : "+isbn);
+		 });
+4.now send this productData to mapper class mapper method like below
+		 ProductHelperProductDTO mapToProductDTO = mapper.mapToProductDTO(productData);
+
+5.thats it.
+
+Using implemetation class is different approach
+
+6.here we will do the same but additionally we declare a interface with methods you want to declare or use in service
+for more information refer here
+https://github.com/tandfgroup/routledge-order-management/blob/develop/src/main/java/com/tandf/ecommerce/routledge/ordermanagement/service/impl/InvoiceServiceImpl.java
+

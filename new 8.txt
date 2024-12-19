@@ -1,0 +1,17 @@
+display : block, takes full size of screen
+justify-content: x-axis
+align-items : y-axis
+button,input takes total height of its parent container
+width percentages are responsive 
+
+
+display:flex;
+justify-content:space-around; //having equal space before and after an element
+space-between : first item at start,last item at end and remaining items adjusted in middle space equallly
+align-items:flex-end; items align at the end vertically in a column
+align-items- align the items in center vertically
+justify-content:center align items center horizontally
+
+
+
+

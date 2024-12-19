@@ -1,0 +1,205 @@
+image
+title
+subtitle
+content
+
+
+
+image
+title
+subtitle
+content
+--- text
+
+
+--- markup
+
+<h2>something<h2>
+<code>alsdjfa;sdjf;asjd;a</code>
+
+
+--- EDITOR ( visual editor ---> controls )
+/////
+asdha;sjdf;asdf
+imagal
+
+JSON : 
+
+
+
+{
+	heading: {
+	  type: 'h2',
+	  content: SomeHeader,
+	},
+	code: {
+	  lang: JS,
+	  content: const a = 23;
+	},
+	image: {
+	  src: http://sinecomo
+	  size: 20
+	},
+	paragraph: {
+	  content: alsdjf;lasjd;fajsd;flajs;dja;sdfja;df,
+	  align: left-align,
+	  color: red,
+	  font-weight: bold,
+	},
+	subheading: {
+      content: noball of bumrah,
+      styling: {
+         font-weight: bold,
+         color: black,
+         from: 0,
+         to: 6
+      }
+	},
+	heading: {
+
+	}
+}
+
+
+
+
+
+
+myfirstblog --- data = [
+  [
+    "Happy "
+  ],
+  [
+  	"http://myservice.com/puppy.jpg",
+  	[
+  		"i"
+  	]
+  ]
+  [
+    "flow",
+    [
+      [
+        "b"
+      ],
+      [
+        "s"
+      ]
+    ]
+  ],
+  [
+    " of mine",
+    [
+    	["h",
+    		"purple"
+    	]
+    ]
+  ]
+]
+
+
+for( dat in data ):
+   if(data[1] == null):
+      content += <p>{data[0]}</p>
+   else if(data[1]) {
+      cont = dat[0]
+      for ( appl in data[1]):
+          if(appl[0] == "h") content += <p style={color={appl[1]}}>cont</p>
+          if(appl[0] == "i") content += <img href={appl[1]}</img>
+          content += <{appl}>cont</appl> ---> <s><b>flow</b></s>
+   }
+
+
+notion.com/myfirstblog
+medium.com/myfirstblog
+
+
+
+
+
+const useFetch  = () => {
+
+	const [data, setData] = useState();
+	const [isLoading, setIsLoading] = useState(false);
+
+
+	 const callUrl = async (url) => {
+	    setIsLoading(true);
+	    const res = await fetch(url);
+	    cont json = awati res.json()
+	    setDatat(json);
+	    setIsLoading(false);
+	 }
+	
+	return {
+		data,
+		callUrl,
+		isLoading,
+	};
+}
+
+
+
+const Mybutton = () => {
+	
+	const {data, callUrl, isLoading} = useFetch();
+
+	useEffect(()=>{
+		callUrl(url);
+	}, [])
+
+   const onClick = () => {
+   		callUrl(url);
+   }
+
+   if(isLoading) return <SPinner />
+	
+   return <button  onClick>{data}</button>
+}
+
+const Table = ....
+cosnt Menu = ...
+
+const LoadingButton = WithLoadig(MyButton)
+cosnt LoadingTable = WithLoadig(Table)
+const LladingMenu = .....
+
+
+const WithLoading = (props: {
+	isLoading,
+	children
+}) => {
+	if(isLoading) return <Spinner />
+	else return children;
+}
+
+
+
+
+
+isEven()
+isOdd()
+isLoading()
+
+
+
+
+
+const MyApp = () => {
+	
+	const {data, callUrl, isLoading} = useFetch();
+	const [] = useState();
+
+	useEffect(()=>{
+		callUrl(url);
+	}, [])
+
+   const onClick = () => {
+   		callUrl(url);
+   }
+	
+   return <div>
+   		<LoadingButton isLoading />
+   		<Loadingtable isLoading />
+   		<LoadingMenu isLoading />
+   </div>
+}

@@ -1,0 +1,54 @@
+it('should have a title',()=>{
+    expect(component.title).toBe('some component');
+    const title = fixture.debugElement.query(By.css('h1')).nativeElement;
+    expect(title.innerHTML).toBe('Going to Mars');
+  })
+  it('verifying uisng Id',() =>{
+    const btnText = fixture.debugElement.nativeElement.querySelector('#yes-btn');
+    expect(btnText.innerHTML).toBe('Yes')
+  })
+  it('verifying using className',()=>{
+    const pTxt = fixture.debugElement.nativeElement.querySelector('.p1');
+    expect(pTxt.innerHTML).not.toBeNull();
+    expect(pTxt.innerHTML.length).toBeGreaterThan(0);
+  })
+  it('get attributes',()=>{
+    const buttonText = fixture.debugElement.nativeElement.querySelector('#no-btn');
+    expect(buttonText.disabled).toBeTruthy();
+  })
+  it('before clicking on button',()=>{
+    expect(component.text.length).toBe(0);
+  })
+  it('after clicking on button',()=>{
+    const btnRes = fixture.debugElement.nativeElement.querySelector('#yes-btn');
+    btnRes.click();
+    expect(component.text).toBe('Iam in');
+  })
+  it('*ngIf',()=>{
+    component.show = !!component.show;
+    fixture.detectChanges();
+    const element = fixture.debugElement.query(By.css('#title'));
+    expect(element).toBeTruthy();
+  })
+  it('*ngFor',()=>{
+    const eles = fixture.debugElement.queryAll(By.css('.row'));
+    expect(eles.length).toBe(component.alphabets.length);
+  })
+
+
+//toBe(==)
+//toEqual(===)
+//toContain
+//toMatch (regex)
+
+
+it('tobe',()=>{
+    let a = { val:10};
+    let b = { val:10};
+    expect(a).toEqual(b);
+  })
+  it('array',()=>{
+    let arr = [1,2,3]
+    expect(arr).toContain(2)
+    expect(arr).toEqual([1,2,3])
+  })

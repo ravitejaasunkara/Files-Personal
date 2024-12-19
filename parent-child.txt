@@ -1,0 +1,32 @@
+HOW TO SEND DATA FROM PARENT TO CHILD IN ANGUAR
+
+1.IN parent.component.ts file declare the fields that you want to send to chhild.
+2.NOW BIND THE FIELDS TO CHILD SELECTOR AS OPEN parent.component.html AND INSIDE TO IT place
+the child selector and bind the data to the child selector like - 
+<app-child [parentData]="name"></app-child>
+here name is the field that you want to send from parent to child where as [parentData] is any variable
+that we use to bind the data fields.
+3.now go to child and accept the data by decalring the field as 
+@Input() parentData;
+now the data is sent from parent and received in child.
+
+
+SENDING DATA FROM CHILD TO PARENT
+can be done as follows
+-go to child.component.ts and declare like @Output sendingDataToParent = new EventEmitter();
+-now declare a button child.component.html and declare a button to raise the eventemitter.
+-the button will call a function on click event like this " this.sendingDataToParent.emit('sending data
+from parent') 
+-whatever you have placed inside emit we are sending that data.
+-now in parent.component.html take the child selector and add like
+-<app-child (sendingDataToParent)="data=$event"></app-child>
+-declare the field "data" in parent.component.ts 
+-that's it we got the data from child to parent.
+
+
+
+this child-parent relationship we can also use to ngOnChanges(){} to detect the changes made in parent 
+will be reflected in child;
+
+add a input tag in parent and send the data which is entered in input tag,whenever we made changes the
+changes are displayed in ngOnChanges() SimpleChanges Object.
