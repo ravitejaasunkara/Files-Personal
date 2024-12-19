@@ -1,0 +1,21 @@
+.item {
+    position: relative;
+    text-decoration: none;
+}
+
+.item::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color:  rgb(109 40 217);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.item:hover::before {
+    transform: scaleX(1);
+}
