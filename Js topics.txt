@@ -1,0 +1,954 @@
+SELECT DISTINCT (tac.VALUE) as Email, ta.NAME as Name,tar.[ROLE] as Role
+FROM TBL_APPLICATION_ROLE tar 
+JOIN TBL_APPLICATIONS ta ON ta.ID = tar.APPLICATION_ID
+JOIN TBL_APPLICATION_CONFIGURATION tac on tac.APPLICATION_ID = ta.ID 
+WHERE tar.[ROLE] IN ('admin', 'affilmarketingperson', 'bookpointperson', 'custsvc', 'gtuser', 'guvnor', 'marketing', 'ptsubsystem', 'sales', 'tldperson', 'webclient', 'PromotionOperations')
+and tac.VALUE LIKE '%.com' or tac.VALUE LIKE '%.uk' or tac.VALUE LIKE '%.au' or tac.VALUE LIKE '%.local' or tac.VALUE LIKE '%.sg';
+
+
+select top 100 tii.INVOICE_ID,tii.PROMOCODE,tii.UNIQODO_CODE 
+from TBL_INVOICE_ITEMS tii
+join TBL_INVOICES ti on ti.ID = tii.INVOICE_ID 
+WHERE tii.PROMOCODE is not null and tii.UNIQODO_CODE is not null order by ti.TRANSACTION_DATE desc;
+
+
+
+select * from TBL_INVOICES ti order by ti.TRANSACTION_DATE DESC;
+
+select * from TBL_INVOICES ti where ti.Vitalsource_code is not null;
+
+SELECT * FROM TBL_SHOPPERS ts where ts.EMAIL LIKE 'crohanrobert@gmail.com';
+
+
+select DISTINCT tc.id as cart_id, tspa.PARTY_ID as user_id, tc2.ISO_NAME  as currency ,ts.ID as external_system_reference, ts.EMAIL as emailId ,
+	case 
+		when tc.CURRENCY_ID = 1001 then 'US'
+		when tc.CURRENCY_ID = 1002  then 'GB' 
+		when tc.CURRENCY_ID = 1008 then 'AU' 
+		when tc.CURRENCY_ID = 1011 then 'NZ'
+		else ''
+	end as displayCountryCode, tc.DISCOUNT_CODE,tc.UNIQODO_CODE  as uniqodoCode
+from TBL_CARTS tc join TBL_SHOPPERS ts  on ts.ID = tc.SHOPPER_ID 
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa  on tspa.SHOPPER_ID = ts.ID 
+join TBL_CURRENCIES tc2  on tc2.ID = tc.CURRENCY_ID join TBL_CART_ITEMS tci on tci.CART_ID = tc.ID
+where tc.ID in (
+	select  MAX(tc.ID) from TBL_CARTS tc join TBL_CART_ITEMS tci on tc.ID = tci.CART_ID 
+	join active_shoppers as2 on as2.id = tc.SHOPPER_ID 
+	where tc.CONFERENCE_ID is null
+	group by tc.SHOPPER_ID
+) and tc.Last_Modified_Date  >= '2024-06-01' or tc.DATE_CREATED >= '2024-06-01';
+
+
+select tci.CART_ID cart_id  , tp.ISBN as sku_id , 'UBW_BOOK' as sku_category, tb.CODE as sku_type  ,tci.QUANTITY, 
+				tpt.CODE  as subscriptionType,tb.CODE as bindingType  , tci.PROMOCODE as promoCode,tci.UNIQODO_CODE as uniqodoCode
+from TBL_CART_ITEMS tci join TBL_CARTS tc on tc.id = tci.CART_ID  
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tspa.SHOPPER_ID = tc.SHOPPER_ID 
+join TBL_PRODUCTS tp ON tci.PRODUCT_ID = tp.ID 
+join TBL_BINDINGSTYLE tb on tb.ID = tp.BINDINGSTYLE_ID
+join TBL_PRICE_TYPE tpt on tpt.ID = tci.PRICE_TYPE_ID
+WHERE tc.Last_Modified_Date  >= '2024-06-01' or tc.DATE_CREATED >= '2024-06-01';
+
+
+
+SELECT 
+    COUNT(*) AS paymentCount,
+    ti.PAYMENT_TYPE AS paymentType,
+    ti.STATUS_ID AS statusId
+FROM 
+    TBL_INVOICES ti
+WHERE 
+    ti.PCI LIKE 'stripe%' 
+    AND ti.STATUS_ID = 1008
+GROUP BY 
+    ti.PAYMENT_TYPE, ti.STATUS_ID;
+
+select sum(tii.LINE_TOTAL) from TBL_INVOICES ti 
+join TBL_INVOICE_ITEMS tii on tii.INVOICE_ID = ti.ID  WHERE ti.PCI like 'stripe%' and ti.TRANSACTION_DATE >= '2024-10-22';
+
+INSERT INTO UNITY_Ecommerce_PROD.dbo.TBL_CART_PARTY_ASSOCIATION
+(CART_UUID, PARTY_ID, LAST_UPDATED)
+VALUES( '60bd9d76-f7b5-4f22-9c0e-5de73715fa5f', 857292499, getdate());
+
+
+
+SELECT ROW_NUMBER() OVER (ORDER BY ts.id) AS seq_id,
+ts.ID as Shopper_ID, ts.EMAIL , ts.FIRST_NAME, ts.LAST_NAME
+from active_shoppers as2 join TBL_SHOPPERS ts on ts.ID  = as2.id
+left join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tspa.SHOPPER_ID = ts.ID
+where tspa.ID is null and ts.FIRST_NAME is not null and ts.LAST_NAME is not null
+and ts.FIRST_NAME != '' and ts.LAST_NAME != '';
+
+
+select * from active_shoppers as2;
+
+select count(ti.ID),ti.CURRENCY_ID from TBL_INVOICES ti 
+join TBL_CURRENCIES tc on tc.ID = ti.CURRENCY_ID WHERE ti.TRANSACTION_DATE >='2024-10-21' group by ti.CURRENCY_ID;
+
+SELECT COUNT(*) from TBL_INVOICES ti WHERE ti.TRANSACTION_DATE >= '2024-10-22';
+
+SELECT * from TBL_SHOPPERS ts WHERE ts.ID = 2216653;
+SELECT * from TBL_INVOICES ti WHERE ti.SHOPPER_ID = 2227890;
+
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa WHERE tspa.SHOPPER_ID = 2216653;
+
+SELECT * from TBL_SHOPPERS ts WHERE ts.EMAIL like 'rachelchen0105@gmail.com%';
+
+select * from TBL_SHOPPERS ts WHERE ts.EMAIL LIKE 'rachamallu.venugopalreddy@taylorandfrancis.com%';
+
+select * from TBL_PROFILES tp WHERE tp.SHOPPER_ID = 839324
+
+select * from tbl_shoppers ts WHERE ts.DATE_CREATED >= '2014-01-01' and ts.DATE_CREATED <= '2014-03-02';
+
+SELECT ts.SHOPPER_ID 
+FROM TBL_SHOPPERS ts 
+JOIN TBL_PROFILES tp ON tp.SHOPPER_ID = ts.SHOPPER_ID 
+group by ts.SHOPPER_ID HAVING COUNT(ts.SHOPPER_ID) > 1; 
+
+SELECT ti.EMAIL, ti.ID, ti.INVOICE_NO,ti.TRANSACTION_DATE 
+FROM TBL_INVOICES ti 
+WHERE (ti.EMAIL LIKE '%blaing@nswbar.asn.au%'
+   OR ti.EMAIL LIKE '%adam@bespokecinemas.com%'
+   OR ti.EMAIL LIKE '%theparatres@gmail.com%'
+   OR ti.EMAIL LIKE '%khwankhaw.s@gmail.com%'
+   OR ti.EMAIL LIKE '%geoff@boydwilkins.nz%'
+   OR ti.EMAIL LIKE '%karyndsuchy@gmail.com%'
+   OR ti.EMAIL LIKE '%almitadelagarza@gmail.com%')
+   AND ti.TRANSACTION_DATE >= '2024-10-20';
+
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+select * from TBL_INVOICES ti where ti.EMAIL like 'francesca.fitzg@gmail.com'
+
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa WHERE tspa.PARTY_ID = 857846533
+SELECT * from TBL_SHOPPERS ts where ts.id = 2228942
+ 
+
+select tp.SHOPPER_ID , count(*) from TBL_PROFILES tp  left join TBL_SHOPPER_PARTY_ASSOCIATION tspa 
+on tp.SHOPPER_ID = tspa.SHOPPER_ID where tspa.ID is NULL
+group by tp.SHOPPER_ID HAVING count(*) > 2;
+
+
+select * from TBL_PROFILES tp where tp.SHOPPER_ID = 1272243;
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa where tspa.SHOPPER_ID = 1272243;
+
+SELECT ti.PAYMENT_TYPE  from TBL_INVOICES ti order by ti.TRANSACTION_DATE desc; 
+select EMAIL from TBL_SHOPPERS ts WHERE ID = 1272243;
+
+SELECT ti.INVOICE_NO  from TBL_INVOICES ti WHERE ti.TRANSACTION_DATE >='2024-10-24' and ti.PAYMENT_TYPE LIKE 'google%' order by ti.TRANSACTION_DATE desc; 
+
+
+select ti.PAYMENT_TYPE,tcct.NAME,ti.INVOICE_NO,ti.TRANSACTION_DATE  from TBL_INVOICES ti
+join TBL_CREDIT_CARD_TYPES tcct on tcct.ID = ti.CC_TYPE_ID 
+where ti.TRANSACTION_DATE >= '2024-10-24' and ti.CC_TYPE_ID = 1;
+
+select * from TBL_CREDIT_CARD_TYPES tcct 
+
+
+select * from tbl_invoices ti ;
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa WHERE CART_UUID = '1faea209-5268-494a-9723-0abaeabe0ef5';
+
+select ts.EMAIL ,tspa.PARTY_ID from TBL_SHOPPERS ts 
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa on ts.ID = tspa.SHOPPER_ID 
+-- join TBL_INVOICES ti on ti.SHOPPER_ID = ts.SHOPPER_ID 
+WHERE ts.EMAIL in ('amywin@umich.edu','harpadora@gmail.com','maryo@gard-sibley.org','Robertfekete@gmail.com','robinforsyth@gmail.com');
+
+
+
+select * from TBL_INVOICE_ITEMS tii WHERE tii.INVOICE_ID = 3040485;
+
+SELECT tp.ISBN,tp.PLANNED_PUBLICATION_DATE,tp.ACTUAL_PUBLICATION_DATE  
+from TBL_PRODUCTS tp WHERE tp.ISBN in ('9781032282022','9780367140076','9780367235574');
+
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa WHERE tcpa.PARTY_ID = 3692044;
+
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa
+join TBL_INVOICES ti on ti.SHOPPER_ID = tspa.SHOPPER_ID 
+WHERE tspa.PARTY_ID = 857289185 and ti.ID = 3040879;
+
+select * from TBL_INVOICES ti WHERE ti.CONFERENCE_ID is not null order by ti.TRANSACTION_DATE desc 
+
+select * from TBL_CREDIT_CARD_TYPES tcct;
+
+select count(*),tcct.NAME  from TBL_INVOICES ti
+join TBL_CREDIT_CARD_TYPES tcct on tcct.ID = ti.CC_TYPE_ID 
+WHERE ti.CC_TYPE_ID in (1,2,6,7,8) and ti.TRANSACTION_DATE > '2024-10-21' group by tcct.NAME;
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+select count(*) as orders_count,tc.NAME  from tbl_invoices ts
+join TBL_CURRENCIES tc on tc.ID = ts.CURRENCY_ID 
+WHERE ts.TRANSACTION_DATE >= '2024-10-29' and ts.TRANSACTION_DATE <='2024-10-30' group by tc.NAME;
+
+select ti.INVOICE_NO  from TBL_INVOICES ti WHERE ti.TRANSACTION_DATE >= '2024-10-29' and ti.TRANSACTION_DATE <='2024-10-30' and ti.CONFERENCE_ID is not null;
+
+select ti.*  from TBL_INVOICES ti WHERE ti.TRANSACTION_DATE >= '2024-10-30'  order by TRANSACTION_DATE  desc;
+
+select * from TBL_PRODUCTS tp where tp.ISBN = '9781032708485'
+
+select * from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr 
+join TBL_PRODUCTS tp on tp.ID = tpcr.PRODUCT_ID 
+where tp.ISBN = '9781032708485'
+
+select tp.id from tbl_products tp WHERE tp.ISBN = '9781032708485';
+
+
+select * from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr;
+
+
+SELECT ti.PAYMENT_TYPE,ti.TRANSACTION_DATE,ti.INVOICE_NO  from TBL_INVOICES ti WHERE ti.PAYMENT_TYPE like 'google%' and ti.CONFERENCE_ID is null order by TRANSACTION_DATE DESC ;
+
+select ti.PAYMENT_TYPE  from TBL_INVOICES ti where ti.INVOICE_NO = '1528825';
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+select * from TBL_SHOPPERS ts WHERE ts.EMAIL = 'midris@elon.edu'
+
+select * from TBL_INVOICES ti WHERE ti.EMAIL = 'midris@elon.edu';
+
+SELECT tp.PUBLICATION_DATE,tp.PLANNED_PUBLICATION_DATE  from TBL_PRODUCTS tp where tp.ISBN = '9781032708485';
+
+Select * from TBL_APPLICATION_CONFIGURATION tac 
+
+select * from TBL_APPLICATION_ROLE tar
+
+SELECT DISTINCT (tac.VALUE) as Email, ta.NAME as Name,tar.[ROLE] as Role
+FROM TBL_APPLICATION_ROLE tar 
+JOIN TBL_APPLICATIONS ta ON ta.ID = tar.APPLICATION_ID
+JOIN TBL_APPLICATION_CONFIGURATION tac on tac.APPLICATION_ID = ta.ID 
+WHERE tar.[ROLE] IN ('admin', 'affilmarketingperson', 'bookpointperson', 'custsvc', 'gtuser', 'guvnor', 'marketing', 'ptsubsystem', 'sales', 'tldperson', 'webclient', 'PromotionOperations')
+and tac.VALUE LIKE '%.com' or tac.VALUE LIKE '%.uk' or tac.VALUE LIKE '%.au' or tac.VALUE LIKE '%.local' or tac.VALUE LIKE '%.sg';
+
+
+select ta.NAME,tar.[ROLE]  from TBL_APPLICATIONS ta
+join TBL_APPLICATION_ROLE tar on tar.APPLICATION_ID = ta.ID 
+WHERE ta.NAME LIKE 'prod_admin%'
+
+select *  from TBL_APPLICATION_ROLE tar 
+
+select * from TBL_APPLICATIONS ta 
+
+select * from TBL_CHECKOUT_INVOICE_MAPPING tcim 
+
+--WHERE tcim.CHECKOUT_ID in ('98182','99744','100660');
+
+select ti.ID , tii.ISBN,tp.PUBLICATION_DATE,tp.PLANNED_PUBLICATION_DATE,tp.ACTUAL_PUBLICATION_DATE  from TBL_INVOICES ti
+join TBL_INVOICE_ITEMS tii on tii.INVOICE_ID = ti.ID 
+join TBL_PRODUCTS tp on tp.ISBN = tii.ISBN 
+WHERE ti.INVOICE_NO = '1524496'; --invoice id for the person who failed the email.
+
+
+select tii.INVOICE_ID,MAX(ti.TRANSACTION_DATE) as date,count(tii.ISBN) as count 
+from TBL_INVOICES ti
+join TBL_INVOICE_ITEMS tii on tii.INVOICE_ID = ti.ID 
+group by tii.INVOICE_ID,ti.TRANSACTION_DATE 
+HAVING count(tii.INVOICE_ID) > 3 order by ti.TRANSACTION_DATE desc;
+
+SELECT * from TBL_INVOICE_ITEMS tii 
+
+
+select tp.ACTUAL_PUBLICATION_DATE,tp.PLANNED_PUBLICATION_DATE,tp.PUBLICATION_DATE  from TBL_PRODUCTS tp where tp.ISBN in ('9780415452304 ','9780367485818','9780415086332','9780815399513','9780415284301','9780415540827','9781138251564','9781409470045');
+
+
+
+select tp.PLANNED_PUBLICATION_DATE,tp.ACTUAL_PUBLICATION_DATE,tp.PUBLICATION_DATE,tp.ISBN  from TBL_PRODUCTS tp WHERE tp.PLANNED_PUBLICATION_DATE > GETDATE()  
+
+
+SELECT * from TBL_PRODUCTS tp where tp.date
+
+select ti.SHIPPING_STATE_PROVINCE  from TBL_INVOICES ti order by ti.TRANSACTION_DATE asc;
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+select ti.TRANSACTION_DATE,ti.PAYMENT_TYPE,ti.INVOICE_NO  from TBL_INVOICES ti where (ti.TRANSACTION_DATE >= '2024-10-21' and ti.TRANSACTION_DATE <= '2024-10-22') and (ti.PAYMENT_TYPE LIKE 'google%' or ti.PAYMENT_TYPE like 'apple%');
+
+
+
+select * from TBL_INVOICES ti where ti.EMAIL = 'satyam.bwbs@gmail.com';
+
+select * from TBL_INVOICE_ITEMS tii where tii.INVOICE_ID = 3051778;
+
+
+select tp.PUBLICATION_DATE,tp.PLANNED_PUBLICATION_DATE,tp.ACTUAL_PUBLICATION_DATE  from TBL_PRODUCTS tp WHERE tp.ISBN = '9780367235574';
+
+
+select ti.ID,tp.NAME  from TBL_INVOICES ti
+join TBL_INVOICE_ITEMS tii on tii.INVOICE_ID = ti.ID 
+join TBL_PRODUCTS tp on tp.ISBN = tii.ISBN 
+where ti.TRANSACTION_DATE >= '2024-11-24' and ti.CONFERENCE_ID is not null and tp.NAME like '%Place%';
+
+
+select * from TBL_CHECKOUT_INVOICE_MAPPING tcim WHERE tcim.CHECKOUT_ID = 136471
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa WHERE tspa.PARTY_ID = 324106854;
+
+select tp.ID from TBL_PRODUCTS tp where tp.ISBN = '9781032138077';
+
+select * from TBL_CURRENCIES tc 
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa  order by tcpa.LAST_UPDATED  DESC ;
+
+select * from TBL_INVOICES ti where (ti.CURRENCY_ID = 1008 and ti.TRANSACTION_DATE >='2024-12-04') order by ti.TRANSACTION_DATE desc;
+
+
+
+select ti.*  from TBL_INVOICES ti order by ti.TRANSACTION_DATE desc;
+
+
+SELECT DISTINCT tp.ID
+FROM TBL_PRODUCT_PRICE tpp 
+JOIN TBL_PRODUCTS tp ON tp.ID = tpp.PRODUCT_ID 
+JOIN TBL_PRICE_TYPE tpt ON tpt.ID = tpp.PRICE_TYPE_ID 
+WHERE NOT (
+    tpp.LIST_PRICE >= 1 
+    AND tpt.CODE = 'LP' 
+    AND (
+        (CURRENT_TIMESTAMP >= tpp.EFFECTIVE_DATE AND (CURRENT_TIMESTAMP <= tpp.EXPIRATION_DATE OR tpp.EXPIRATION_DATE IS NULL)) 
+        OR 
+        (tpp.EFFECTIVE_DATE IS NULL AND (CURRENT_TIMESTAMP <= tpp.EXPIRATION_DATE OR tpp.EXPIRATION_DATE IS NULL))
+    )
+)
+
+select * from TBL_PRODUCTS tp 
+
+
+
+
+SELECT tpp.* FROM TBL_PRODUCT_PRICE tpp 
+JOIN TBL_PRODUCTS tp ON tp.ID = tpp.PRODUCT_ID 
+JOIN TBL_PRICE_TYPE tpt ON tpt.ID = tpp.PRICE_TYPE_ID 
+WHERE (
+  tpp.LIST_PRICE >= 1 
+  AND tpt.CODE = 'LP' 
+  AND (
+    (CURRENT_TIMESTAMP >= tpp.EFFECTIVE_DATE AND (CURRENT_TIMESTAMP <= tpp.EXPIRATION_DATE OR tpp.EXPIRATION_DATE IS NULL)) 
+    OR 
+    (tpp.EFFECTIVE_DATE IS NULL AND (CURRENT_TIMESTAMP <= tpp.EXPIRATION_DATE OR tpp.EXPIRATION_DATE IS NULL))
+  ));
+
+
+
+select ti.BILLING_NAME,ti.BILLING_LAST_NAME  from TBL_INVOICES ti
+
+select * from TBL_INVOICE_ITEMS tii where tii.INVOICE_ID = 3056278;
+
+select tpcr.DESCRIPTION  from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr
+
+
+select * from TBL_PRODUCTS tp WHERE tp.ID = 1047671;
+
+
+select count(*) as invoiceCount,CAST(ti.TRANSACTION_DATE AS DATE) as transactionDate,tc.ISO_NAME as isoName
+from TBL_INVOICES ti
+join TBL_CURRENCIES tc on tc.ID = ti.CURRENCY_ID 
+where (ti.TRANSACTION_DATE >= '2024-11-21' and (ti.CURRENCY_ID = 1008 or ti.CURRENCY_ID = 1001 or ti.CURRENCY_ID = 1002 or ti.CURRENCY_ID = 1011))
+group by CAST(ti.TRANSACTION_DATE AS DATE),tc.ISO_NAME 
+order by CAST(ti.TRANSACTION_DATE as DATE) ;
+
+select  * from TBL_CHECKOUT tcim where tcim.CHECKOUT_ID = 158639;
+
+
+
+select * from TBL_SHOPPER_PARTY_ASSOCIATION tspa 
+
+select * from TBL_MCAS_CHARGE tmc where MCASID in ('4337574','4338715');
+
+select ti.ID,ti.INVOICE_NO,ti.STATUS_ID,ti.TRANSACTION_DATE,ti.PAYMENT_TYPE,ti.INVOICE_NO ,tmc.MCASID  
+from TBL_INVOICES ti 
+join TBL_SHOPPER_PAYMENTS tsp on tsp.SHOPPER_ID = ti.SHOPPER_ID 
+join TBL_MCAS_CHARGE tmc on tmc.SHOPPER_ID = tsp.SHOPPER_ID 
+where tmc.MCASID in ('4337574','4338715');
+
+
+select * from TBL_CHECKOUT tc 
+
+select * from TBL_INVOICES ti order by ti.TRANSACTION_DATE  desc;
+
+
+select tcpa.* from TBL_CART_PARTY_ASSOCIATION tcpa 
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tcpa.PARTY_ID = tspa.PARTY_ID 
+where tspa.SHOPPER_ID = 2238316;
+
+select * from JMS_TRANSACTIONS jt 
+
+select * from TBL_INVOICES ti where ti.INVOICE_NO ='1509441';
+
+
+SELECT * from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr 
+
+
+SELECT  tp.ISBN, tp.GT_LAST_UPDATE,tpcr.COUNTRY_ID,tpcr.DESCRIPTION 
+FROM TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr 
+JOIN TBL_PRODUCTS tp ON tp.ID = tpcr.PRODUCT_ID 
+where tp.ISBN = '9780203890547';
+ORDER BY tp.GT_LAST_UPDATE DESC;
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ALTER TABLE TBL_CART_PARTY_ASSOCIATION 
+DROP COLUMN user_id;
+
+DELETE FROM UNITYEcommerce_Dev.dbo.TBL_CART_PARTY_ASSOCIATION
+WHERE ID in (238,
+239,
+244,
+255,
+266,
+295,
+325,
+329,
+336,
+337,
+338);
+
+SELECT * from TBL_CALLBACK_LOGS tcl;
+
+CREATE view CallbackLogs as SELECT * from TBL_CALLBACK_LOGS tcl;
+
+CREATE view InvoiceStatus as Select * from TEMP_INVOICE_STATUS tis ;
+
+SELECT * from InvoiceStatus;
+
+
+SELECT top 10 CONCAT(ti.NAME_ON_CARD,'|',ti.SHIPPING_NAME) as info from TBL_INVOICES ti
+
+SELECT DB_NAME() AS CurrentDatabase;
+
+
+
+Create Procedure getInvoice
+@InvoiceId INT
+AS
+BEGIN
+	SELECT * from TBL_INVOICES ti WHERE ti.ID = @InvoiceId 
+END;
+EXEC getInvoice @InvoiceId = 297040;
+
+SELECT * from TBL_COUNTRY tc 
+
+select * from TBL_COUNTRY_SUBDIVISION tcs 
+
+
+
+
+
+
+
+
+
+
+
+SELECT DISTINCT ta.NAME,tar.[ROLE],ta.DESCRIPTION,tac.VALUE 
+FROM TBL_APPLICATION_ROLE tar 
+JOIN TBL_APPLICATIONS ta ON ta.ID = tar.APPLICATION_ID
+JOIN TBL_APPLICATION_CONFIGURATION tac on tac.APPLICATION_ID = ta.ID 
+WHERE tar.[ROLE] IN ('admin', 'affilmarketingperson', 'bookpointperson', 'custsvc', 'gtuser', 'guvnor', 'marketing', 'ptsubsystem', 'sales', 'tldperson', 'webclient', 'PromotionOperations')
+and tac.VALUE LIKE '%.com';
+
+
+SELECT top 10 ti.*,tis.ID,tis.NAME  From TBL_INVOICES ti
+join TBL_INVOICE_STATUS tis on tis.ID = ti.STATUS_ID 
+WHERE ti.CURRENCY_ID = 1008 or ti.CURRENCY_ID = 1012
+
+
+select tcpa.CART_UUID  from TBL_CART_PARTY_ASSOCIATION tcpa join
+TBL_SHOPPER_PARTY_ASSOCIATION tspa on tspa.PARTY_ID = tcpa.PARTY_ID 
+join TBL_SHOPPERS ts on ts.ID = tspa.SHOPPER_ID WHERE ts.ID = 245760;
+
+
+select tsp.* from TBL_SHOPPER_PREFERENCES tsp WHERE tsp.PREFERENCE_KEY LIKE 'IS%' ORDER by tsp.DATE_CREATED DESC 
+
+SELECT tsp.* from TBL_SHOPPER_PAYMENTS tsp order by tsp.DATE_CREATED  DESC 
+
+select tsp.* from TBL_SHOPPER_PAYMENTS tsp WHERE tsp.CARD_TYPE IN ('8');
+
+SELECT COUNT(*) 
+FROM TBL_SHOPPER_PAYMENTS tsp 
+WHERE tsp.CARD_TYPE IN ('1','2','3','4','5','6')
+
+select ti.* from TBL_INVOICES ti WHERE ti.TRANSACTION_DATE > '2021-01-01' and ti.TRANSACTION_DATE < '2021-02-01'; 
+
+
+select * from TBL_SHOPPER_PAYMENTS tsp where len(tsp.CARD_TYPE ) = 1;
+select count(*) from TBL_SHOPPER_PAYMENTS tsp where tsp.CARD_TYPE = '5';
+ 
+select * from TBL_CREDIT_CARD_TYPES tcct ;
+
+SELECT DISTINCT 
+    TI.SHOPPER_ID AS shopperId, 
+    TI.EMAIL AS email,
+    TS.FIRST_NAME AS firstName, 
+    TS.MIDDLE_INITIAL AS middleInitial,
+    TS.LAST_NAME AS lastName,
+    TS.LAST_LOGIN_DATE AS lastLoginDate, 
+    TS.DATE_CREATED AS dateCreated,
+    IIF(
+        (SELECT COUNT(SHOPPER_ID) 
+         FROM TBL_SHOPPER_PREFERENCES WITH (NOLOCK) 
+         WHERE PREFERENCE_KEY = 'IS_GUEST_SHOPPER' 
+           AND PREFERENCE_VALUE = '1' 
+           AND SHOPPER_ID = TI.SHOPPER_ID
+        ) > 0, 
+        'YES', 
+        'NO'
+    ) AS isGuestShopper,
+    TIS.NAME AS status,
+    CASE 
+        WHEN ISNULL(TI.CC_TYPE_ID, 0) = 0 THEN NULL 
+        ELSE tcct.NAME 
+    END AS ccName,
+    TI.TRANSACTION_DATE AS transactionDate,
+    TI.SHIPPING_METHOD_ID AS shippingMethodId,
+    TC.NAME AS currency, 
+    TI.DISCOUNT_CODE AS discountCode,
+    TI.INVOICE_NO AS invoiceNo,
+    TI.CONFERENCE_ID AS conferenceId,
+    (
+        SELECT SUM(LINE_TOTAL) 
+        FROM TBL_INVOICE_ITEMS WITH (NOLOCK) 
+        GROUP BY INVOICE_ID 
+        HAVING INVOICE_ID = TI.ID
+    ) AS invoiceAmount,
+    TI.ITEM_TAX AS itemTax,
+    TI.SHIPPING_TAX AS shippingTax,
+    TI.SHIPPING_AMOUNT AS shippingAmount,
+    CAST(TI.SHIPPING_COUNTRY_ID AS VARCHAR(5)) AS shippingCountryId,
+    TCS.Name AS ShippingCountryName,
+    TI.SHIPPING_NAME AS shippingName, 
+    TI.SHIPPING_LAST_NAME AS shippingLastName,
+    TI.SHIPPING_STREET1 AS shippingStreet1, 
+    TI.SHIPPING_STREET2 AS shippingStreet2, 
+    TI.SHIPPING_CITY AS shippingCity, 
+    TI.SHIPPING_STATE_PROVINCE AS shippingStateProvince, 
+    TI.SHIPPING_POSTAL_CODE AS shippingPostalCode,
+    CAST(TI.BILLING_COUNTRY_ID AS VARCHAR(5)) AS billingCountryId,
+    TCB.Name AS billingCountryName,
+    TI.BILLING_NAME AS billingName, 
+    TI.BILLING_LAST_NAME AS billingLastName,
+    TI.BILLING_STREET1 AS billingStreet1, 
+    TI.BILLING_STREET2 AS billingStreet2, 
+    TI.BILLING_CITY AS billingCity,
+    TI.BILLING_STATE_PROVINCE AS billingStateProvince, 
+    TI.BILLING_POSTAL_CODE AS billingPostalCode,
+    TI.SHIPPING_PHONE_NUMBER AS shippingPhone,
+    TI.BILLING_PHONE_NUMBER AS billingPhone,
+    TI.ADJUSTED_SHIPPING_PRICE AS adjustedShippingPrice,
+    TI.SHIPPING_CODE AS shippingCode, 
+    TI.SHIPPING_DESCRIPTION AS shippingDescription,
+    TI.APPLICATION_ID AS applicationId,
+    TA.NAME AS applicationName,
+    TII.INVOICE_ID AS invoiceId,
+    TI.PRE_PAID AS Prepaid,
+    TI.VAT_CHARGE AS vatCharge,
+    TC.ISO_NAME AS Region
+FROM 
+    TBL_INVOICES TI WITH (NOLOCK)
+    LEFT JOIN TBL_INVOICE_ITEMS TII WITH (NOLOCK) ON TII.INVOICE_ID = TI.ID
+    JOIN TBL_PRICE_TYPE TPT WITH (NOLOCK) ON TII.Price_Type_ID = TPT.ID
+    JOIN TBL_PRODUCTS TP WITH (NOLOCK) ON TII.ISBN = TP.ISBN
+    JOIN TBL_BINDINGSTYLE TBS WITH (NOLOCK) ON TP.BINDINGSTYLE_ID = TBS.ID
+    JOIN TBL_INVOICE_STATUS TIS WITH (NOLOCK) ON TI.STATUS_ID = TIS.ID
+    JOIN TBL_CURRENCIES TC WITH (NOLOCK) ON TI.CURRENCY_ID = TC.ID
+    JOIN TBL_COUNTRY TCS WITH (NOLOCK) ON TI.SHIPPING_COUNTRY_ID = TCS.ID
+    JOIN TBL_COUNTRY TCB WITH (NOLOCK) ON TI.BILLING_COUNTRY_ID = TCB.ID
+    JOIN TBL_APPLICATIONS TA WITH (NOLOCK) ON TI.APPLICATION_ID = TA.ID
+    JOIN TBL_SHOPPERS TS WITH (NOLOCK) ON TI.SHOPPER_ID = TS.ID
+    LEFT JOIN TBL_CREDIT_CARD_TYPES tcct WITH (NOLOCK) ON tcct.ID = TI.CC_TYPE_ID
+WHERE 
+    TI.CONFERENCE_ID = 'VFE24BS'
+ORDER BY 
+    TI.TRANSACTION_DATE DESC
+    
+    select ti.* from TBL_INVOICES ti WHERE ti.CONFERENCE_ID LIKE 'UATConferenceListDemo01%'
+    
+SELECT COUNT(*) from TBL_INVOICES ti WHERE ti.CONFERENCE_ID = 'UATConferenceListDemo01'
+
+and ti.TRANSACTION_DATE 
+> '2024-03-01 00:00:00' and ti.TRANSACTION_DATE < '2024-04-01 23:59:59'; 
+
+
+
+
+
+SELECT 
+    TI.SHOPPER_ID AS shopperId, 
+    TI.EMAIL AS email,
+    TS.FIRST_NAME AS firstName, 
+    TS.MIDDLE_INITIAL AS middleInitial,
+    TS.LAST_NAME AS lastName,
+    TS.LAST_LOGIN_DATE AS lastLoginDate, 
+    TS.DATE_CREATED AS dateCreated,
+    IIF(
+        (SELECT COUNT(SHOPPER_ID) 
+         FROM TBL_SHOPPER_PREFERENCES WITH (NOLOCK) 
+         WHERE PREFERENCE_KEY = 'IS_GUEST_SHOPPER' 
+           AND PREFERENCE_VALUE = '1' 
+           AND SHOPPER_ID = TI.SHOPPER_ID) > 0, 
+        'YES', 
+        'NO'
+    ) AS isGuestShopper,
+    TIS.NAME AS status,
+    (CASE WHEN ISNULL(TI.CC_TYPE_ID, 0) = 0 THEN NULL ELSE tcct.NAME END) AS ccName,
+    TI.TRANSACTION_DATE AS transactionDate,
+    TI.SHIPPING_METHOD_ID AS shippingMethodId,
+    TC.NAME AS currency, 
+    TI.DISCOUNT_CODE AS discountCode,
+    TI.INVOICE_NO AS invoiceNo,
+    TI.CONFERENCE_ID AS conferenceId, 
+    (SELECT SUM(LINE_TOTAL) 
+     FROM TBL_INVOICE_ITEMS WITH (NOLOCK) 
+     WHERE INVOICE_ID = TI.ID
+     GROUP BY INVOICE_ID
+    ) AS invoiceAmount,
+    TI.ITEM_TAX AS itemTax,
+    TI.SHIPPING_TAX AS shippingTax,
+    TI.SHIPPING_AMOUNT AS shippingAmount,
+    CAST(TI.SHIPPING_COUNTRY_ID AS VARCHAR(5)) AS shippingCountryId,
+    TCS.Name AS ShippingCountryName,
+    TI.SHIPPING_NAME AS shippingName, 
+    TI.SHIPPING_LAST_NAME AS shippingLastName,
+    TI.SHIPPING_STREET1 AS shippingStreet1, 
+    TI.SHIPPING_STREET2 AS shippingStreet2, 
+    TI.SHIPPING_CITY AS shippingCity, 
+    TI.SHIPPING_STATE_PROVINCE AS shippingStateProvince, 
+    TI.SHIPPING_POSTAL_CODE AS shippingPostalCode,
+    CAST(TI.BILLING_COUNTRY_ID AS VARCHAR(5)) AS billingCountryId,
+    TCB.Name AS billingCountryName,
+    TI.BILLING_NAME AS billingName, 
+    TI.BILLING_LAST_NAME AS billingLastName,
+    TI.BILLING_STREET1 AS billingStreet1, 
+    TI.BILLING_STREET2 AS billingStreet2, 
+    TI.BILLING_CITY AS billingCity,
+    TI.BILLING_STATE_PROVINCE AS billingStateProvince, 
+    TI.BILLING_POSTAL_CODE AS billingPostalCode,
+    TI.SHIPPING_PHONE_NUMBER AS shippingPhone,
+    TI.BILLING_PHONE_NUMBER AS billingPhone,
+    TI.ADJUSTED_SHIPPING_PRICE AS adjustedShippingPrice,
+    TI.SHIPPING_CODE AS shippingCode, 
+    TI.SHIPPING_DESCRIPTION AS shippingDescription,
+    TI.APPLICATION_ID AS applicationId,
+    TA.NAME AS applicationName,
+    TI.ID AS invoiceId, 
+    TI.PRE_PAID AS Prepaid,
+    TI.VAT_CHARGE AS vatCharge,
+    TC.ISO_NAME AS Region 
+FROM 
+    TBL_INVOICES TI WITH (NOLOCK)
+JOIN 
+    TBL_INVOICE_ITEMS TII WITH (NOLOCK) ON TI.INVOICE_NO = TII.INVOICE_NO 
+JOIN 
+    TBL_PRICE_TYPE TPT WITH (NOLOCK) ON TII.Price_Type_ID = TPT.ID
+JOIN 
+    TBL_PRODUCTS TP WITH (NOLOCK) ON TII.ISBN = TP.ISBN
+JOIN 
+    TBL_BINDINGSTYLE TBS WITH (NOLOCK) ON TP.BINDINGSTYLE_ID = TBS.ID
+JOIN 
+    TBL_INVOICE_STATUS TIS WITH (NOLOCK) ON TI.STATUS_ID = TIS.ID
+JOIN 
+    TBL_CURRENCIES TC WITH (NOLOCK) ON TI.CURRENCY_ID = TC.ID
+JOIN 
+    TBL_COUNTRY TCS WITH (NOLOCK) ON TI.SHIPPING_COUNTRY_ID = TCS.ID
+JOIN 
+    TBL_COUNTRY TCB WITH (NOLOCK) ON TI.BILLING_COUNTRY_ID = TCB.ID
+JOIN 
+    TBL_APPLICATIONS TA WITH (NOLOCK) ON TI.APPLICATION_ID = TA.ID
+JOIN 
+    TBL_SHOPPERS TS WITH (NOLOCK) ON TI.SHOPPER_ID = TS.ID
+LEFT JOIN 
+	TBL_CREDIT_CARD_TYPES tcct  WITH (NOLOCK) on tcct.ID = TI.CC_TYPE_ID
+WHERE 
+    TI.CONFERENCE_ID = 'ISA19'
+ORDER BY 
+    TI.TRANSACTION_DATE DESC;
+   
+SELECT DISTINCT ti.CONFERENCE_ID from TBL_INVOICES ti;
+
+select ti.CONFERENCE_ID,ti.ID,ti.SHOPPER_ID,ti.TRANSACTION_DATE,ti.INVOICE_NO  from TBL_INVOICES ti WHERE ti.CONFERENCE_ID = 'AERA19';
+
+
+select * from TBL_PRODUCTS tp WHERE tp.DISTRIBUTION_CENTER_ID is not null
+
+
+select tp.isbn from TBL_PRODUCTS tp WHERE tp.ID = 1828531
+
+
+select tp.NAME from TBL_PRODUCTS tp WHERE tp.ISBN = :keyword or tp.sku = :keyword or tp.NAME like CONCAT(:keyword,'%')  order by tp.NAME ;
+
+
+select top 10 tp.ISBN,tp.REVIEWS,tp.REVIEWS_FOR_EXPORT_NEW  from TBL_PRODUCTS tp WHERE tp.REVIEWS_FOR_EXPORT_NEW  is not null;
+
+SELECT tp.* from TBL_PRODUCTS tp WHERE tp.ISBN = '9780415133258';
+
+CREATE TABLE TBL_INVOICE_MCAS_MAPPING (
+    ID INTEGER PRIMARY KEY IDENTITY,
+    MCAS_CHARGE_ID INT,  
+    DATE_CREATED DATE,
+    INVOICE_ITEM_ID INT,
+    FOREIGN KEY (INVOICE_ITEM_ID) REFERENCES TBL_INVOICE_ITEMS(ID),
+    FOREIGN KEY (MCAS_CHARGE_ID) REFERENCES TBL_MCAS_CHARGE(ID)
+);
+
+INSERT INTO UNITYEcommerce_Uat.dbo.TBL_INVOICE_MCAS_MAPPING
+(MCAS_CHARGE_ID, DATE_CREATED, INVOICE_ITEM_ID)
+VALUES(33167, GETDATE(), 473503);
+
+
+select tp.ISBN,tp.DESCRIPTION  from TBL_PRODUCTS tp WHERE tp.BINDINGSTYLE_ID in (8,19) order by tp.GT_LAST_UPDATE  desc;
+
+select
+*
+from
+TBL_INVOICE_ITEMS tii
+where
+tii.INVOICE_ID = 338005
+;
+
+select count(*) from TBL_INVOICES ti join TBL_INVOICE_ITEMS tii on ti.ID  = tii.INVOICE_ID
+left join TBL_INVOICE_MCAS_MAPPING timm on timm.INVOICE_ITEM_ID  = tii.ID where ti.ID  = 338005 and timm.id is null;
+
+
+SELECT tb.CODE  from TBL_PRODUCTS tp 
+join TBL_BINDINGSTYLE tb on tb.ID = tp.BINDINGSTYLE_ID WHERE tp.ISBN = '9781138699861';
+
+
+select tii.ISBN,tb.CODE  from TBL_INVOICES ti 
+join TBL_INVOICE_ITEMS tii on tii.INVOICE_ID = ti.ID 
+join TBL_PRODUCTS tp on tp.ISBN = tii.ISBN 
+join TBL_BINDINGSTYLE tb on tb.ID = tp.BINDINGSTYLE_ID 
+Where ti.ID = 338062;
+
+SELECT * from TBL_COUNTRY tc WHERE tc.IS_ACTIVE = 1;
+
+SELECT * from TBL_SHOPPERS ts left join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tspa.SHOPPER_ID = ts.ID 
+WHERE tspa.PARTY_ID  is null;
+
+select * from tbl_shoppers ts WHERE ts.DATE_CREATED >= '2010-01-01' and ts.DATE_CREATED <= '2011-01-01';
+
+SELECT * from TBL_PROFILES tp ;
+
+SELECT * from TBL_SHOPPER_PARTY_ASSOCIATION tspa WHERE SHOPPER_ID = 245637;
+
+SELECT tp.SHOPPER_ID  
+FROM TBL_PROFILES tp 
+WHERE tp.DATE_CREATED >= '2015-01-01' 
+GROUP BY tp.SHOPPER_ID 
+HAVING COUNT(*) > 1;
+
+select * from TBL_SHOPPERS ts WHERE ts.ID = 245637;
+
+
+select tp.SHOPPER_ID,ts.EMAIL , count(*) from TBL_PROFILES tp  
+join TBL_SHOPPERS ts on ts.ID = tp.SHOPPER_ID 
+left join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tp.SHOPPER_ID = tspa.SHOPPER_ID where tspa.ID is NULL
+group by tp.SHOPPER_ID,ts.EMAIL  HAVING count(*) > 5;
+
+
+select ts.EMAIL  from TBL_SHOPPERS ts WHERE ts.ID = 229817;
+
+select ti.PAYMENT_TYPE,tcct.NAME,ti.INVOICE_NO,ti.TRANSACTION_DATE  from TBL_INVOICES ti
+join TBL_CREDIT_CARD_TYPES tcct on tcct.ID = ti.CC_TYPE_ID 
+where ti.TRANSACTION_DATE >= '2024-10-25' and ti.CC_TYPE_ID = 6;
+
+select * from TBL_CREDIT_CARD_TYPES tcct; 
+
+
+select * from TBL_SHOPPERS ts WHERE ts.EMAIL = 'Bruce.Silver@tandf.co.uk';
+
+
+select * from TBL_COUNTRY_SUBDIVISION
+
+
+select * from TBL_INVOICES where TBL_INVOICES.SHIPPING_COUNTRY_ID = 'AU' and BILLING_COUNTRY_ID = 'NZ' and TRANSACTION_DATE >= '2024-10-01';
+
+select * from TBL_INVOICES ti WHERE ti.ID = 342093
+
+select ti.ID,ti.STATUS_ID 
+from TBL_INVOICES ti WHERE ti.INVOICE_NO = '216682';
+
+select * from tbl_shoppers WHERE EMAIL like 'sunkara%'
+
+
+select * from TBL_INVOICES ti WHERE ti.EMAIL = 'midris@elon.edu';
+
+
+select top 100 tp.GT_LAST_UPDATE  from TBL_PRODUCTS tp  order by tp.GT_LAST_UPDATE desc;
+
+
+
+select * from TBL_PCM_UBW_PRODUCTS tpup order by tpup.PCM_PRODUCT_ID desc 
+
+
+select * from TBL_PRODUCTS tp WHERE tp.GT_LAST_UPDATE >= GETDATE(); 
+
+select tp.GT_LAST_UPDATE,count(*)  from TBL_PRODUCTS tp 
+WHERE tp.GT_LAST_UPDATE >= CAST(GETDATE() AS DATE) group by tp.GT_LAST_UPDATE order by tp.GT_LAST_UPDATE 
+
+
+select ID from TBL_INVOICES ti WHERE ti.INVOICE_NO = '217318';
+
+select ti.BILLING_COUNTRY_ID as billing,ti.SHIPPING_COUNTRY_ID as shipping,tc.NAME as invoiceCurrency,ti.CURRENCY_ID  ,ti.TRANSACTION_DATE  from TBL_INVOICES ti
+join TBL_CURRENCIES tc on tc.ID = ti.CURRENCY_ID 
+WHERE ti.SHIPPING_COUNTRY_ID != ti.BILLING_COUNTRY_ID  order by ti.TRANSACTION_DATE desc
+
+select * from TBL_INVOICES ti order by ti.TRANSACTION_DATE desc;
+
+select * from TBL_CALLBACK_LOGS tcl order by tcl.DATE_CREATED desc;
+
+select ti.ID,ti.INVOICE_NO,ti.SHIPPING_COUNTRY_ID,ti.BILLING_COUNTRY_ID,ti.EMAIL  from TBL_INVOICES ti
+join TBL_COUNTRY tc on tc.ID = ti.SHIPPING_COUNTRY_ID 
+where ti.SHIPPING_COUNTRY_ID = ti.BILLING_COUNTRY_ID order by ti.TRANSACTION_DATE DESC ;
+
+
+
+select ti.ID as invoiceId, tc.CHECKOUT_ID as checkoutId from TBL_INVOICES ti 
+left join TBL_CHECKOUT tc on ti.ID = tc.INVOICE_ID 
+join TBL_SHOPPERS ts on ts.ID = ti.SHOPPER_ID 
+WHERE ts.ID = 245760;
+
+select tc.* from TBL_CHECKOUT tc 
+join TBL_INVOICES ti on ti.ID = tc.INVOICE_ID where ti.INVOICE_NO = '221254';
+
+select ti.SHIPPING_NAME,ti.BILLING_NAME,ti.SHIPPING_LAST_NAME,ti.BILLING_LAST_NAME,ts.FIRST_NAME as SHOPPER_FIRST_NAME,ts.LAST_NAME as SHOPPER_LAST_NAME  from TBL_INVOICES ti
+join TBL_SHOPPERS ts on ts.ID = ti.SHOPPER_ID 
+where ti.SHOPPER_ID = '245760' order by TRANSACTION_DATE desc;
+
+select * from TBL_CHECKOUT tc where tc.CHECKOUT_ID = 889988;
+
+select* from TBL_CALLBACK_LOGS tcl order by tcl.DATE_CREATED  desc;
+
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa order by tcpa.LAST_UPDATED  desc;
+
+select tp.*  from TBL_PRODUCTS tp WHERE tp.ISBN = '9780415534918';
+
+
+select tpcr.DESCRIPTION  from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr group by tpcr.DESCRIPTION 
+
+
+select top 10 tp.ISBN,tp.ID  from TBL_PRODUCT_CLASSIFICATION tpc 
+join TBL_PRODUCTS tp on tp.ID = tpc.PRODUCT_ID 
+join TBL_CLASSIFICATION tc on tc.ID = tpc.CLASSIFICATION_ID 
+where tc.CODE like '%INFO%'
+
+
+select * from TBL_PRODUCTS tp WHERE tp.ID = 2021632;
+SELECT tp.ID  from TBL_PRODUCTS tp WHERE tp.ISBN = '9780429121678';
+
+
+select * from tbl_products tp WHERE tp.ISBN = '9781482240009';
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa 
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tspa.PARTY_ID = tcpa.PARTY_ID 
+join TBL_SHOPPERS ts on ts.ID = tspa.SHOPPER_ID 
+WHERE ts.EMAIL = 'mahadev.sannabilagi@informa.com';
+
+select * from TBL_CART_PARTY_ASSOCIATION tcpa WHERE PARTY_ID = 666802
+
+select * from TBL_PRODUCT_PRICE tpp where tpp.PRODUCT_ID  = 1987593;
+
+UPDATE UNITYEcommerce_Uat.dbo.TBL_PRODUCT_PRICE
+SET LIST_PRICE=0.00 WHERE PRODUCT_ID = 1987593;
+
+select * from TBL_CHECKOUT tc where tc.CHECKOUT_ID = 19;
+
+select * from TBL_INVOICES ti where ti.INVOICE_NO = '221709';
+
+select tp.PUBLICATION_DATE,tp.ACTUAL_PUBLICATION_DATE,tp.GT_LAST_UPDATE,tp.PLANNED_PUBLICATION_DATE  
+from TBL_PRODUCTS tp where tp.ISBN = '9781032736297'; 
+
+
+SELECT ti.* from TBL_INVOICES ti order by ti.TRANSACTION_DATE desc;
+
+
+select * from TBL_CALLBACK_LOGS tcl 
+
+
+SELECT tpis.PUBLICATION_DATE, tpis.PLANNED_PUBLICATION_DATE
+FROM TBL_PRODUCT_INVENTORY_STATUS tpis
+JOIN TBL_PRODUCTS tp ON tp.ID = tpis.PRODUCT_ID
+WHERE tp.ID = 2203714
+AND tpis.DISTRIBUTION_CENTER_ID IN (
+      SELECT tdc.ID
+      FROM TBL_DISTRIBUTION_CENTER tdc
+      JOIN TBL_SHIPPING_ZONES tsz ON tdc.ID = tsz.DISTRIBUTION_CENTER_ID
+      JOIN TBL_SHIPPING_ZONE_COUNTRY tszc ON tszc.SHIPPING_ZONE_ID = tsz.ID
+      JOIN TBL_COUNTRY tc ON tc.ID = tszc.COUNTRY_ID
+      WHERE tc.ID = 'GBP'
+     
+);
+
+select * from TBL_COUNTRY tc where tc.ID = 'USD';
+
+
+select * from TBL_INVOICE_ITEMS tii where tii.INVOICE_ID = 347171;
+
+select tp.ISBN,tb.[TEXT]  from TBL_PRODUCTS tp 
+join TBL_BINDINGSTYLE tb on tb.ID = tp.BINDINGSTYLE_ID 
+where tp.ISBN in ('9781032453415','9781032506159');
+
+select tcpa.CART_UUID  from TBL_CART_PARTY_ASSOCIATION tcpa
+join TBL_SHOPPER_PARTY_ASSOCIATION tspa on tcpa.PARTY_ID = tspa.PARTY_ID 
+where tspa.SHOPPER_ID = 262419;
+
+select * from TBL_SHOPPERS ts where ts.ID = 249549;
+
+select * from TBL_SHOPPERS ts where ts.EMAIL like 'vowij76242@bawsny.com%'
+
+select * from TBL_SHOPPERS ts  WHERE EMAIL like 'sunkara.raviteja@%'
+
+
+select * from TBL_CURRENCIES tc 
+
+select ti.*  from TBL_INVOICES ti WHERE ti.CURRENCY_ID in (1008) order by ti.TRANSACTION_DATE desc;
+
+select tp.id from TBL_PRODUCTS tp where tp.ISBN = '9781032032436';
+
+select * from TBL_CURRENCIES
+
+select * from TBL_PRODUCT_PRICE tpp 
+
+select * from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr WHERE tpcr.PRODUCT_ID = 1042185;
+
+SELECT tp.ISBN as isbn,tpcr.COUNTRY_ID  as countryCode,tc.Name  as countryName,tpcr.DESCRIPTION from TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr 
+join TBL_PRODUCTS tp on tp.ID = tpcr.PRODUCT_ID 
+join TBL_COUNTRY tc on tc.ID = tpcr.COUNTRY_ID 
+where tp.ISBN = '9781032032436';
+
+SELECT * from TBL_COUNTRY tc WHERE tc.Name = 'INDIA';
+
+SELECT DISTINCT TOP 10 tp.ISBN, tp.GT_LAST_UPDATE 
+FROM TBL_PRODUCT_COUNTRY_RESTRICTIONS tpcr 
+JOIN TBL_PRODUCTS tp ON tp.ID = tpcr.PRODUCT_ID 
+ORDER BY tp.GT_LAST_UPDATE DESC;
+
+
+
+
+   
+
+
+
+
