@@ -1,0 +1,40 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "D:/work projects/work projects/routledge"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-common"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-core-web-ejb"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-customer-service"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-order-management"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-product-service"
+		},
+		{
+			"path": "D:/work projects/work projects/routledge-shipping-management-service"
+		},
+		{
+			"path": "D:/work projects/work projects/ubw-admintool-core"
+		},
+		{
+			"path": "D:/work projects/work projects/ubw-admintool-web"
+		},
+		{
+			"path": "D:/all my data/ANGULAR/angular/angular playground/aangular-everything"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "disabled"
+	}
+}

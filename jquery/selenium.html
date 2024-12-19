@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var inputField = document.getElementById('inputField');
+        
+            inputField.addEventListener('paste', function(event) {
+                event.preventDefault();
+                //alert("Pasting is not allowed in this input field.");
+            });
+        });
+        </script>
+    <input type="text" id="inputField">
+    <p id="paragraph">This is some text</p>
+</body>
+</html>
